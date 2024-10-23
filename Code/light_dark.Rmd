@@ -6,15 +6,63 @@ output: html_notebook
 
 # Loading Packages 
 ```{r}
-#install.packages("tidyverse", "knitr", "here")
+#install.packages("tidyverse", "knitr", "here", "ggplot2")
 library(tidyverse) 
 library(knitr)
 library(here)
+library(ggplot2)
+library(dplyr)
 ```
 
 # Data Dictionary
+Loading in the data from our personal computer files. Edit here if we need to switch what data is being used.
 ```{r}
 DataDictionary <-read_csv(file = here("Data", "RawData", "vert_migration.csv"))
 kable(DataDictionary)
+```
+#Transforming our numbers into Chl/cm^2
+We need to make it so that we are looking directly at how much chlorophyll per cm^2. I don't know how to do this calculation with VolSol.
+I am going to make preliminary graphs by dividing off the Tissue Area and timesing by VolSol. When we know correct calculations, we can change this.
+This will go into a new column called Chl_cm2
+```{r}
+DataDictionary$Chl_cm2 <- (DataDictionary$Fluorescence_Reading*DataDictionary$VolSol_mL) / DataDictionary$Tissue_Area_cm2
+kable(DataDictionary)
+```
+
+#Sorting the data, creating lists 
+To make the data usable for future. I need the categories which will become each bar on a bar plot. For my first plot, I am going with top sheets comparing all conditions.
+
+The for loops and lists has it so that it will cycle through each of the different conditions. When each condition is present, I can manipulate it to a list as the std and the mean. I will need the std and the mean for the bar graph. 
+```{r}
+temp <- c(20, 15)
+sheet <- "top"
+condition <-c("dark", "med", "light")
+time <- 202410101430
+
+top_means <-c()
+top_std <-c()
+top_conditions<-c()
+
+for (y in 1:2) {
+  for (x in 1:3) {
+    sub_data <- filter(DataDictionary, Temp_C == temp[[y]], Top_Bottom == sheet, Light == condition[[x]], Chl_cm2 > 0, YYYYMMDDHHMM == time)
+    top_means <-append(top_means, mean(sub_data$Chl_cm2))
+    top_std <-append(top_std, sd(sub_data$Chl_cm2))
+    top_conditions <-append(top_conditions, paste(temp[[y]], condition[[x]]))
+  }
+}
+
+kable(sub_data)
+#print(top_std)
+```
+
+#Bar Graph 
+```{r}
+data <- data.frame(top_conditions, top_means)
+ggplot(data, aes(x=top_conditions, y=top_means)) + 
+  geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin=top_means-top_std, ymax=top_means+top_std), width=.2,
+                 position=position_dodge(.9))
+ 
 ```
 
