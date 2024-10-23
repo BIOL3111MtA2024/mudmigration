@@ -2,4 +2,4 @@
 
 Information about documents added to this folder.
 
-Testing connection Sarah Postuma
+light_dark file has the anova and bar plots about the different light and temperature conditions after the entire time period. 
