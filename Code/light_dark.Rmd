@@ -50,9 +50,9 @@ top_conditions<-c()
 
 for (y in 1:2) {
   for (x in 1:3) {
-    sub_data <- filter(DataDictionary, Temp_C == temp[[y]], Top_Bottom == sheet, Light == condition[[x]], Chl_cm2 > 0, YYYYMMDDHHMM == time)
-    top_means <-append(top_means, mean(sub_data$Chl_cm2))
-    top_std <-append(top_std, sd(sub_data$Chl_cm2))
+    sub_data <- filter(chl_data, Temp_C == temp[[y]], Top_Bottom == sheet, Light == condition[[x]], Chl_cm2 > 0, YYYYMMDDHHMM == time)
+    top_means <-append(top_means, mean(sub_data$Chl_ugcm2))
+    top_std <-append(top_std, sd(sub_data$Chl_ugcm2))
     top_conditions <-append(top_conditions, paste(temp[[y]], condition[[x]]))
   }
 }
@@ -61,7 +61,7 @@ kable(sub_data)
 #print(top_std)
 ```
 
-#Bar Graph 
+# Bar Graph 
 ```{r}
 data <- data.frame(top_conditions, top_means)
 ggplot(data, aes(x=top_conditions, y=top_means)) + 
@@ -69,5 +69,11 @@ ggplot(data, aes(x=top_conditions, y=top_means)) +
   geom_errorbar(aes(ymin=top_means-top_std, ymax=top_means+top_std), width=.2,
                  position=position_dodge(.9))
  
+```
+
+
+```{r}
+
+
 ```
 
