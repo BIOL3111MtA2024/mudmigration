@@ -38,6 +38,7 @@ googlesheet_url <- "https://docs.google.com/spreadsheets/d/16DxWZhYw69ZgACGu82sz
 # Accessing sheets
 ```{r accessing_sheets}
 vert_migration <- read_sheet(googlesheet_url, sheet = "vert_migration")
+
 ```
 
 
@@ -55,15 +56,29 @@ vert_migration <- vert_migration |>
   
 kable(vert_migration)
 
+
+#remove garbage columns; may depend upon version of import
+vert_migration <- vert_migration |>
+  select(-c( "...12", "...13","...14","...15","...16"   ))
+
+# base R alternate approach
 # chl_data$Chl_ugL <- (chl_data$Fluorescence_Reading/7.0314) -0.9791
 # chl_data$Chl_ugcm2 <- (chl_data$Chl_ugL*chl_data$VolSol_mL/1000) / chl_data$Tissue_Area_cm2
 # kable(chl_data)
 ```
-# Generate elapsed time
+
+# Generate Time of Day & elapsed time
 ```{r elapsed_time}
-vert_migration2 <- vert_migration |>
+vert_migration <- vert_migration |>
   mutate(DateTime = lubridate::ymd_hm(YYYYMMDDHHMM)) |>
-  mutate(ToD = lubridate::hms(DateTime))
+  mutate(Date = stringr::str_extract(DateTime, "[0-9]{4}-[0-9]{2}-[0-9]{2}")) |>
+  mutate(ToD = stringr::str_extract(DateTime, "[0-9]{2}:[0-9]{2}:[0-9]{2}"))
+
+# vert_migration |>
+#   group_by(Date) |>
+#   mutate(E_time = ToD - min(ToD))
+
+
 ```
 
 
