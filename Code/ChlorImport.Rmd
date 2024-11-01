@@ -12,7 +12,6 @@ This .rmd imports chlorophyll florescence data ...
 #install.packages("googlesheets4")
 #install.packages("googledrive")
 #install.packages("tidyverse")
-#install.packages("here")
 #install.packages("kableExtra")
 ```
 
@@ -20,7 +19,6 @@ This .rmd imports chlorophyll florescence data ...
 # Loading Packages 
 ```{r load packages}
 library(tidyverse) 
-library(here)
 library(googlesheets4)
 library(googledrive)
 library(kableExtra)
@@ -51,7 +49,8 @@ Instructions for the chlorophyll calculations come from CampbellSOP28Chlorophyll
 ```{r chlorophyll_calculations}
 vert_migration <- vert_migration |>
   mutate(Chl_ugL = (Fluorescence_Reading/7.0314) -0.9791) |>
-  mutate(Chl_ugcm2 = (Chl_ugL*VolSol_mL/1000) / Tissue_Area_cm2) 
+  mutate(Chl_ugcm2 = (Chl_ugL*VolSol_mL/1000) / Tissue_Area_cm2) |>
+  filter(!is.na(OperatorID)) #get rid of rows that are blanks with OperatorID = NA
   
 kable(vert_migration)
 
@@ -60,7 +59,9 @@ kable(vert_migration)
 # kable(chl_data)
 ```
 
+
+
 ```{r save_vert_migration}
-saveRDS(object = vert_migration, file = file.path("..","Code","CleanData","vert_migration.rds"))
+saveRDS(object = vert_migration, file = file.path("..", "Data","CleanData", "vert_migration.rds"))
 ```
 
