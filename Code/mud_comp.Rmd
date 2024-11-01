@@ -2,5 +2,46 @@
 title: "Mud Migration Community Compositon"
 output: html_notebook
 ---
+# Install packages if needed
+```{r install_packages}
+#install.packages("googlesheets4")
+#install.packages("googledrive")
+#install.packages("tidyverse")
+```
+
+# Load packages
+```{r load_packages}
+library(googlesheets4)
+library(googledrive)
+library(tidyverse)
+```
+
+# Connect to google account
+Deauthorize google account to allow universal access to the raw data sheet.Then retrive data sheet from where it's stored on google drive.
+```{r connect_google}
+gs4_deauth()
+googlesheet_url <- "https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1iz1L2MoCAyF0O4x3D6mCePw/edit?gid=405129858#gid=405129858"
+```
+
+# Accessing sheets
+```{r accessing_sheets}
+community_composition <- read_sheet(googlesheet_url, sheet = "community_composition")
+raw_cell_measurements <- read_sheet(googlesheet_url, sheet = "raw_cell_measurements")
+data_dictionary <- read_sheet(googlesheet_url, sheet = "data_dictionary")
+```
+
+# Set missing width_1 values to equal 1um 
+```{r mutate_width_1}
+raw_cell_measurements_2 <- raw_cell_measurements |>
+  mutate(Width1_um = case_when(
+    is.na(Width1_um) ~ 1,
+    TRUE ~ Width1_um
+  ))
+```
+
+
+
+
+
 
 
