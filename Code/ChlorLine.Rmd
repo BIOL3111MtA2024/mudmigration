@@ -1,0 +1,33 @@
+---
+title: "ChlorLine"
+output: html_notebook
+---
+
+# Introduction
+This .rmd reads chlorophyll data and generates a line graph ...
+
+
+# Install packages if needed
+```{r install_packages}
+#install.packages("tidyverse")
+#install.packages("kableExtra")
+```
+
+
+# Loading Packages 
+```{r load packages}
+library(tidyverse) 
+library(kableExtra)
+```
+
+
+```{r read_vert_migration}
+vert_migration <- readRDS( file = file.path("..","Data","CleanData","vert_migration.rds"))
+```
+
+```{r chlor_time}
+vert_migration |>
+  ggplot() +
+  geom_point(aes(x=YYYYMMDDHHMM, y = ))
+```
+
