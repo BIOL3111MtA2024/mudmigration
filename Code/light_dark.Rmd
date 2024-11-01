@@ -14,22 +14,27 @@ library(ggplot2)
 #library(dplyr)
 ```
 
-# Data Dictionary
+# chl_data
 Loading in the data from our personal computer files. Edit here if we need to switch what data is being used.
 ```{r}
-DataDictionary <-read_csv(file = here("Data", "RawData", "vert_migration.csv"))
-kable(DataDictionary)
+chl_data <-read_csv(file = here("Data", "RawData", "vert_migration.csv"))
+kable(chl_data)
 ```
-#Transforming our numbers into Chl/cm^2
+
+# Transforming our numbers into Chl/cm^2
 We need to make it so that we are looking directly at how much chlorophyll per cm^2. I don't know how to do this calculation with VolSol.
 I am going to make preliminary graphs by dividing off the Tissue Area and timesing by VolSol. When we know correct calculations, we can change this.
 This will go into a new column called Chl_cm2
-```{r}
-DataDictionary$Chl_cm2 <- (DataDictionary$Fluorescence_Reading*DataDictionary$VolSol_mL) / DataDictionary$Tissue_Area_cm2
-kable(DataDictionary)
+Instructions for the chlorophyll calculations come from CampbellSOP28ChlorophyllaTurner.pdf
+ 7.0314 RFU/ug L-1 and intercept of 0.9791
+ 
+```{r chlorophyll_calculations}
+chl_data$Chl_ugL <- (chl_data$Fluorescence_Reading/7.0314) -0.9791
+chl_data$Chl_ugcm2 <- (chl_data$Chl_ugL*chl_data$VolSol_mL/1000) / chl_data$Tissue_Area_cm2
+kable(chl_data)
 ```
 
-#Sorting the data, creating lists 
+# Sorting the data, creating lists 
 To make the data usable for future. I need the categories which will become each bar on a bar plot. For my first plot, I am going with top sheets comparing all conditions.
 
 The for loops and lists has it so that it will cycle through each of the different conditions. When each condition is present, I can manipulate it to a list as the std and the mean. I will need the std and the mean for the bar graph. 
