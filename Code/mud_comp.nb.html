@@ -1752,9 +1752,37 @@ display: none;
 
 
 <!-- rnb-text-begin -->
+<p>Packages</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaW5zdGFsbC5wYWNrYWdlcyhcImdvb2dsZXNoZWV0czRcIilcbmxpYnJhcnkoZ29vZ2xlc2hlZXRzNClcbmBgYCJ9 -->
+<pre class="r"><code>install.packages(&quot;googlesheets4&quot;)
+library(googlesheets4)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Connect to my google account</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3M0X2F1dGgoKVxuYGBgIn0= -->
+<pre class="r"><code>gs4_auth()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Load in google sheets for community composition</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2hlZXRfdXJsIDwtIFwiaHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vc3ByZWFkc2hlZXRzL2QvMUdhMHFuVnhPVlI5TndTTkk1Uk0xaXoxTDJNb0NBeUYwTzR4M0Q2bUNlUHcvZWRpdD9naWQ9MCNnaWQ9MFwiXG5zaGVldF9kYXRhIDwtIHJlYWRfc2hlZXQoc2hlZXRfdXJsKVxuXG5oZWFkKHNoZWV0X2RhdGEpXG5gYGAifQ== -->
+<pre class="r"><code>sheet_url &lt;- &quot;https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1iz1L2MoCAyF0O4x3D6mCePw/edit?gid=0#gid=0&quot;
+sheet_data &lt;- read_sheet(sheet_url)
+
+head(sheet_data)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiTXVkIE1pZ3JhdGlvbiBDb21tdW5pdHkgQ29tcG9zaXRvbiIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiTXVkIE1pZ3JhdGlvbiBDb21tdW5pdHkgQ29tcG9zaXRvbiIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQpQYWNrYWdlcwpgYGB7cn0KaW5zdGFsbC5wYWNrYWdlcygiZ29vZ2xlc2hlZXRzNCIpCmxpYnJhcnkoZ29vZ2xlc2hlZXRzNCkKYGBgCkNvbm5lY3QgdG8gbXkgZ29vZ2xlIGFjY291bnQKYGBge3J9CmdzNF9hdXRoKCkKYGBgCkxvYWQgaW4gZ29vZ2xlIHNoZWV0cyBmb3IgY29tbXVuaXR5IGNvbXBvc2l0aW9uCmBgYHtyfQpzaGVldF91cmwgPC0gImh0dHBzOi8vZG9jcy5nb29nbGUuY29tL3NwcmVhZHNoZWV0cy9kLzFHYTBxblZ4T1ZSOU53U05JNVJNMWl6MUwyTW9DQXlGME80eDNENm1DZVB3L2VkaXQ/Z2lkPTAjZ2lkPTAiCnNoZWV0X2RhdGEgPC0gcmVhZF9zaGVldChzaGVldF91cmwpCgpoZWFkKHNoZWV0X2RhdGEpCmBgYAoKCg==</div>
 
 
 
