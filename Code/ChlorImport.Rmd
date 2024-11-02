@@ -4,9 +4,9 @@ output: html_notebook
 ---
 
 # Introduction
-This .rmd imports chlorophyll florescence data from an interactive googlesheet.
-It converts RFU from Turner Fluorometer to ug Chl cm^-2^ of originating tissue paper used to sample from a model mudflat.
-It converts a numeric YYYYMMDDHHMM code to elapsed time.
+This .rmd imports Turner chlorophyll florescence data from an interactive googlesheet.
+It converts RFU from the Turner Fluorometer to ug Chl cm^-2^ of originating tissue paper, used to sample from a model mudflat.
+It converts a numeric YYYYMMDDHHMM code to Time of Day, and elapsed time.
 It saves the tidied data as a .Rds for general use in the project.
 
 
@@ -57,26 +57,29 @@ vert_migration <- vert_migration |>
 kable(vert_migration)
 
 
-#remove garbage columns; may depend upon version of import
+#remove garbage columns containing only NA
 vert_migration <- vert_migration |>
-  select(-c( "...12", "...13","...14","...15","...16"   ))
+  select(where(function(x) !all(is.na(x))))
 
-# base R alternate approach
+# base R alternate approach from Sarah P.
 # chl_data$Chl_ugL <- (chl_data$Fluorescence_Reading/7.0314) -0.9791
 # chl_data$Chl_ugcm2 <- (chl_data$Chl_ugL*chl_data$VolSol_mL/1000) / chl_data$Tissue_Area_cm2
 # kable(chl_data)
 ```
 
 # Generate Time of Day & elapsed time
+Working with Dates & Times is tricky!
 ```{r elapsed_time}
 vert_migration <- vert_migration |>
   mutate(DateTime = lubridate::ymd_hm(YYYYMMDDHHMM)) |>
   mutate(Date = stringr::str_extract(DateTime, "[0-9]{4}-[0-9]{2}-[0-9]{2}")) |>
   mutate(ToD = stringr::str_extract(DateTime, "[0-9]{2}:[0-9]{2}:[0-9]{2}"))
 
-# vert_migration |>
-#   group_by(Date) |>
-#   mutate(E_time = ToD - min(ToD))
+#hack solution to get elapsed time; difficulty 'subtracting' times
+vert_migration <- vert_migration |>
+  group_by(Date) |>
+  mutate(E_time_h = as.numeric(DateTime - DateTime[1])/3600) |>
+  ungroup()
 
 
 ```
