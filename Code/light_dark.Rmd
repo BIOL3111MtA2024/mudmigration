@@ -9,7 +9,8 @@ output: html_notebook
 #install.packages("tidyverse", "knitr", "here", "ggplot2")
 library(tidyverse) 
 library(knitr)
-library(here)
+library(googlesheets4)
+library(googledrive)
 library(ggplot2)
 #library(dplyr)
 ```
@@ -17,8 +18,9 @@ library(ggplot2)
 # chl_data
 Loading in the data from our personal computer files. Edit here if we need to switch what data is being used.
 ```{r}
-chl_data <-read_csv(file = here("Data", "RawData", "vert_migration.csv"))
-kable(chl_data)
+gs4_deauth()
+googlesheet_url <- "https://docs.google.com/spreadsheets/d/16DxWZhYw69ZgACGu82szN9tpgpYYPWIxPXOcSLM2Bo0/edit?usp=sharing"
+chl_data <- read_sheet(googlesheet_url, sheet = "vert_migration")
 ```
 
 # Transforming our numbers into Chl/cm^2
