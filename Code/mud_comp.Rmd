@@ -37,29 +37,41 @@ raw_cell_measurements_2 <- raw_cell_measurements |>
     is.na(Width1_um) ~ 1,
     TRUE ~ Width1_um
   ))
+
+raw_cell_measurements_3 <- raw_cell_measurements_2 |>
+  mutate(Width2_um = case_when(is.na(Width2_um) ~ Width1_um,
+                               !is.na(Width2_um) ~ Width2_um
+  ))
+
 ```
 
-#Calculate Surface Area:
+# Estimate Volumes & Maximum Linear Dimension
 
-##Centric surface area calculations
-```{r centric_areas}
-raw_cell_measurements_2$Centric_Area <- ifelse(raw_cell_measurements_2$CellMorphotype == "centric", raw_cell_measurements_2$Width1_um * raw_cell_measurements_2$Width2_um, NA)
+```{r volumes_maxlinear}
+
+#need volume equations for cylinder (Centric), rectangular prism (pennate), oblate spheroid for undefined & peanut?
+
+raw_cell_measurements_4 <- raw_cell_measurements_3 |>
+  mutate(CellVol = case_when(CellMorphotype == "centric" ~ pi * (Width1_um/2)^2 *  Width2_um,
+                          CellMorphotype == "pennate" ~  Length_um * Width1_um * Width2_um,
+                          CellMorphotype == "undefined" ~ 4/3 pi * (Length_um/2)^3, 
+                          CellMorphotype == "peanut" ~   Length_um * Width1_um * Width2_um
+  )
+  )
+
+raw_cell_measurements_4 <- raw_cell_measurements_4 |>
+  rowwise() |>
+  mutate(MaxDim_um = max(Length_um, Width1_um, Width2_um, na.rm = TRUE)
+  )
+
+         
+         
+
+  
+  
 ```
 
-##Pennate surface area calculations
-```{r pennate_areas}
-raw_cell_measurements_2$Pennate_Area <- ifelse(raw_cell_measurements_2$CellMorphotype == "pennate", raw_cell_measurements_2$Length_um * raw_cell_measurements_2$Width1_um, NA)
-```
 
-##'Peanut'surface area calculations
-```{r peanut_areas}
-raw_cell_measurements_2$Peanut_Area <- ifelse(raw_cell_measurements_2$CellMorphotype == "peanut", raw_cell_measurements_2$Length_um * raw_cell_measurements_2$Width1_um, NA)
-```
-
-##Combine surface area results into one column
-```{r combined_areas}
-raw_cell_measurements_2$Surface_Area <- rowSums(raw_cell_measurements_2[, c("Centric_Area", "Pennate_Area", "Peanut_Area")], na.rm = TRUE)
-```
 
 #Bin surface areas
 ```{r bin_areas}
