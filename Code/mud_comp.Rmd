@@ -54,7 +54,7 @@ raw_cell_measurements_3 <- raw_cell_measurements_2 |>
 raw_cell_measurements_4 <- raw_cell_measurements_3 |>
   mutate(CellVol = case_when(CellMorphotype == "centric" ~ pi * (Width1_um/2)^2 *  Width2_um,
                           CellMorphotype == "pennate" ~  Length_um * Width1_um * Width2_um,
-                          CellMorphotype == "undefined" ~ 4/3 pi * (Length_um/2)^3, 
+                          CellMorphotype == "undefined" ~ 4/3 * pi * (Length_um/2)^3, 
                           CellMorphotype == "peanut" ~   Length_um * Width1_um * Width2_um
   )
   )
@@ -63,14 +63,18 @@ raw_cell_measurements_4 <- raw_cell_measurements_4 |>
   rowwise() |>
   mutate(MaxDim_um = max(Length_um, Width1_um, Width2_um, na.rm = TRUE)
   )
-
-         
-         
-
-  
-  
 ```
 
+# Histogram of volumes and max dimension
+```{r histogram}
+raw_cell_measurements_4 |>
+  ggplot()+
+  geom_histogram(aes(CellVol))
+
+raw_cell_measurements_4 |>
+  ggplot()+
+  geom_histogram(aes(MaxDim_um))
+```
 
 
 #Bin surface areas
@@ -85,6 +89,10 @@ raw_cell_measurements_4 <- raw_cell_measurements_4 |>
 
 #Merge common value between raw data and conditions
 ```{r merge_sheets}
-merged_data <- merge(sheet_data, raw_cell_measurements_2, by = "SamplePhotoID", all.x = TRUE)
+#merged_data <- merge(community_composition, raw_cell_measurements_4, by = "SamplePhotoID", all.x = TRUE)
+
+#merged_data_2 <- left_join(raw_cell_measurements_4, community_composition, by = "SamplePhotoID")
+
+merged_data_3 <- right_join(community_composition, raw_cell_measurements_4, by = "SamplePhotoID")
 ```
 
