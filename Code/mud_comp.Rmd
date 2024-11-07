@@ -30,8 +30,8 @@ raw_cell_measurements <- read_sheet(googlesheet_url, sheet = "raw_cell_measureme
 data_dictionary <- read_sheet(googlesheet_url, sheet = "data_dictionary")
 ```
 
-# Set missing width_1 values to equal 1um 
-```{r mutate_width1}
+# Set missing values of width_1 and width_2
+```{r missing_widths}
 raw_cell_measurements_2 <- raw_cell_measurements |>
   mutate(Width1_um = case_when(
     is.na(Width1_um) ~ 1,
@@ -42,11 +42,9 @@ raw_cell_measurements_3 <- raw_cell_measurements_2 |>
   mutate(Width2_um = case_when(is.na(Width2_um) ~ Width1_um,
                                !is.na(Width2_um) ~ Width2_um
   ))
-
 ```
 
 # Estimate Volumes & Maximum Linear Dimension
-
 ```{r volumes_maxlinear}
 
 #need volume equations for cylinder (Centric), rectangular prism (pennate), oblate spheroid for undefined & peanut?
@@ -77,22 +75,19 @@ raw_cell_measurements_4 |>
 ```
 
 
-#Bin surface areas
-```{r bin_areas}
-# equal breaks
-#raw_cell_measurements_2$Surface_Area_Bins <- cut(raw_cell_measurements_2$Surface_Area, breaks = 5, labels = FALSE)
-
-# custom bin ranges
-#bin_ranges <- c(0, 10, 20, 30, 40, 50)
-#raw_cell_measurements_2$Surface_Area_Bins <- cut(raw_cell_measurements_2$Surface_Area, breaks = bin_ranges, include.lowest = TRUE)
+# Bin max dimension
+```{r bin_dimension}
+bin_ranges <- c(0, 5, 10, 20, 30, 40, 50, 75, 100, 150, 200)
+raw_cell_measurements_4 <- raw_cell_measurements_4 |>
+  dplyr::mutate(MaxDim_Bin = cut(MaxDim_um, breaks = bin_ranges, include.lowest = TRUE, labels = c("0-5", "5-10", "10-20", "20-30", "30-40", "40-50", "50-75", "75-100", "100-150", "150-200")))
 ```
 
-#Merge common value between raw data and conditions
+# Merge common value between raw data and conditions
 ```{r merge_sheets}
-#merged_data <- merge(community_composition, raw_cell_measurements_4, by = "SamplePhotoID", all.x = TRUE)
+merged_data <- merge(community_composition, raw_cell_measurements_4, by = "SamplePhotoID", all.x = TRUE)
 
 #merged_data_2 <- left_join(raw_cell_measurements_4, community_composition, by = "SamplePhotoID")
 
-merged_data_3 <- right_join(community_composition, raw_cell_measurements_4, by = "SamplePhotoID")
+#merged_data_3 <- right_join(community_composition, raw_cell_measurements_4, by = "SamplePhotoID")
 ```
 
