@@ -54,7 +54,7 @@ vert_migration <- vert_migration |>
   mutate(Chl_ugcm2 = (Chl_ugL*VolSol_mL/1000) / Tissue_Area_cm2) |>
   filter(!is.na(OperatorID)) #get rid of rows that are blanks with OperatorID = NA
   
-kable(vert_migration)
+
 
 
 #remove garbage columns containing only NA
@@ -65,6 +65,8 @@ vert_migration <- vert_migration |>
 # chl_data$Chl_ugL <- (chl_data$Fluorescence_Reading/7.0314) -0.9791
 # chl_data$Chl_ugcm2 <- (chl_data$Chl_ugL*chl_data$VolSol_mL/1000) / chl_data$Tissue_Area_cm2
 # kable(chl_data)
+
+kable(vert_migration)
 ```
 
 # Generate Time of Day & elapsed time
