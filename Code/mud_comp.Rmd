@@ -85,9 +85,19 @@ raw_cell_measurements_4 <- raw_cell_measurements_4 |>
 # Merge common value between raw data and conditions
 ```{r merge_sheets}
 merged_data <- merge(community_composition, raw_cell_measurements_4, by = "SamplePhotoID", all.x = TRUE)
+```
 
-#merged_data_2 <- left_join(raw_cell_measurements_4, community_composition, by = "SamplePhotoID")
+# Create bargraph to visualize cell counts per sample
+```{r bargraph_sample}
+# Count occurrences of each value
+CellCount <- merged_data %>%
+  count(SamplePhotoID)
 
-#merged_data_3 <- right_join(community_composition, raw_cell_measurements_4, by = "SamplePhotoID")
+# Create the bar graph
+ggplot(CellCount, aes(x = SamplePhotoID, y = n)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(x = "Sample", y = "Number of Cells", title = "Number of Cells per Sample") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
