@@ -101,23 +101,37 @@ ggplot(CellCount, aes(x = SamplePhotoID, y = n)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-# Group photo ID's by light, temperature, and layer then count
-```{r group_by}
-associated_data <- merged_data %>%
-  group_by(Light, Temp_C, Top_Bottom) %>%
-  summarise(SamplePhotoID = n()) %>%
-  ungroup()
-```
-
 # Bargraph using associated data
 ```{r bargraph_associated}
 ggplot(associated_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = Light)) +
   geom_bar(stat = "identity") +
-  labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Average Cell Count") +
+  labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(associated_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = Top_Bottom)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(associated_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = Temp_C)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+# ANOVA on the number of cells observed under each experimental condition
+```{r anova}
+count_data <- merged_data %>%
+  group_by(Temp_C, Light, Top_Bottom) %>%
+  summarise(SamplePhotoID = n()) %>%
+  ungroup()
+
+anova_result <- aov(SamplePhotoID ~ Temp_C * Light * Top_Bottom, data = count_data)
+summary(anova_result)
+```
 
 
 
