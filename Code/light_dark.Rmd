@@ -36,46 +36,25 @@ chl_data$Chl_ugcm2 <- (chl_data$Chl_ugL*chl_data$VolSol_mL/1000) / chl_data$Tiss
 kable(chl_data)
 ```
 
-# Sorting the data, creating lists 
-To make the data usable for future. I need the categories which will become each bar on a bar plot. For my first plot, I am going with top sheets comparing all conditions.
-
-The for loops and lists has it so that it will cycle through each of the different conditions. When each condition is present, I can manipulate it to a list as the std and the mean. I will need the std and the mean for the bar graph. 
+# Sorting the data
+ 
 ```{r}
-temp <- c(20, 15)
-sheet <- "top"
-condition <-c("dark", "med", "light")
-time <- 202410101430
+top_data <- filter(chl_data, Top_Bottom == 'top', Chl_ugcm2 > 0, YYYYMMDDHHMM == 202410101430)
+top_data$Light_Temp <- factor(paste(top_data$Temp_C, top_data$Light))
 
-top_means <-c()
-top_std <-c()
-top_conditions<-c()
-
-for (y in 1:2) {
-  for (x in 1:3) {
-    sub_data <- filter(chl_data, Temp_C == temp[[y]], Top_Bottom == sheet, Light == condition[[x]], Chl_cm2 > 0, YYYYMMDDHHMM == time)
-    top_means <-append(top_means, mean(sub_data$Chl_ugcm2))
-    top_std <-append(top_std, sd(sub_data$Chl_ugcm2))
-    top_conditions <-append(top_conditions, paste(temp[[y]], condition[[x]]))
-  }
-}
-
-kable(sub_data)
-#print(top_std)
 ```
 
-# Bar Graph 
+#  Graph 
 ```{r}
-data <- data.frame(top_conditions, top_means)
-ggplot(data, aes(x=top_conditions, y=top_means)) + 
-  geom_bar(stat = "identity") +
-  geom_errorbar(aes(ymin=top_means-top_std, ymax=top_means+top_std), width=.2,
-                 position=position_dodge(.9))
+top_data %>%
+  ggplot() +
+  geom_point(aes(x = as.factor(Light_Temp), y = Chl_ugcm2, colour = 'pink')) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
  
 ```
 
 
-```{r}
 
-
-```
 
