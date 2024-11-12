@@ -178,9 +178,6 @@ ggplot(associated_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = Samp
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-# Bargraph of binned cell volumes 
-
-
 # ANOVA on the number of cells observed under each experimental condition
 ```{r anova_cell_count}
 #Count the number of cells per condition
