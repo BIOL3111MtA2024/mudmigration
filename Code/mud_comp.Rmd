@@ -44,53 +44,106 @@ raw_cell_measurements_3 <- raw_cell_measurements_2 |>
   ))
 ```
 
-# Estimate Volumes & Maximum Linear Dimension
+# List of morphotypes obseved 
+```{r unqiue_morphotypes}
+unique_morphotypes <- unique(raw_cell_measurements_3$CellMorphotype)
+print(unique_morphotypes)
+```
+
+# Correct mispelled pennate
+```{r correct_mispelling}
+# Find cell containing the mispelled word
+mislabel_pennate <- which(raw_cell_measurements_3 == "penate", arr.ind = TRUE)
+mislabel_pennate
+
+#Indicate the cell which was mislabeled
+raw_cell_measurements_3[106, "CellMorphotype"] <- "pennate"
+```
+
+# Fix missing CellVol
+```{r fix_missing_undefined}
+#Rename morphotype to better calculate cell volume
+raw_cell_measurements_3[12, "CellMorphotype"] <- "other"
+```
+
+# Estimate volumes & maximum linear dimension
 ```{r volumes_maxlinear}
-
-#need volume equations for cylinder (Centric), rectangular prism (pennate), oblate spheroid for undefined & peanut?
-
+#Calculate Cell Volume for each Morphotype
 raw_cell_measurements_4 <- raw_cell_measurements_3 |>
   mutate(CellVol = case_when(CellMorphotype == "centric" ~ pi * (Width1_um/2)^2 *  Width2_um,
                           CellMorphotype == "pennate" ~  Length_um * Width1_um * Width2_um,
                           CellMorphotype == "undefined" ~ 4/3 * pi * (Length_um/2)^3, 
-                          CellMorphotype == "peanut" ~   Length_um * Width1_um * Width2_um
+                          CellMorphotype == "peanut" ~   Length_um * Width1_um * Width2_um,
+                          CellMorphotype == "rectangular" ~ Length_um * Width1_um * Width2_um,
+                          CellMorphotype == "square"~ Width1_um * Width2_um,
+                          CellMorphotype == "other" ~ 4/3 * pi * (Width1_um/2)^3
   )
   )
 
+#Calculate Maximum Dimension
 raw_cell_measurements_4 <- raw_cell_measurements_4 |>
   rowwise() |>
   mutate(MaxDim_um = max(Length_um, Width1_um, Width2_um, na.rm = TRUE)
   )
 ```
 
+# Check for missing results
+```{r missing_results}
+#Find empty cells in CellVol
+empty_CellVol <- which(is.na(raw_cell_measurements_4$CellVol))
+raw_cell_measurements_4[empty_CellVol, ]
+
+#Find it's location
+empty_CellVol_location <- cbind(row = empty_CellVol, column = "CellVol")
+empty_CellVol_location
+
+#Find empty cells in MaxDim_um
+empty_MaxDim <- which(is.na(raw_cell_measurements_4$MaxDim_um))
+raw_cell_measurements_4[empty_MaxDim, ]
+
+#Corrected these missing results, return to misspelling above ^
+```
+
 # Histogram of volumes and max dimension
 ```{r histogram}
+#Plot Cell Volumes
 raw_cell_measurements_4 |>
   ggplot()+
   geom_histogram(aes(CellVol))
 
+#Plot Maximum Dimensions
 raw_cell_measurements_4 |>
   ggplot()+
   geom_histogram(aes(MaxDim_um))
 ```
 
-
-# Bin max dimension
+# Bin max dimension and cell volume
 ```{r bin_dimension}
-bin_ranges <- c(0, 5, 10, 20, 30, 40, 50, 75, 100, 150, 200)
+bin_ranges_1 <- c(0, 5, 10, 20, 30, 40, 50, 75, 100, 150, 200)
 raw_cell_measurements_4 <- raw_cell_measurements_4 |>
   dplyr::mutate(MaxDim_Bin = cut(MaxDim_um, breaks = bin_ranges, include.lowest = TRUE, labels = c("0-5", "5-10", "10-20", "20-30", "30-40", "40-50", "50-75", "75-100", "100-150", "150-200")))
+
+bin_ranges_2 <- c(0, 100, 1000, 5000, 10000, 15000, 20000, 25000, 50000)
+raw_cell_measurements_4 <- raw_cell_measurements_4 |>
+  dplyr::mutate(MaxVol_Bin = cut(CellVol, breaks = bin_ranges_2, include.lowest = TRUE, labels = c("0-100", "100-1000", "1000-5000", "5000-10000", "10000-15000", "15000-20000", "20000-25000", "25000-50000")))
+
 ```
 
-# Merge common value between raw data and conditions
+# Merge common value between raw data and conditions (light, temp, layer)
 ```{r merge_sheets}
 merged_data <- merge(community_composition, raw_cell_measurements_4, by = "SamplePhotoID", all.x = TRUE)
+```
+
+# Add an identical row for each cell in chains
+```{r count_chains}
+expand_data <- merged_data %>%
+  uncount(ChainNum)
 ```
 
 # Create bargraph to visualize cell counts per sample
 ```{r bargraph_sample}
 # Count occurrences of each value
-CellCount <- merged_data %>%
+CellCount <- expand_data %>%
   count(SamplePhotoID)
 
 # Create the bar graph
@@ -103,32 +156,40 @@ ggplot(CellCount, aes(x = SamplePhotoID, y = n)) +
 
 # Bargraph using associated data
 ```{r bargraph_associated}
+#Fill is Light
 ggplot(associated_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = Light)) +
   geom_bar(stat = "identity") +
-  labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count") +
+  labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count", title = "Number of Cells per Condition") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+#Fill is Top or Bottom
 ggplot(associated_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = Top_Bottom)) +
   geom_bar(stat = "identity") +
-  labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count") +
+  labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count", title = "Number of Cells per Condition") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+#Fill is Temperature
 ggplot(associated_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = Temp_C)) +
   geom_bar(stat = "identity") +
-  labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count") +
+  labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count", title = "Number of Cells per Condition") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+# Bargraph of binned cell volumes 
+
+
 # ANOVA on the number of cells observed under each experimental condition
-```{r anova}
-count_data <- merged_data %>%
+```{r anova_cell_count}
+#Count the number of cells per condition
+count_data <- expand_data %>%
   group_by(Temp_C, Light, Top_Bottom) %>%
   summarise(SamplePhotoID = n()) %>%
   ungroup()
 
+#Run the anova
 anova_result <- aov(SamplePhotoID ~ Temp_C * Light * Top_Bottom, data = count_data)
 summary(anova_result)
 ```
