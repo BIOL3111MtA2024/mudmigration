@@ -52,7 +52,7 @@ print(unique_morphotypes)
 
 # Correct mispelled pennate
 ```{r correct_mispelling}
-# Find cell containing the mispelled word
+#Find cell containing the misspelled word
 mislabel_pennate <- which(raw_cell_measurements_3 == "penate", arr.ind = TRUE)
 mislabel_pennate
 
