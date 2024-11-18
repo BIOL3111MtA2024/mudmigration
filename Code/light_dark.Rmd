@@ -38,19 +38,22 @@ kable(chl_data)
 
 # Sorting the data
  
-```{r}
-top_data <- filter(chl_data, Top_Bottom == 'top', Chl_ugcm2 > 0, YYYYMMDDHHMM == 202410101430)
-top_data$Light_Temp <- factor(paste(top_data$Temp_C, top_data$Light))
+```{r filter_data}
+filtered_data <- filter(chl_data, Chl_ugcm2 > 0, YYYYMMDDHHMM == 202410101430)
+filtered_data$Light_Temp <- factor(paste(filtered_data$Temp_C, filtered_data$Light))
 
+Thresholds <- c('top', 'bottom')
+ThresholdColours <- c("green","pink")
 ```
 
 #  Graph 
-```{r}
-top_data %>%
+```{r graph}
+filtered_data %>%
   ggplot() +
-  geom_point(aes(x = as.factor(Light_Temp), y = Chl_ugcm2, colour = 'pink')) +
+  geom_point(aes(x = as.factor(Light_Temp), y = Chl_ugcm2, colour = as.factor(Top_Bottom))) +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(values = ThresholdColours)
 
  
 ```
