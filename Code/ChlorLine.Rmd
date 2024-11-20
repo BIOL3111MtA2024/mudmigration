@@ -31,6 +31,12 @@ vert_migration |>
   geom_point(aes(x=ToD, y = Chl_ugcm2 )) + 
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C))
 ```
+created top and bottom ratio
+```{r top_bottom}
+vert_migration<- vert_migration |>
+  mutate(Top_Bottom_Ratio =  ) 
+
+```
 
 
 
