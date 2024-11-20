@@ -1833,13 +1833,13 @@ CampbellSOP28ChlorophyllaTurner.pdf 7.0314 RFU/ug L-1 and intercept of
 0.9791</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmVydF9taWdyYXRpb24gPC0gdmVydF9taWdyYXRpb24gfD5cbiAgbXV0YXRlKENobF91Z0wgPSAoRmx1b3Jlc2NlbmNlX1JlYWRpbmcvNy4wMzE0KSAtMC45NzkxKSB8PlxuICBtdXRhdGUoQ2hsX3VnY20yID0gKENobF91Z0wqVm9sU29sX21MLzEwMDApIC8gVGlzc3VlX0FyZWFfY20yKSB8PlxuICBmaWx0ZXIoIWlzLm5hKE9wZXJhdG9ySUQpKSAjZ2V0IHJpZCBvZiByb3dzIHRoYXQgYXJlIGJsYW5rcyB3aXRoIE9wZXJhdG9ySUQgPSBOQVxuICBcblxuXG5cbiNyZW1vdmUgZ2FyYmFnZSBjb2x1bW5zIGNvbnRhaW5pbmcgb25seSBOQVxudmVydF9taWdyYXRpb24gPC0gdmVydF9taWdyYXRpb24gfD5cbiAgc2VsZWN0KHdoZXJlKGZ1bmN0aW9uKHgpICFhbGwoaXMubmEoeCkpKSlcblxuIyBiYXNlIFIgYWx0ZXJuYXRlIGFwcHJvYWNoIGZyb20gU2FyYWggUC5cbiMgY2hsX2RhdGEkQ2hsX3VnTCA8LSAoY2hsX2RhdGEkRmx1b3Jlc2NlbmNlX1JlYWRpbmcvNy4wMzE0KSAtMC45NzkxXG4jIGNobF9kYXRhJENobF91Z2NtMiA8LSAoY2hsX2RhdGEkQ2hsX3VnTCpjaGxfZGF0YSRWb2xTb2xfbUwvMTAwMCkgLyBjaGxfZGF0YSRUaXNzdWVfQXJlYV9jbTJcbiMga2FibGUoY2hsX2RhdGEpXG5cbmthYmxlKHZlcnRfbWlncmF0aW9uKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmVydF9taWdyYXRpb24gPC0gdmVydF9taWdyYXRpb24gfD5cbiAgbXV0YXRlKENobF91Z0wgPSAoRmx1b3Jlc2NlbmNlX1JlYWRpbmcvNy4wMzE0KSAtMC45NzkxKSB8PlxuICBtdXRhdGUoQ2hsX3VnY20yID0gKENobF91Z0wqVm9sU29sX21MLzEwMDApIC8gVGlzc3VlX0FyZWFfY20yKSB8PlxuICBmaWx0ZXIoIWlzLm5hKE9wZXJhdG9ySUQpKXw+ICNnZXQgcmlkIG9mIHJvd3MgdGhhdCBhcmUgYmxhbmtzIHdpdGggT3BlcmF0b3JJRCA9IE5BIFxuIGZpbHRlcighaXMubmEoVG9wX0JvdHRvbSkpfD4gI2dldCByaWQgb2Ygcm93cyB0aGF0IGFyZSBibGFua3Mgd2l0aCBUb3BfQm90dG9tID1OQVxuZmlsdGVyKCFpcy5uYShUZW1wX0MpKSAjZ2V0IHJpZCBvZiByb3dzIHRoYXQgYXJlIGJsYW5rcyB3aXRoIFRlbXBfQyA9TkFcblxuXG4jcmVtb3ZlIGdhcmJhZ2UgY29sdW1ucyBjb250YWluaW5nIG9ubHkgTkFcbnZlcnRfbWlncmF0aW9uIDwtIHZlcnRfbWlncmF0aW9uIHw+XG4gIHNlbGVjdCh3aGVyZShmdW5jdGlvbih4KSAhYWxsKGlzLm5hKHgpKSkpXG5cbiMgYmFzZSBSIGFsdGVybmF0ZSBhcHByb2FjaCBmcm9tIFNhcmFoIFAuXG4jIGNobF9kYXRhJENobF91Z0wgPC0gKGNobF9kYXRhJEZsdW9yZXNjZW5jZV9SZWFkaW5nLzcuMDMxNCkgLTAuOTc5MVxuIyBjaGxfZGF0YSRDaGxfdWdjbTIgPC0gKGNobF9kYXRhJENobF91Z0wqY2hsX2RhdGEkVm9sU29sX21MLzEwMDApIC8gY2hsX2RhdGEkVGlzc3VlX0FyZWFfY20yXG4jIGthYmxlKGNobF9kYXRhKVxuXG5rYWJsZSh2ZXJ0X21pZ3JhdGlvbilcbmBgYCJ9 -->
 <pre class="r"><code>vert_migration &lt;- vert_migration |&gt;
   mutate(Chl_ugL = (Fluorescence_Reading/7.0314) -0.9791) |&gt;
   mutate(Chl_ugcm2 = (Chl_ugL*VolSol_mL/1000) / Tissue_Area_cm2) |&gt;
-  filter(!is.na(OperatorID)) #get rid of rows that are blanks with OperatorID = NA
-  
-
+  filter(!is.na(OperatorID))|&gt; #get rid of rows that are blanks with OperatorID = NA 
+ filter(!is.na(Top_Bottom))|&gt; #get rid of rows that are blanks with Top_Bottom =NA
+filter(!is.na(Temp_C)) #get rid of rows that are blanks with Temp_C =NA
 
 
 #remove garbage columns containing only NA
@@ -1859,7 +1859,7 @@ kable(vert_migration)</code></pre>
 <table style="width:100%;">
 <colgroup>
 <col width="6%" />
-<col width="4%" />
+<col width="5%" />
 <col width="7%" />
 <col width="6%" />
 <col width="5%" />
@@ -1870,7 +1870,7 @@ kable(vert_migration)</code></pre>
 <col width="11%" />
 <col width="3%" />
 <col width="21%" />
-<col width="6%" />
+<col width="5%" />
 <col width="5%" />
 </colgroup>
 <thead>
@@ -1905,7 +1905,7 @@ kable(vert_migration)</code></pre>
 <td align="right">157.47</td>
 <td align="right">1</td>
 <td align="left">Samples at pecks cove, not dense bloom</td>
-<td align="right">21.4161556</td>
+<td align="right">21.41616</td>
 <td align="right">0.0107081</td>
 </tr>
 <tr class="even">
@@ -1921,7 +1921,7 @@ kable(vert_migration)</code></pre>
 <td align="right">448.51</td>
 <td align="right">1</td>
 <td align="left">Chlorophyll should be similar</td>
-<td align="right">62.8076281</td>
+<td align="right">62.80763</td>
 <td align="right">0.0314038</td>
 </tr>
 <tr class="odd">
@@ -1937,7 +1937,7 @@ kable(vert_migration)</code></pre>
 <td align="right">608.76</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">85.5982530</td>
+<td align="right">85.59825</td>
 <td align="right">0.0427991</td>
 </tr>
 <tr class="even">
@@ -1953,7 +1953,7 @@ kable(vert_migration)</code></pre>
 <td align="right">1118.97</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">158.1599050</td>
+<td align="right">158.15991</td>
 <td align="right">0.0790800</td>
 </tr>
 <tr class="odd">
@@ -1969,7 +1969,7 @@ kable(vert_migration)</code></pre>
 <td align="right">933.48</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">131.7796678</td>
+<td align="right">131.77967</td>
 <td align="right">0.1317797</td>
 </tr>
 <tr class="even">
@@ -1985,7 +1985,7 @@ kable(vert_migration)</code></pre>
 <td align="right">2282.57</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">323.6461524</td>
+<td align="right">323.64615</td>
 <td align="right">0.3236462</td>
 </tr>
 <tr class="odd">
@@ -2001,7 +2001,7 @@ kable(vert_migration)</code></pre>
 <td align="right">727.71</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">102.5152255</td>
+<td align="right">102.51523</td>
 <td align="right">0.1025152</td>
 </tr>
 <tr class="even">
@@ -2017,7 +2017,7 @@ kable(vert_migration)</code></pre>
 <td align="right">1798.60</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">254.8163319</td>
+<td align="right">254.81633</td>
 <td align="right">0.2548163</td>
 </tr>
 <tr class="odd">
@@ -2033,7 +2033,7 @@ kable(vert_migration)</code></pre>
 <td align="right">955.85</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">134.9611111</td>
+<td align="right">134.96111</td>
 <td align="right">0.0674806</td>
 </tr>
 <tr class="even">
@@ -2049,7 +2049,7 @@ kable(vert_migration)</code></pre>
 <td align="right">3898.50</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">553.4624052</td>
+<td align="right">553.46241</td>
 <td align="right">0.2767312</td>
 </tr>
 <tr class="odd">
@@ -2065,7 +2065,7 @@ kable(vert_migration)</code></pre>
 <td align="right">3107.16</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">440.9186728</td>
+<td align="right">440.91867</td>
 <td align="right">0.4409187</td>
 </tr>
 <tr class="even">
@@ -2081,26 +2081,10 @@ kable(vert_migration)</code></pre>
 <td align="right">3619.61</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">513.7988958</td>
+<td align="right">513.79890</td>
 <td align="right">0.5137989</td>
 </tr>
 <tr class="odd">
-<td align="left">SaPo</td>
-<td align="left">blank_2</td>
-<td align="right">202409261400</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="right">NA</td>
-<td align="left">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">0.19</td>
-<td align="right">1</td>
-<td align="left">NA</td>
-<td align="right">-0.9520784</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1001</td>
 <td align="right">202409261400</td>
@@ -2113,10 +2097,10 @@ kable(vert_migration)</code></pre>
 <td align="right">657.77</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">92.5684154</td>
+<td align="right">92.56842</td>
 <td align="right">0.0308561</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1002</td>
 <td align="right">202409261400</td>
@@ -2129,10 +2113,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1831.68</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">259.5209427</td>
+<td align="right">259.52094</td>
 <td align="right">0.0865070</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1003</td>
 <td align="right">202409261400</td>
@@ -2145,10 +2129,10 @@ kable(vert_migration)</code></pre>
 <td align="right">755.80</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">106.5101625</td>
+<td align="right">106.51016</td>
 <td align="right">0.0355034</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1004</td>
 <td align="right">202409261400</td>
@@ -2161,10 +2145,10 @@ kable(vert_migration)</code></pre>
 <td align="right">2804.85</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">397.9243901</td>
+<td align="right">397.92439</td>
 <td align="right">0.1326415</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1005</td>
 <td align="right">202409261400</td>
@@ -2177,10 +2161,10 @@ kable(vert_migration)</code></pre>
 <td align="right">3383.45</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">480.2124124</td>
+<td align="right">480.21241</td>
 <td align="right">0.1600708</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1006</td>
 <td align="right">202409261400</td>
@@ -2193,10 +2177,10 @@ kable(vert_migration)</code></pre>
 <td align="right">3629.54</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">515.2111324</td>
+<td align="right">515.21113</td>
 <td align="right">0.1717370</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1009</td>
 <td align="right">202410101430</td>
@@ -2209,10 +2193,10 @@ kable(vert_migration)</code></pre>
 <td align="right">769.67</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">108.4827426</td>
+<td align="right">108.48274</td>
 <td align="right">0.2169655</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1010</td>
 <td align="right">202410101430</td>
@@ -2225,10 +2209,10 @@ kable(vert_migration)</code></pre>
 <td align="right">560.48</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">78.7319106</td>
+<td align="right">78.73191</td>
 <td align="right">0.1574638</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1011</td>
 <td align="right">202410101430</td>
@@ -2241,10 +2225,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1413.95</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">200.1117212</td>
+<td align="right">200.11172</td>
 <td align="right">0.4002234</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1014</td>
 <td align="right">202410101430</td>
@@ -2257,10 +2241,10 @@ kable(vert_migration)</code></pre>
 <td align="right">927.44</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">130.9206639</td>
+<td align="right">130.92066</td>
 <td align="right">0.2618413</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1015</td>
 <td align="right">202410101430</td>
@@ -2273,10 +2257,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1615.09</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">228.7176887</td>
+<td align="right">228.71769</td>
 <td align="right">0.1524785</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1016</td>
 <td align="right">202410101430</td>
@@ -2289,10 +2273,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1538.35</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">217.8037882</td>
+<td align="right">217.80379</td>
 <td align="right">0.1452025</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1017</td>
 <td align="right">202410101430</td>
@@ -2305,10 +2289,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1025.00</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">144.7955679</td>
+<td align="right">144.79557</td>
 <td align="right">0.2895911</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1018</td>
 <td align="right">202410101430</td>
@@ -2321,10 +2305,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1314.75</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">186.0035777</td>
+<td align="right">186.00358</td>
 <td align="right">0.3720072</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1019</td>
 <td align="right">202410101430</td>
@@ -2337,10 +2321,10 @@ kable(vert_migration)</code></pre>
 <td align="right">687.76</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">96.8335689</td>
+<td align="right">96.83357</td>
 <td align="right">0.1936671</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1020</td>
 <td align="right">202410101430</td>
@@ -2353,10 +2337,10 @@ kable(vert_migration)</code></pre>
 <td align="right">887.96</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">125.3058504</td>
+<td align="right">125.30585</td>
 <td align="right">0.2506117</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1021</td>
 <td align="right">202410101430</td>
@@ -2369,10 +2353,10 @@ kable(vert_migration)</code></pre>
 <td align="right">661.86</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">93.1500919</td>
+<td align="right">93.15009</td>
 <td align="right">0.1863002</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1024</td>
 <td align="right">202410101430</td>
@@ -2385,10 +2369,10 @@ kable(vert_migration)</code></pre>
 <td align="right">617.24</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">86.8042717</td>
+<td align="right">86.80427</td>
 <td align="right">0.1736085</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1025</td>
 <td align="right">202410101430</td>
@@ -2401,10 +2385,10 @@ kable(vert_migration)</code></pre>
 <td align="right">535.14</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">75.1280764</td>
+<td align="right">75.12808</td>
 <td align="right">0.1502562</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1027</td>
 <td align="right">202410101430</td>
@@ -2417,10 +2401,10 @@ kable(vert_migration)</code></pre>
 <td align="right">582.68</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">81.8891766</td>
+<td align="right">81.88918</td>
 <td align="right">0.0545928</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1028</td>
 <td align="right">202410101430</td>
@@ -2433,10 +2417,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1632.15</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">231.1439480</td>
+<td align="right">231.14395</td>
 <td align="right">0.1540960</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1029</td>
 <td align="right">202410101430</td>
@@ -2449,10 +2433,10 @@ kable(vert_migration)</code></pre>
 <td align="right">858.61</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">121.1317172</td>
+<td align="right">121.13172</td>
 <td align="right">0.0807545</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1030</td>
 <td align="right">202410101430</td>
@@ -2465,10 +2449,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1255.52</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">177.5799352</td>
+<td align="right">177.57994</td>
 <td align="right">0.1183866</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1031</td>
 <td align="right">202410101430</td>
@@ -2481,10 +2465,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1053.52</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">148.8516592</td>
+<td align="right">148.85166</td>
 <td align="right">0.0992344</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1032</td>
 <td align="right">202410101430</td>
@@ -2497,10 +2481,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1053.52</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">148.8516592</td>
+<td align="right">148.85166</td>
 <td align="right">0.0992344</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1033</td>
 <td align="right">202410101430</td>
@@ -2513,10 +2497,10 @@ kable(vert_migration)</code></pre>
 <td align="right">488.98</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">68.5632387</td>
+<td align="right">68.56324</td>
 <td align="right">0.1371265</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1034</td>
 <td align="right">202410101430</td>
@@ -2529,10 +2513,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1309.27</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">185.2242166</td>
+<td align="right">185.22422</td>
 <td align="right">0.1852242</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1035</td>
 <td align="right">202410101430</td>
@@ -2545,10 +2529,10 @@ kable(vert_migration)</code></pre>
 <td align="right">103.86</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">13.7917849</td>
+<td align="right">13.79178</td>
 <td align="right">0.0137918</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1036</td>
 <td align="right">202410101430</td>
@@ -2561,10 +2545,10 @@ kable(vert_migration)</code></pre>
 <td align="right">358.29</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">49.9766129</td>
+<td align="right">49.97661</td>
 <td align="right">0.1499298</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1037</td>
 <td align="right">202410101430</td>
@@ -2577,10 +2561,10 @@ kable(vert_migration)</code></pre>
 <td align="right">120.87</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">16.2109333</td>
+<td align="right">16.21093</td>
 <td align="right">0.0486328</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1039</td>
 <td align="right">202410101430</td>
@@ -2593,10 +2577,10 @@ kable(vert_migration)</code></pre>
 <td align="right">120.87</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">16.2109333</td>
+<td align="right">16.21093</td>
 <td align="right">0.0486328</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1040</td>
 <td align="right">202410101430</td>
@@ -2609,10 +2593,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1631.48</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">231.0486612</td>
+<td align="right">231.04866</td>
 <td align="right">0.4620973</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1041</td>
 <td align="right">202410101430</td>
@@ -2625,10 +2609,10 @@ kable(vert_migration)</code></pre>
 <td align="right">200.25</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">27.5002924</td>
+<td align="right">27.50029</td>
 <td align="right">0.0550006</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1042</td>
 <td align="right">202410101430</td>
@@ -2641,10 +2625,10 @@ kable(vert_migration)</code></pre>
 <td align="right">890.60</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">125.6813090</td>
+<td align="right">125.68131</td>
 <td align="right">0.2513626</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1043</td>
 <td align="right">202410101430</td>
@@ -2657,10 +2641,10 @@ kable(vert_migration)</code></pre>
 <td align="right">834.15</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">117.6530358</td>
+<td align="right">117.65304</td>
 <td align="right">0.2353061</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1044</td>
 <td align="right">202410101430</td>
@@ -2673,10 +2657,10 @@ kable(vert_migration)</code></pre>
 <td align="right">983.80</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">138.9361374</td>
+<td align="right">138.93614</td>
 <td align="right">0.2778723</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1045</td>
 <td align="right">202410101430</td>
@@ -2689,10 +2673,10 @@ kable(vert_migration)</code></pre>
 <td align="right">826.89</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">116.6205245</td>
+<td align="right">116.62052</td>
 <td align="right">0.2332410</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1046</td>
 <td align="right">202410101430</td>
@@ -2705,10 +2689,10 @@ kable(vert_migration)</code></pre>
 <td align="right">578.78</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">81.3345218</td>
+<td align="right">81.33452</td>
 <td align="right">0.1626690</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1047</td>
 <td align="right">202410101430</td>
@@ -2721,10 +2705,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1647.67</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">233.3511898</td>
+<td align="right">233.35119</td>
 <td align="right">0.1555675</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1048</td>
 <td align="right">202410101430</td>
@@ -2737,10 +2721,10 @@ kable(vert_migration)</code></pre>
 <td align="right">442.45</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">61.9457798</td>
+<td align="right">61.94578</td>
 <td align="right">0.1238916</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1049</td>
 <td align="right">202410101430</td>
@@ -2753,10 +2737,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1191.76</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">168.5120397</td>
+<td align="right">168.51204</td>
 <td align="right">0.1123414</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1050</td>
 <td align="right">202410101430</td>
@@ -2769,10 +2753,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1173.47</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">165.9108508</td>
+<td align="right">165.91085</td>
 <td align="right">0.3318217</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1051</td>
 <td align="right">202410101430</td>
@@ -2785,10 +2769,10 @@ kable(vert_migration)</code></pre>
 <td align="right">619.12</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">87.0716438</td>
+<td align="right">87.07164</td>
 <td align="right">0.1741433</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1052</td>
 <td align="right">202410101430</td>
@@ -2801,10 +2785,10 @@ kable(vert_migration)</code></pre>
 <td align="right">543.18</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">76.2715187</td>
+<td align="right">76.27152</td>
 <td align="right">0.1525430</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1053</td>
 <td align="right">202410101430</td>
@@ -2817,10 +2801,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1448.11</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">204.9699286</td>
+<td align="right">204.96993</td>
 <td align="right">0.1366466</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1054</td>
 <td align="right">202410101430</td>
@@ -2833,10 +2817,10 @@ kable(vert_migration)</code></pre>
 <td align="right">858.86</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">121.1672720</td>
+<td align="right">121.16727</td>
 <td align="right">0.2423345</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1055</td>
 <td align="right">202410101430</td>
@@ -2849,10 +2833,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1225.63</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">173.3290036</td>
+<td align="right">173.32900</td>
 <td align="right">0.1155527</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">GaCh</td>
 <td align="left">3013</td>
 <td align="right">202410100900</td>
@@ -2865,10 +2849,10 @@ kable(vert_migration)</code></pre>
 <td align="right">501.72</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">70.3751111</td>
+<td align="right">70.37511</td>
 <td align="right">0.0703751</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">GaCh</td>
 <td align="left">3014</td>
 <td align="right">202410100900</td>
@@ -2881,10 +2865,10 @@ kable(vert_migration)</code></pre>
 <td align="right">122.69</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">16.4697722</td>
+<td align="right">16.46977</td>
 <td align="right">0.0082349</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3015</td>
 <td align="right">202410101010</td>
@@ -2897,10 +2881,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1236.11</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">174.8194607</td>
+<td align="right">174.81946</td>
 <td align="right">0.0874097</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3016</td>
 <td align="right">202410101010</td>
@@ -2913,10 +2897,10 @@ kable(vert_migration)</code></pre>
 <td align="right">259.71</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">35.9566454</td>
+<td align="right">35.95665</td>
 <td align="right">0.0179783</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3017</td>
 <td align="right">202410101100</td>
@@ -2929,10 +2913,10 @@ kable(vert_migration)</code></pre>
 <td align="right">343.51</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">47.8746133</td>
+<td align="right">47.87461</td>
 <td align="right">0.0478746</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3019</td>
 <td align="right">202410101100</td>
@@ -2945,10 +2929,10 @@ kable(vert_migration)</code></pre>
 <td align="right">254.53</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">35.2199500</td>
+<td align="right">35.21995</td>
 <td align="right">0.0352199</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3020</td>
 <td align="right">202410101200</td>
@@ -2961,10 +2945,10 @@ kable(vert_migration)</code></pre>
 <td align="right">147.36</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">19.9783196</td>
+<td align="right">19.97832</td>
 <td align="right">0.0199783</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3021</td>
 <td align="right">202410101200</td>
@@ -2977,10 +2961,10 @@ kable(vert_migration)</code></pre>
 <td align="right">323.86</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">45.0800063</td>
+<td align="right">45.08001</td>
 <td align="right">0.0450800</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3022</td>
 <td align="right">202410101300</td>
@@ -2993,10 +2977,10 @@ kable(vert_migration)</code></pre>
 <td align="right">139.68</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">18.8860762</td>
+<td align="right">18.88608</td>
 <td align="right">0.0188861</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">3023</td>
 <td align="right">202410101300</td>
@@ -3009,10 +2993,10 @@ kable(vert_migration)</code></pre>
 <td align="right">793.41</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">111.8590261</td>
+<td align="right">111.85903</td>
 <td align="right">0.1118590</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3024</td>
 <td align="right">202410101300</td>
@@ -3025,10 +3009,10 @@ kable(vert_migration)</code></pre>
 <td align="right">694.33</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">97.7679490</td>
+<td align="right">97.76795</td>
 <td align="right">0.0977679</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">3025</td>
 <td align="right">202410101300</td>
@@ -3041,10 +3025,10 @@ kable(vert_migration)</code></pre>
 <td align="right">207.39</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">28.5157374</td>
+<td align="right">28.51574</td>
 <td align="right">0.0855472</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">3026</td>
 <td align="right">202410101300</td>
@@ -3057,10 +3041,10 @@ kable(vert_migration)</code></pre>
 <td align="right">564.20</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">79.2609660</td>
+<td align="right">79.26097</td>
 <td align="right">0.2377829</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3027</td>
 <td align="right">202410101300</td>
@@ -3073,10 +3057,10 @@ kable(vert_migration)</code></pre>
 <td align="right">820.62</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">115.7288102</td>
+<td align="right">115.72881</td>
 <td align="right">0.1157288</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">3028</td>
 <td align="right">202410101400</td>
@@ -3092,7 +3076,7 @@ kable(vert_migration)</code></pre>
 <td align="right">NA</td>
 <td align="right">NA</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">3029</td>
 <td align="right">202410101400</td>
@@ -3108,7 +3092,7 @@ kable(vert_migration)</code></pre>
 <td align="right">NA</td>
 <td align="right">NA</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3030</td>
 <td align="right">202410100900</td>
@@ -3121,10 +3105,10 @@ kable(vert_migration)</code></pre>
 <td align="right">906.97</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">128.0094371</td>
+<td align="right">128.00944</td>
 <td align="right">0.3840283</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3031</td>
 <td align="right">202410100900</td>
@@ -3137,10 +3121,10 @@ kable(vert_migration)</code></pre>
 <td align="right">276.58</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">38.3558831</td>
+<td align="right">38.35588</td>
 <td align="right">0.0191779</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3032</td>
 <td align="right">202410101010</td>
@@ -3153,10 +3137,10 @@ kable(vert_migration)</code></pre>
 <td align="right">491.98</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">68.9898962</td>
+<td align="right">68.98990</td>
 <td align="right">0.0344949</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3033</td>
 <td align="right">202410101010</td>
@@ -3169,10 +3153,10 @@ kable(vert_migration)</code></pre>
 <td align="right">278.85</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">38.6787206</td>
+<td align="right">38.67872</td>
 <td align="right">0.0193394</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3034</td>
 <td align="right">202410101100</td>
@@ -3185,10 +3169,10 @@ kable(vert_migration)</code></pre>
 <td align="right">181.19</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">24.7895947</td>
+<td align="right">24.78959</td>
 <td align="right">0.0123948</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3035</td>
 <td align="right">202410101100</td>
@@ -3201,10 +3185,10 @@ kable(vert_migration)</code></pre>
 <td align="right">220.03</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">30.3133880</td>
+<td align="right">30.31339</td>
 <td align="right">0.0303134</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3036</td>
 <td align="right">202410101200</td>
@@ -3217,10 +3201,10 @@ kable(vert_migration)</code></pre>
 <td align="right">140.18</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">18.9571858</td>
+<td align="right">18.95719</td>
 <td align="right">0.0189572</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3037</td>
 <td align="right">202410101200</td>
@@ -3233,10 +3217,10 @@ kable(vert_migration)</code></pre>
 <td align="right">190.25</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">26.0781006</td>
+<td align="right">26.07810</td>
 <td align="right">0.0260781</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3038</td>
 <td align="right">202410101300</td>
@@ -3249,10 +3233,10 @@ kable(vert_migration)</code></pre>
 <td align="right">1372.59</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">194.2295355</td>
+<td align="right">194.22954</td>
 <td align="right">0.1942295</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3039</td>
 <td align="right">202410101300</td>
@@ -3265,10 +3249,10 @@ kable(vert_migration)</code></pre>
 <td align="right">79.44</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">10.3187923</td>
+<td align="right">10.31879</td>
 <td align="right">0.0103188</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">3040</td>
 <td align="right">202410101300</td>
@@ -3281,10 +3265,10 @@ kable(vert_migration)</code></pre>
 <td align="right">283.62</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">39.3571062</td>
+<td align="right">39.35711</td>
 <td align="right">0.1180713</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3041</td>
 <td align="right">202410101300</td>
@@ -3297,10 +3281,10 @@ kable(vert_migration)</code></pre>
 <td align="right">310.72</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">43.2112462</td>
+<td align="right">43.21125</td>
 <td align="right">0.0432112</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">3042</td>
 <td align="right">202410101300</td>
@@ -3313,10 +3297,10 @@ kable(vert_migration)</code></pre>
 <td align="right">317.35</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">44.1541594</td>
+<td align="right">44.15416</td>
 <td align="right">0.1324625</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3043</td>
 <td align="right">202410101300</td>
@@ -3329,10 +3313,10 @@ kable(vert_migration)</code></pre>
 <td align="right">498.86</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">69.9683642</td>
+<td align="right">69.96836</td>
 <td align="right">0.0699684</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">3044</td>
 <td align="right">202410101400</td>
@@ -3348,7 +3332,7 @@ kable(vert_migration)</code></pre>
 <td align="right">NA</td>
 <td align="right">NA</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">3045</td>
 <td align="right">202410101400</td>
@@ -3378,6 +3362,20 @@ kable(vert_migration)</code></pre>
 <p>Working with Dates &amp; Times is tricky!</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmVydF9taWdyYXRpb24gPC0gdmVydF9taWdyYXRpb24gfD5cbiAgbXV0YXRlKERhdGVUaW1lID0gbHVicmlkYXRlOjp5bWRfaG0oWVlZWU1NRERISE1NKSkgfD5cbiAgbXV0YXRlKERhdGUgPSBzdHJpbmdyOjpzdHJfZXh0cmFjdChEYXRlVGltZSwgXCJbMC05XXs0fS1bMC05XXsyfS1bMC05XXsyfVwiKSkgfD5cbiAgbXV0YXRlKFRvRCA9IHN0cmluZ3I6OnN0cl9leHRyYWN0KERhdGVUaW1lLCBcIlswLTldezJ9OlswLTldezJ9OlswLTldezJ9XCIpKVxuXG4jaGFjayBzb2x1dGlvbiB0byBnZXQgZWxhcHNlZCB0aW1lOyBkaWZmaWN1bHR5ICdzdWJ0cmFjdGluZycgdGltZXNcbnZlcnRfbWlncmF0aW9uIDwtIHZlcnRfbWlncmF0aW9uIHw+XG4gIGdyb3VwX2J5KERhdGUpIHw+XG4gIG11dGF0ZShFX3RpbWVfaCA9IGFzLm51bWVyaWMoRGF0ZVRpbWUgLSBEYXRlVGltZVsxXSkvMzYwMCkgfD5cbiAgdW5ncm91cCgpXG5cbmthYmxlKHZlcnRfbWlncmF0aW9uKVxuYGBgIn0= -->
+<pre class="r"><code>vert_migration &lt;- vert_migration |&gt;
+  mutate(DateTime = lubridate::ymd_hm(YYYYMMDDHHMM)) |&gt;
+  mutate(Date = stringr::str_extract(DateTime, &quot;[0-9]{4}-[0-9]{2}-[0-9]{2}&quot;)) |&gt;
+  mutate(ToD = stringr::str_extract(DateTime, &quot;[0-9]{2}:[0-9]{2}:[0-9]{2}&quot;))
+
+#hack solution to get elapsed time; difficulty &#39;subtracting&#39; times
+vert_migration &lt;- vert_migration |&gt;
+  group_by(Date) |&gt;
+  mutate(E_time_h = as.numeric(DateTime - DateTime[1])/3600) |&gt;
+  ungroup()
+
+kable(vert_migration)</code></pre>
+<!-- rnb-source-end -->
 
 <!-- rnb-html-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImtuaXRfYXNpcyJdLCJzaXppbmdQb2xpY3kiOltdfX0= -->
 
@@ -3394,8 +3392,8 @@ kable(vert_migration)</code></pre>
 <col width="4%" />
 <col width="9%" />
 <col width="2%" />
-<col width="16%" />
-<col width="5%" />
+<col width="17%" />
+<col width="4%" />
 <col width="4%" />
 <col width="8%" />
 <col width="4%" />
@@ -3438,7 +3436,7 @@ kable(vert_migration)</code></pre>
 <td align="right">157.47</td>
 <td align="right">1</td>
 <td align="left">Samples at pecks cove, not dense bloom</td>
-<td align="right">21.4161556</td>
+<td align="right">21.41616</td>
 <td align="right">0.0107081</td>
 <td align="left">2024-09-26 09:00:00</td>
 <td align="left">2024-09-26</td>
@@ -3458,7 +3456,7 @@ kable(vert_migration)</code></pre>
 <td align="right">448.51</td>
 <td align="right">1</td>
 <td align="left">Chlorophyll should be similar</td>
-<td align="right">62.8076281</td>
+<td align="right">62.80763</td>
 <td align="right">0.0314038</td>
 <td align="left">2024-09-26 09:00:00</td>
 <td align="left">2024-09-26</td>
@@ -3478,7 +3476,7 @@ kable(vert_migration)</code></pre>
 <td align="right">608.76</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">85.5982530</td>
+<td align="right">85.59825</td>
 <td align="right">0.0427991</td>
 <td align="left">2024-09-26 10:00:00</td>
 <td align="left">2024-09-26</td>
@@ -3498,7 +3496,7 @@ kable(vert_migration)</code></pre>
 <td align="right">1118.97</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">158.1599050</td>
+<td align="right">158.15991</td>
 <td align="right">0.0790800</td>
 <td align="left">2024-09-26 10:00:00</td>
 <td align="left">2024-09-26</td>
@@ -3518,7 +3516,7 @@ kable(vert_migration)</code></pre>
 <td align="right">933.48</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">131.7796678</td>
+<td align="right">131.77967</td>
 <td align="right">0.1317797</td>
 <td align="left">2024-09-26 11:30:00</td>
 <td align="left">2024-09-26</td>
@@ -3538,7 +3536,7 @@ kable(vert_migration)</code></pre>
 <td align="right">2282.57</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">323.6461524</td>
+<td align="right">323.64615</td>
 <td align="right">0.3236462</td>
 <td align="left">2024-09-26 11:30:00</td>
 <td align="left">2024-09-26</td>
@@ -3558,7 +3556,7 @@ kable(vert_migration)</code></pre>
 <td align="right">727.71</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">102.5152255</td>
+<td align="right">102.51523</td>
 <td align="right">0.1025152</td>
 <td align="left">2024-09-26 12:00:00</td>
 <td align="left">2024-09-26</td>
@@ -3578,7 +3576,7 @@ kable(vert_migration)</code></pre>
 <td align="right">1798.60</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">254.8163319</td>
+<td align="right">254.81633</td>
 <td align="right">0.2548163</td>
 <td align="left">2024-09-26 12:00:00</td>
 <td align="left">2024-09-26</td>
@@ -3598,7 +3596,7 @@ kable(vert_migration)</code></pre>
 <td align="right">955.85</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">134.9611111</td>
+<td align="right">134.96111</td>
 <td align="right">0.0674806</td>
 <td align="left">2024-09-26 13:00:00</td>
 <td align="left">2024-09-26</td>
@@ -3618,7 +3616,7 @@ kable(vert_migration)</code></pre>
 <td align="right">3898.50</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">553.4624052</td>
+<td align="right">553.46241</td>
 <td align="right">0.2767312</td>
 <td align="left">2024-09-26 13:00:00</td>
 <td align="left">2024-09-26</td>
@@ -3638,7 +3636,7 @@ kable(vert_migration)</code></pre>
 <td align="right">3107.16</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">440.9186728</td>
+<td align="right">440.91867</td>
 <td align="right">0.4409187</td>
 <td align="left">2024-09-26 14:00:00</td>
 <td align="left">2024-09-26</td>
@@ -3658,7 +3656,7 @@ kable(vert_migration)</code></pre>
 <td align="right">3619.61</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">513.7988958</td>
+<td align="right">513.79890</td>
 <td align="right">0.5137989</td>
 <td align="left">2024-09-26 14:00:00</td>
 <td align="left">2024-09-26</td>
@@ -3666,26 +3664,6 @@ kable(vert_migration)</code></pre>
 <td align="right">5.000000</td>
 </tr>
 <tr class="odd">
-<td align="left">SaPo</td>
-<td align="left">blank_2</td>
-<td align="right">202409261400</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="right">NA</td>
-<td align="left">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">0.19</td>
-<td align="right">1</td>
-<td align="left">NA</td>
-<td align="right">-0.9520784</td>
-<td align="right">NA</td>
-<td align="left">2024-09-26 14:00:00</td>
-<td align="left">2024-09-26</td>
-<td align="left">14:00:00</td>
-<td align="right">5.000000</td>
-</tr>
-<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1001</td>
 <td align="right">202409261400</td>
@@ -3698,14 +3676,14 @@ kable(vert_migration)</code></pre>
 <td align="right">657.77</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">92.5684154</td>
+<td align="right">92.56842</td>
 <td align="right">0.0308561</td>
 <td align="left">2024-09-26 14:00:00</td>
 <td align="left">2024-09-26</td>
 <td align="left">14:00:00</td>
 <td align="right">5.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1002</td>
 <td align="right">202409261400</td>
@@ -3718,14 +3696,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1831.68</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">259.5209427</td>
+<td align="right">259.52094</td>
 <td align="right">0.0865070</td>
 <td align="left">2024-09-26 14:00:00</td>
 <td align="left">2024-09-26</td>
 <td align="left">14:00:00</td>
 <td align="right">5.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1003</td>
 <td align="right">202409261400</td>
@@ -3738,14 +3716,14 @@ kable(vert_migration)</code></pre>
 <td align="right">755.80</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">106.5101625</td>
+<td align="right">106.51016</td>
 <td align="right">0.0355034</td>
 <td align="left">2024-09-26 14:00:00</td>
 <td align="left">2024-09-26</td>
 <td align="left">14:00:00</td>
 <td align="right">5.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1004</td>
 <td align="right">202409261400</td>
@@ -3758,14 +3736,14 @@ kable(vert_migration)</code></pre>
 <td align="right">2804.85</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">397.9243901</td>
+<td align="right">397.92439</td>
 <td align="right">0.1326415</td>
 <td align="left">2024-09-26 14:00:00</td>
 <td align="left">2024-09-26</td>
 <td align="left">14:00:00</td>
 <td align="right">5.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1005</td>
 <td align="right">202409261400</td>
@@ -3778,14 +3756,14 @@ kable(vert_migration)</code></pre>
 <td align="right">3383.45</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">480.2124124</td>
+<td align="right">480.21241</td>
 <td align="right">0.1600708</td>
 <td align="left">2024-09-26 14:00:00</td>
 <td align="left">2024-09-26</td>
 <td align="left">14:00:00</td>
 <td align="right">5.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1006</td>
 <td align="right">202409261400</td>
@@ -3798,14 +3776,14 @@ kable(vert_migration)</code></pre>
 <td align="right">3629.54</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="right">515.2111324</td>
+<td align="right">515.21113</td>
 <td align="right">0.1717370</td>
 <td align="left">2024-09-26 14:00:00</td>
 <td align="left">2024-09-26</td>
 <td align="left">14:00:00</td>
 <td align="right">5.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1009</td>
 <td align="right">202410101430</td>
@@ -3818,14 +3796,14 @@ kable(vert_migration)</code></pre>
 <td align="right">769.67</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">108.4827426</td>
+<td align="right">108.48274</td>
 <td align="right">0.2169655</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1010</td>
 <td align="right">202410101430</td>
@@ -3838,14 +3816,14 @@ kable(vert_migration)</code></pre>
 <td align="right">560.48</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">78.7319106</td>
+<td align="right">78.73191</td>
 <td align="right">0.1574638</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1011</td>
 <td align="right">202410101430</td>
@@ -3858,14 +3836,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1413.95</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">200.1117212</td>
+<td align="right">200.11172</td>
 <td align="right">0.4002234</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1014</td>
 <td align="right">202410101430</td>
@@ -3878,14 +3856,14 @@ kable(vert_migration)</code></pre>
 <td align="right">927.44</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">130.9206639</td>
+<td align="right">130.92066</td>
 <td align="right">0.2618413</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1015</td>
 <td align="right">202410101430</td>
@@ -3898,14 +3876,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1615.09</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">228.7176887</td>
+<td align="right">228.71769</td>
 <td align="right">0.1524785</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1016</td>
 <td align="right">202410101430</td>
@@ -3918,14 +3896,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1538.35</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">217.8037882</td>
+<td align="right">217.80379</td>
 <td align="right">0.1452025</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1017</td>
 <td align="right">202410101430</td>
@@ -3938,14 +3916,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1025.00</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">144.7955679</td>
+<td align="right">144.79557</td>
 <td align="right">0.2895911</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1018</td>
 <td align="right">202410101430</td>
@@ -3958,14 +3936,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1314.75</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">186.0035777</td>
+<td align="right">186.00358</td>
 <td align="right">0.3720072</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1019</td>
 <td align="right">202410101430</td>
@@ -3978,14 +3956,14 @@ kable(vert_migration)</code></pre>
 <td align="right">687.76</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">96.8335689</td>
+<td align="right">96.83357</td>
 <td align="right">0.1936671</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1020</td>
 <td align="right">202410101430</td>
@@ -3998,14 +3976,14 @@ kable(vert_migration)</code></pre>
 <td align="right">887.96</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">125.3058504</td>
+<td align="right">125.30585</td>
 <td align="right">0.2506117</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1021</td>
 <td align="right">202410101430</td>
@@ -4018,14 +3996,14 @@ kable(vert_migration)</code></pre>
 <td align="right">661.86</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">93.1500919</td>
+<td align="right">93.15009</td>
 <td align="right">0.1863002</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1024</td>
 <td align="right">202410101430</td>
@@ -4038,14 +4016,14 @@ kable(vert_migration)</code></pre>
 <td align="right">617.24</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">86.8042717</td>
+<td align="right">86.80427</td>
 <td align="right">0.1736085</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1025</td>
 <td align="right">202410101430</td>
@@ -4058,14 +4036,14 @@ kable(vert_migration)</code></pre>
 <td align="right">535.14</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">75.1280764</td>
+<td align="right">75.12808</td>
 <td align="right">0.1502562</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1027</td>
 <td align="right">202410101430</td>
@@ -4078,14 +4056,14 @@ kable(vert_migration)</code></pre>
 <td align="right">582.68</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">81.8891766</td>
+<td align="right">81.88918</td>
 <td align="right">0.0545928</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1028</td>
 <td align="right">202410101430</td>
@@ -4098,14 +4076,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1632.15</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">231.1439480</td>
+<td align="right">231.14395</td>
 <td align="right">0.1540960</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1029</td>
 <td align="right">202410101430</td>
@@ -4118,14 +4096,14 @@ kable(vert_migration)</code></pre>
 <td align="right">858.61</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">121.1317172</td>
+<td align="right">121.13172</td>
 <td align="right">0.0807545</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1030</td>
 <td align="right">202410101430</td>
@@ -4138,14 +4116,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1255.52</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">177.5799352</td>
+<td align="right">177.57994</td>
 <td align="right">0.1183866</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1031</td>
 <td align="right">202410101430</td>
@@ -4158,14 +4136,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1053.52</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">148.8516592</td>
+<td align="right">148.85166</td>
 <td align="right">0.0992344</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1032</td>
 <td align="right">202410101430</td>
@@ -4178,14 +4156,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1053.52</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">148.8516592</td>
+<td align="right">148.85166</td>
 <td align="right">0.0992344</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1033</td>
 <td align="right">202410101430</td>
@@ -4198,14 +4176,14 @@ kable(vert_migration)</code></pre>
 <td align="right">488.98</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">68.5632387</td>
+<td align="right">68.56324</td>
 <td align="right">0.1371265</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1034</td>
 <td align="right">202410101430</td>
@@ -4218,14 +4196,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1309.27</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">185.2242166</td>
+<td align="right">185.22422</td>
 <td align="right">0.1852242</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1035</td>
 <td align="right">202410101430</td>
@@ -4238,14 +4216,14 @@ kable(vert_migration)</code></pre>
 <td align="right">103.86</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">13.7917849</td>
+<td align="right">13.79178</td>
 <td align="right">0.0137918</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1036</td>
 <td align="right">202410101430</td>
@@ -4258,14 +4236,14 @@ kable(vert_migration)</code></pre>
 <td align="right">358.29</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">49.9766129</td>
+<td align="right">49.97661</td>
 <td align="right">0.1499298</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1037</td>
 <td align="right">202410101430</td>
@@ -4278,14 +4256,14 @@ kable(vert_migration)</code></pre>
 <td align="right">120.87</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">16.2109333</td>
+<td align="right">16.21093</td>
 <td align="right">0.0486328</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1039</td>
 <td align="right">202410101430</td>
@@ -4298,14 +4276,14 @@ kable(vert_migration)</code></pre>
 <td align="right">120.87</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">16.2109333</td>
+<td align="right">16.21093</td>
 <td align="right">0.0486328</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1040</td>
 <td align="right">202410101430</td>
@@ -4318,14 +4296,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1631.48</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">231.0486612</td>
+<td align="right">231.04866</td>
 <td align="right">0.4620973</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1041</td>
 <td align="right">202410101430</td>
@@ -4338,14 +4316,14 @@ kable(vert_migration)</code></pre>
 <td align="right">200.25</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">27.5002924</td>
+<td align="right">27.50029</td>
 <td align="right">0.0550006</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1042</td>
 <td align="right">202410101430</td>
@@ -4358,14 +4336,14 @@ kable(vert_migration)</code></pre>
 <td align="right">890.60</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">125.6813090</td>
+<td align="right">125.68131</td>
 <td align="right">0.2513626</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1043</td>
 <td align="right">202410101430</td>
@@ -4378,14 +4356,14 @@ kable(vert_migration)</code></pre>
 <td align="right">834.15</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">117.6530358</td>
+<td align="right">117.65304</td>
 <td align="right">0.2353061</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1044</td>
 <td align="right">202410101430</td>
@@ -4398,14 +4376,14 @@ kable(vert_migration)</code></pre>
 <td align="right">983.80</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">138.9361374</td>
+<td align="right">138.93614</td>
 <td align="right">0.2778723</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1045</td>
 <td align="right">202410101430</td>
@@ -4418,14 +4396,14 @@ kable(vert_migration)</code></pre>
 <td align="right">826.89</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">116.6205245</td>
+<td align="right">116.62052</td>
 <td align="right">0.2332410</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1046</td>
 <td align="right">202410101430</td>
@@ -4438,14 +4416,14 @@ kable(vert_migration)</code></pre>
 <td align="right">578.78</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">81.3345218</td>
+<td align="right">81.33452</td>
 <td align="right">0.1626690</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1047</td>
 <td align="right">202410101430</td>
@@ -4458,14 +4436,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1647.67</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">233.3511898</td>
+<td align="right">233.35119</td>
 <td align="right">0.1555675</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1048</td>
 <td align="right">202410101430</td>
@@ -4478,14 +4456,14 @@ kable(vert_migration)</code></pre>
 <td align="right">442.45</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">61.9457798</td>
+<td align="right">61.94578</td>
 <td align="right">0.1238916</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1049</td>
 <td align="right">202410101430</td>
@@ -4498,14 +4476,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1191.76</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">168.5120397</td>
+<td align="right">168.51204</td>
 <td align="right">0.1123414</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1050</td>
 <td align="right">202410101430</td>
@@ -4518,14 +4496,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1173.47</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">165.9108508</td>
+<td align="right">165.91085</td>
 <td align="right">0.3318217</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1051</td>
 <td align="right">202410101430</td>
@@ -4538,14 +4516,14 @@ kable(vert_migration)</code></pre>
 <td align="right">619.12</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">87.0716438</td>
+<td align="right">87.07164</td>
 <td align="right">0.1741433</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1052</td>
 <td align="right">202410101430</td>
@@ -4558,14 +4536,14 @@ kable(vert_migration)</code></pre>
 <td align="right">543.18</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">76.2715187</td>
+<td align="right">76.27152</td>
 <td align="right">0.1525430</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1053</td>
 <td align="right">202410101430</td>
@@ -4578,14 +4556,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1448.11</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">204.9699286</td>
+<td align="right">204.96993</td>
 <td align="right">0.1366466</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">1054</td>
 <td align="right">202410101430</td>
@@ -4598,14 +4576,14 @@ kable(vert_migration)</code></pre>
 <td align="right">858.86</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">121.1672720</td>
+<td align="right">121.16727</td>
 <td align="right">0.2423345</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">1055</td>
 <td align="right">202410101430</td>
@@ -4618,14 +4596,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1225.63</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">173.3290036</td>
+<td align="right">173.32900</td>
 <td align="right">0.1155527</td>
 <td align="left">2024-10-10 14:30:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">14:30:00</td>
 <td align="right">0.000000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">GaCh</td>
 <td align="left">3013</td>
 <td align="right">202410100900</td>
@@ -4638,14 +4616,14 @@ kable(vert_migration)</code></pre>
 <td align="right">501.72</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">70.3751111</td>
+<td align="right">70.37511</td>
 <td align="right">0.0703751</td>
 <td align="left">2024-10-10 09:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">09:00:00</td>
 <td align="right">-5.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">GaCh</td>
 <td align="left">3014</td>
 <td align="right">202410100900</td>
@@ -4658,14 +4636,14 @@ kable(vert_migration)</code></pre>
 <td align="right">122.69</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">16.4697722</td>
+<td align="right">16.46977</td>
 <td align="right">0.0082349</td>
 <td align="left">2024-10-10 09:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">09:00:00</td>
 <td align="right">-5.500000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3015</td>
 <td align="right">202410101010</td>
@@ -4678,14 +4656,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1236.11</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">174.8194607</td>
+<td align="right">174.81946</td>
 <td align="right">0.0874097</td>
 <td align="left">2024-10-10 10:10:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">10:10:00</td>
 <td align="right">-4.333333</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3016</td>
 <td align="right">202410101010</td>
@@ -4698,14 +4676,14 @@ kable(vert_migration)</code></pre>
 <td align="right">259.71</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">35.9566454</td>
+<td align="right">35.95665</td>
 <td align="right">0.0179783</td>
 <td align="left">2024-10-10 10:10:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">10:10:00</td>
 <td align="right">-4.333333</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3017</td>
 <td align="right">202410101100</td>
@@ -4718,14 +4696,14 @@ kable(vert_migration)</code></pre>
 <td align="right">343.51</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">47.8746133</td>
+<td align="right">47.87461</td>
 <td align="right">0.0478746</td>
 <td align="left">2024-10-10 11:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">11:00:00</td>
 <td align="right">-3.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3019</td>
 <td align="right">202410101100</td>
@@ -4738,14 +4716,14 @@ kable(vert_migration)</code></pre>
 <td align="right">254.53</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">35.2199500</td>
+<td align="right">35.21995</td>
 <td align="right">0.0352199</td>
 <td align="left">2024-10-10 11:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">11:00:00</td>
 <td align="right">-3.500000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3020</td>
 <td align="right">202410101200</td>
@@ -4758,14 +4736,14 @@ kable(vert_migration)</code></pre>
 <td align="right">147.36</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">19.9783196</td>
+<td align="right">19.97832</td>
 <td align="right">0.0199783</td>
 <td align="left">2024-10-10 12:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">12:00:00</td>
 <td align="right">-2.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3021</td>
 <td align="right">202410101200</td>
@@ -4778,14 +4756,14 @@ kable(vert_migration)</code></pre>
 <td align="right">323.86</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">45.0800063</td>
+<td align="right">45.08001</td>
 <td align="right">0.0450800</td>
 <td align="left">2024-10-10 12:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">12:00:00</td>
 <td align="right">-2.500000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3022</td>
 <td align="right">202410101300</td>
@@ -4798,14 +4776,14 @@ kable(vert_migration)</code></pre>
 <td align="right">139.68</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">18.8860762</td>
+<td align="right">18.88608</td>
 <td align="right">0.0188861</td>
 <td align="left">2024-10-10 13:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">13:00:00</td>
 <td align="right">-1.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">3023</td>
 <td align="right">202410101300</td>
@@ -4818,14 +4796,14 @@ kable(vert_migration)</code></pre>
 <td align="right">793.41</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">111.8590261</td>
+<td align="right">111.85903</td>
 <td align="right">0.1118590</td>
 <td align="left">2024-10-10 13:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">13:00:00</td>
 <td align="right">-1.500000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3024</td>
 <td align="right">202410101300</td>
@@ -4838,14 +4816,14 @@ kable(vert_migration)</code></pre>
 <td align="right">694.33</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">97.7679490</td>
+<td align="right">97.76795</td>
 <td align="right">0.0977679</td>
 <td align="left">2024-10-10 13:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">13:00:00</td>
 <td align="right">-1.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">3025</td>
 <td align="right">202410101300</td>
@@ -4858,14 +4836,14 @@ kable(vert_migration)</code></pre>
 <td align="right">207.39</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">28.5157374</td>
+<td align="right">28.51574</td>
 <td align="right">0.0855472</td>
 <td align="left">2024-10-10 13:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">13:00:00</td>
 <td align="right">-1.500000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">3026</td>
 <td align="right">202410101300</td>
@@ -4878,14 +4856,14 @@ kable(vert_migration)</code></pre>
 <td align="right">564.20</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">79.2609660</td>
+<td align="right">79.26097</td>
 <td align="right">0.2377829</td>
 <td align="left">2024-10-10 13:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">13:00:00</td>
 <td align="right">-1.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3027</td>
 <td align="right">202410101300</td>
@@ -4898,14 +4876,14 @@ kable(vert_migration)</code></pre>
 <td align="right">820.62</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">115.7288102</td>
+<td align="right">115.72881</td>
 <td align="right">0.1157288</td>
 <td align="left">2024-10-10 13:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">13:00:00</td>
 <td align="right">-1.500000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">3028</td>
 <td align="right">202410101400</td>
@@ -4925,7 +4903,7 @@ kable(vert_migration)</code></pre>
 <td align="left">14:00:00</td>
 <td align="right">-0.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">3029</td>
 <td align="right">202410101400</td>
@@ -4945,7 +4923,7 @@ kable(vert_migration)</code></pre>
 <td align="left">14:00:00</td>
 <td align="right">-0.500000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3030</td>
 <td align="right">202410100900</td>
@@ -4958,14 +4936,14 @@ kable(vert_migration)</code></pre>
 <td align="right">906.97</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">128.0094371</td>
+<td align="right">128.00944</td>
 <td align="right">0.3840283</td>
 <td align="left">2024-10-10 09:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">09:00:00</td>
 <td align="right">-5.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3031</td>
 <td align="right">202410100900</td>
@@ -4978,14 +4956,14 @@ kable(vert_migration)</code></pre>
 <td align="right">276.58</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">38.3558831</td>
+<td align="right">38.35588</td>
 <td align="right">0.0191779</td>
 <td align="left">2024-10-10 09:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">09:00:00</td>
 <td align="right">-5.500000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3032</td>
 <td align="right">202410101010</td>
@@ -4998,14 +4976,14 @@ kable(vert_migration)</code></pre>
 <td align="right">491.98</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">68.9898962</td>
+<td align="right">68.98990</td>
 <td align="right">0.0344949</td>
 <td align="left">2024-10-10 10:10:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">10:10:00</td>
 <td align="right">-4.333333</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3033</td>
 <td align="right">202410101010</td>
@@ -5018,14 +4996,14 @@ kable(vert_migration)</code></pre>
 <td align="right">278.85</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">38.6787206</td>
+<td align="right">38.67872</td>
 <td align="right">0.0193394</td>
 <td align="left">2024-10-10 10:10:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">10:10:00</td>
 <td align="right">-4.333333</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3034</td>
 <td align="right">202410101100</td>
@@ -5038,14 +5016,14 @@ kable(vert_migration)</code></pre>
 <td align="right">181.19</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">24.7895947</td>
+<td align="right">24.78959</td>
 <td align="right">0.0123948</td>
 <td align="left">2024-10-10 11:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">11:00:00</td>
 <td align="right">-3.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3035</td>
 <td align="right">202410101100</td>
@@ -5058,14 +5036,14 @@ kable(vert_migration)</code></pre>
 <td align="right">220.03</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">30.3133880</td>
+<td align="right">30.31339</td>
 <td align="right">0.0303134</td>
 <td align="left">2024-10-10 11:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">11:00:00</td>
 <td align="right">-3.500000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3036</td>
 <td align="right">202410101200</td>
@@ -5078,14 +5056,14 @@ kable(vert_migration)</code></pre>
 <td align="right">140.18</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">18.9571858</td>
+<td align="right">18.95719</td>
 <td align="right">0.0189572</td>
 <td align="left">2024-10-10 12:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">12:00:00</td>
 <td align="right">-2.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3037</td>
 <td align="right">202410101200</td>
@@ -5098,14 +5076,14 @@ kable(vert_migration)</code></pre>
 <td align="right">190.25</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">26.0781006</td>
+<td align="right">26.07810</td>
 <td align="right">0.0260781</td>
 <td align="left">2024-10-10 12:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">12:00:00</td>
 <td align="right">-2.500000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LiKa</td>
 <td align="left">3038</td>
 <td align="right">202410101300</td>
@@ -5118,14 +5096,14 @@ kable(vert_migration)</code></pre>
 <td align="right">1372.59</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">194.2295355</td>
+<td align="right">194.22954</td>
 <td align="right">0.1942295</td>
 <td align="left">2024-10-10 13:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">13:00:00</td>
 <td align="right">-1.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3039</td>
 <td align="right">202410101300</td>
@@ -5138,14 +5116,14 @@ kable(vert_migration)</code></pre>
 <td align="right">79.44</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">10.3187923</td>
+<td align="right">10.31879</td>
 <td align="right">0.0103188</td>
 <td align="left">2024-10-10 13:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">13:00:00</td>
 <td align="right">-1.500000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">3040</td>
 <td align="right">202410101300</td>
@@ -5158,14 +5136,14 @@ kable(vert_migration)</code></pre>
 <td align="right">283.62</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">39.3571062</td>
+<td align="right">39.35711</td>
 <td align="right">0.1180713</td>
 <td align="left">2024-10-10 13:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">13:00:00</td>
 <td align="right">-1.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3041</td>
 <td align="right">202410101300</td>
@@ -5178,14 +5156,14 @@ kable(vert_migration)</code></pre>
 <td align="right">310.72</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">43.2112462</td>
+<td align="right">43.21125</td>
 <td align="right">0.0432112</td>
 <td align="left">2024-10-10 13:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">13:00:00</td>
 <td align="right">-1.500000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">3042</td>
 <td align="right">202410101300</td>
@@ -5198,14 +5176,14 @@ kable(vert_migration)</code></pre>
 <td align="right">317.35</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">44.1541594</td>
+<td align="right">44.15416</td>
 <td align="right">0.1324625</td>
 <td align="left">2024-10-10 13:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">13:00:00</td>
 <td align="right">-1.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LiKa</td>
 <td align="left">3043</td>
 <td align="right">202410101300</td>
@@ -5218,14 +5196,14 @@ kable(vert_migration)</code></pre>
 <td align="right">498.86</td>
 <td align="right">2</td>
 <td align="left">NA</td>
-<td align="right">69.9683642</td>
+<td align="right">69.96836</td>
 <td align="right">0.0699684</td>
 <td align="left">2024-10-10 13:00:00</td>
 <td align="left">2024-10-10</td>
 <td align="left">13:00:00</td>
 <td align="right">-1.500000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SaPo</td>
 <td align="left">3044</td>
 <td align="right">202410101400</td>
@@ -5245,7 +5223,7 @@ kable(vert_migration)</code></pre>
 <td align="left">14:00:00</td>
 <td align="right">-0.500000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SaPo</td>
 <td align="left">3045</td>
 <td align="right">202410101400</td>
@@ -5283,7 +5261,7 @@ kable(vert_migration)</code></pre>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiQ2hsb3JJbXBvcnQiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCiMgSW50cm9kdWN0aW9uClRoaXMgLnJtZCBpbXBvcnRzIFR1cm5lciBjaGxvcm9waHlsbCBmbG9yZXNjZW5jZSBkYXRhIGZyb20gYW4gaW50ZXJhY3RpdmUgZ29vZ2xlc2hlZXQuCkl0IGNvbnZlcnRzIFJGVSBmcm9tIHRoZSBUdXJuZXIgRmx1b3JvbWV0ZXIgdG8gdWcgQ2hsIGNtXi0yXiBvZiBvcmlnaW5hdGluZyB0aXNzdWUgcGFwZXIsIHVzZWQgdG8gc2FtcGxlIGZyb20gYSBtb2RlbCBtdWRmbGF0LgpJdCBjb252ZXJ0cyBhIG51bWVyaWMgWVlZWU1NRERISE1NIGNvZGUgdG8gVGltZSBvZiBEYXksIGFuZCBlbGFwc2VkIHRpbWUuCkl0IHNhdmVzIHRoZSB0aWRpZWQgZGF0YSBhcyBhIC5SZHMgZm9yIGdlbmVyYWwgdXNlIGluIHRoZSBwcm9qZWN0LgoKCiMgSW5zdGFsbCBwYWNrYWdlcyBpZiBuZWVkZWQKYGBge3IgaW5zdGFsbF9wYWNrYWdlc30KI2luc3RhbGwucGFja2FnZXMoImdvb2dsZXNoZWV0czQiKQojaW5zdGFsbC5wYWNrYWdlcygiZ29vZ2xlZHJpdmUiKQojaW5zdGFsbC5wYWNrYWdlcygidGlkeXZlcnNlIikKI2luc3RhbGwucGFja2FnZXMoImthYmxlRXh0cmEiKQpgYGAKCgojIExvYWRpbmcgUGFja2FnZXMgCmBgYHtyIGxvYWQgcGFja2FnZXN9CmxpYnJhcnkodGlkeXZlcnNlKSAKbGlicmFyeShnb29nbGVzaGVldHM0KQpsaWJyYXJ5KGdvb2dsZWRyaXZlKQpsaWJyYXJ5KGthYmxlRXh0cmEpCmBgYAoKCiMgQ29ubmVjdCB0byBnb29nbGUgYWNjb3VudApEZWF1dGhvcml6ZSBnb29nbGUgYWNjb3VudCB0byBhbGxvdyB1bml2ZXJzYWwgYWNjZXNzIHRvIHRoZSByYXcgZGF0YSBzaGVldC5UaGVuIHJldHJpZXZlIGRhdGEgc2hlZXQgZnJvbSB3aGVyZSBpdCdzIHN0b3JlZCBvbiBnb29nbGUgZHJpdmUuCmBgYHtyIGNvbm5lY3RfZ29vZ2xlfQpnczRfZGVhdXRoKCkKZ29vZ2xlc2hlZXRfdXJsIDwtICJodHRwczovL2RvY3MuZ29vZ2xlLmNvbS9zcHJlYWRzaGVldHMvZC8xNkR4V1poWXc2OVpnQUNHdTgyc3pOOXRwZ3BZWVBXSXhQWE9jU0xNMkJvMC9lZGl0P2dpZD0xMzc2NDA2NTQwI2dpZD0xMzc2NDA2NTQwIgpgYGAKCiMgQWNjZXNzaW5nIHNoZWV0cwpgYGB7ciBhY2Nlc3Npbmdfc2hlZXRzfQp2ZXJ0X21pZ3JhdGlvbiA8LSByZWFkX3NoZWV0KGdvb2dsZXNoZWV0X3VybCwgc2hlZXQgPSAidmVydF9taWdyYXRpb24iKQoKYGBgCgoKCiMgVHJhbnNmb3JtaW5nIG91ciBudW1iZXJzIGludG8gQ2hsIGNtXi0yXgoKSW5zdHJ1Y3Rpb25zIGZvciB0aGUgY2hsb3JvcGh5bGwgY2FsY3VsYXRpb25zIGNvbWUgZnJvbSBDYW1wYmVsbFNPUDI4Q2hsb3JvcGh5bGxhVHVybmVyLnBkZgogNy4wMzE0IFJGVS91ZyBMLTEgYW5kIGludGVyY2VwdCBvZiAwLjk3OTEKIApgYGB7ciBjaGxvcm9waHlsbF9jYWxjdWxhdGlvbnN9CnZlcnRfbWlncmF0aW9uIDwtIHZlcnRfbWlncmF0aW9uIHw+CiAgbXV0YXRlKENobF91Z0wgPSAoRmx1b3Jlc2NlbmNlX1JlYWRpbmcvNy4wMzE0KSAtMC45NzkxKSB8PgogIG11dGF0ZShDaGxfdWdjbTIgPSAoQ2hsX3VnTCpWb2xTb2xfbUwvMTAwMCkgLyBUaXNzdWVfQXJlYV9jbTIpIHw+CiAgZmlsdGVyKCFpcy5uYShPcGVyYXRvcklEKSkgI2dldCByaWQgb2Ygcm93cyB0aGF0IGFyZSBibGFua3Mgd2l0aCBPcGVyYXRvcklEID0gTkEKICAKCgoKI3JlbW92ZSBnYXJiYWdlIGNvbHVtbnMgY29udGFpbmluZyBvbmx5IE5BCnZlcnRfbWlncmF0aW9uIDwtIHZlcnRfbWlncmF0aW9uIHw+CiAgc2VsZWN0KHdoZXJlKGZ1bmN0aW9uKHgpICFhbGwoaXMubmEoeCkpKSkKCiMgYmFzZSBSIGFsdGVybmF0ZSBhcHByb2FjaCBmcm9tIFNhcmFoIFAuCiMgY2hsX2RhdGEkQ2hsX3VnTCA8LSAoY2hsX2RhdGEkRmx1b3Jlc2NlbmNlX1JlYWRpbmcvNy4wMzE0KSAtMC45NzkxCiMgY2hsX2RhdGEkQ2hsX3VnY20yIDwtIChjaGxfZGF0YSRDaGxfdWdMKmNobF9kYXRhJFZvbFNvbF9tTC8xMDAwKSAvIGNobF9kYXRhJFRpc3N1ZV9BcmVhX2NtMgojIGthYmxlKGNobF9kYXRhKQoKa2FibGUodmVydF9taWdyYXRpb24pCmBgYAoKIyBHZW5lcmF0ZSBUaW1lIG9mIERheSAmIGVsYXBzZWQgdGltZQpXb3JraW5nIHdpdGggRGF0ZXMgJiBUaW1lcyBpcyB0cmlja3khCmBgYHtyIGVsYXBzZWRfdGltZX0KdmVydF9taWdyYXRpb24gPC0gdmVydF9taWdyYXRpb24gfD4KICBtdXRhdGUoRGF0ZVRpbWUgPSBsdWJyaWRhdGU6OnltZF9obShZWVlZTU1EREhITU0pKSB8PgogIG11dGF0ZShEYXRlID0gc3RyaW5ncjo6c3RyX2V4dHJhY3QoRGF0ZVRpbWUsICJbMC05XXs0fS1bMC05XXsyfS1bMC05XXsyfSIpKSB8PgogIG11dGF0ZShUb0QgPSBzdHJpbmdyOjpzdHJfZXh0cmFjdChEYXRlVGltZSwgIlswLTldezJ9OlswLTldezJ9OlswLTldezJ9IikpCgojaGFjayBzb2x1dGlvbiB0byBnZXQgZWxhcHNlZCB0aW1lOyBkaWZmaWN1bHR5ICdzdWJ0cmFjdGluZycgdGltZXMKdmVydF9taWdyYXRpb24gPC0gdmVydF9taWdyYXRpb24gfD4KICBncm91cF9ieShEYXRlKSB8PgogIG11dGF0ZShFX3RpbWVfaCA9IGFzLm51bWVyaWMoRGF0ZVRpbWUgLSBEYXRlVGltZVsxXSkvMzYwMCkgfD4KICB1bmdyb3VwKCkKCmthYmxlKHZlcnRfbWlncmF0aW9uKQpgYGAKCgoKYGBge3Igc2F2ZV92ZXJ0X21pZ3JhdGlvbn0Kc2F2ZVJEUyhvYmplY3QgPSB2ZXJ0X21pZ3JhdGlvbiwgZmlsZSA9IGZpbGUucGF0aCgiLi4iLCAiRGF0YSIsIkNsZWFuRGF0YSIsICJ2ZXJ0X21pZ3JhdGlvbi5yZHMiKSkKYGBgCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiQ2hsb3JJbXBvcnQiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCiMgSW50cm9kdWN0aW9uClRoaXMgLnJtZCBpbXBvcnRzIFR1cm5lciBjaGxvcm9waHlsbCBmbG9yZXNjZW5jZSBkYXRhIGZyb20gYW4gaW50ZXJhY3RpdmUgZ29vZ2xlc2hlZXQuCkl0IGNvbnZlcnRzIFJGVSBmcm9tIHRoZSBUdXJuZXIgRmx1b3JvbWV0ZXIgdG8gdWcgQ2hsIGNtXi0yXiBvZiBvcmlnaW5hdGluZyB0aXNzdWUgcGFwZXIsIHVzZWQgdG8gc2FtcGxlIGZyb20gYSBtb2RlbCBtdWRmbGF0LgpJdCBjb252ZXJ0cyBhIG51bWVyaWMgWVlZWU1NRERISE1NIGNvZGUgdG8gVGltZSBvZiBEYXksIGFuZCBlbGFwc2VkIHRpbWUuCkl0IHNhdmVzIHRoZSB0aWRpZWQgZGF0YSBhcyBhIC5SZHMgZm9yIGdlbmVyYWwgdXNlIGluIHRoZSBwcm9qZWN0LgoKCiMgSW5zdGFsbCBwYWNrYWdlcyBpZiBuZWVkZWQKYGBge3IgaW5zdGFsbF9wYWNrYWdlc30KI2luc3RhbGwucGFja2FnZXMoImdvb2dsZXNoZWV0czQiKQojaW5zdGFsbC5wYWNrYWdlcygiZ29vZ2xlZHJpdmUiKQojaW5zdGFsbC5wYWNrYWdlcygidGlkeXZlcnNlIikKI2luc3RhbGwucGFja2FnZXMoImthYmxlRXh0cmEiKQpgYGAKCgojIExvYWRpbmcgUGFja2FnZXMgCmBgYHtyIGxvYWQgcGFja2FnZXN9CmxpYnJhcnkodGlkeXZlcnNlKSAKbGlicmFyeShnb29nbGVzaGVldHM0KQpsaWJyYXJ5KGdvb2dsZWRyaXZlKQpsaWJyYXJ5KGthYmxlRXh0cmEpCmBgYAoKCiMgQ29ubmVjdCB0byBnb29nbGUgYWNjb3VudApEZWF1dGhvcml6ZSBnb29nbGUgYWNjb3VudCB0byBhbGxvdyB1bml2ZXJzYWwgYWNjZXNzIHRvIHRoZSByYXcgZGF0YSBzaGVldC5UaGVuIHJldHJpZXZlIGRhdGEgc2hlZXQgZnJvbSB3aGVyZSBpdCdzIHN0b3JlZCBvbiBnb29nbGUgZHJpdmUuCmBgYHtyIGNvbm5lY3RfZ29vZ2xlfQpnczRfZGVhdXRoKCkKZ29vZ2xlc2hlZXRfdXJsIDwtICJodHRwczovL2RvY3MuZ29vZ2xlLmNvbS9zcHJlYWRzaGVldHMvZC8xNkR4V1poWXc2OVpnQUNHdTgyc3pOOXRwZ3BZWVBXSXhQWE9jU0xNMkJvMC9lZGl0P2dpZD0xMzc2NDA2NTQwI2dpZD0xMzc2NDA2NTQwIgpgYGAKCiMgQWNjZXNzaW5nIHNoZWV0cwpgYGB7ciBhY2Nlc3Npbmdfc2hlZXRzfQp2ZXJ0X21pZ3JhdGlvbiA8LSByZWFkX3NoZWV0KGdvb2dsZXNoZWV0X3VybCwgc2hlZXQgPSAidmVydF9taWdyYXRpb24iKQoKYGBgCgoKCiMgVHJhbnNmb3JtaW5nIG91ciBudW1iZXJzIGludG8gQ2hsIGNtXi0yXgoKSW5zdHJ1Y3Rpb25zIGZvciB0aGUgY2hsb3JvcGh5bGwgY2FsY3VsYXRpb25zIGNvbWUgZnJvbSBDYW1wYmVsbFNPUDI4Q2hsb3JvcGh5bGxhVHVybmVyLnBkZgogNy4wMzE0IFJGVS91ZyBMLTEgYW5kIGludGVyY2VwdCBvZiAwLjk3OTEKIApgYGB7ciBjaGxvcm9waHlsbF9jYWxjdWxhdGlvbnN9CnZlcnRfbWlncmF0aW9uIDwtIHZlcnRfbWlncmF0aW9uIHw+CiAgbXV0YXRlKENobF91Z0wgPSAoRmx1b3Jlc2NlbmNlX1JlYWRpbmcvNy4wMzE0KSAtMC45NzkxKSB8PgogIG11dGF0ZShDaGxfdWdjbTIgPSAoQ2hsX3VnTCpWb2xTb2xfbUwvMTAwMCkgLyBUaXNzdWVfQXJlYV9jbTIpIHw+CiAgZmlsdGVyKCFpcy5uYShPcGVyYXRvcklEKSl8PiAjZ2V0IHJpZCBvZiByb3dzIHRoYXQgYXJlIGJsYW5rcyB3aXRoIE9wZXJhdG9ySUQgPSBOQSAKIGZpbHRlcighaXMubmEoVG9wX0JvdHRvbSkpfD4gI2dldCByaWQgb2Ygcm93cyB0aGF0IGFyZSBibGFua3Mgd2l0aCBUb3BfQm90dG9tID1OQQpmaWx0ZXIoIWlzLm5hKFRlbXBfQykpICNnZXQgcmlkIG9mIHJvd3MgdGhhdCBhcmUgYmxhbmtzIHdpdGggVGVtcF9DID1OQQoKCiNyZW1vdmUgZ2FyYmFnZSBjb2x1bW5zIGNvbnRhaW5pbmcgb25seSBOQQp2ZXJ0X21pZ3JhdGlvbiA8LSB2ZXJ0X21pZ3JhdGlvbiB8PgogIHNlbGVjdCh3aGVyZShmdW5jdGlvbih4KSAhYWxsKGlzLm5hKHgpKSkpCgojIGJhc2UgUiBhbHRlcm5hdGUgYXBwcm9hY2ggZnJvbSBTYXJhaCBQLgojIGNobF9kYXRhJENobF91Z0wgPC0gKGNobF9kYXRhJEZsdW9yZXNjZW5jZV9SZWFkaW5nLzcuMDMxNCkgLTAuOTc5MQojIGNobF9kYXRhJENobF91Z2NtMiA8LSAoY2hsX2RhdGEkQ2hsX3VnTCpjaGxfZGF0YSRWb2xTb2xfbUwvMTAwMCkgLyBjaGxfZGF0YSRUaXNzdWVfQXJlYV9jbTIKIyBrYWJsZShjaGxfZGF0YSkKCmthYmxlKHZlcnRfbWlncmF0aW9uKQpgYGAKCiMgR2VuZXJhdGUgVGltZSBvZiBEYXkgJiBlbGFwc2VkIHRpbWUKV29ya2luZyB3aXRoIERhdGVzICYgVGltZXMgaXMgdHJpY2t5IQpgYGB7ciBlbGFwc2VkX3RpbWV9CnZlcnRfbWlncmF0aW9uIDwtIHZlcnRfbWlncmF0aW9uIHw+CiAgbXV0YXRlKERhdGVUaW1lID0gbHVicmlkYXRlOjp5bWRfaG0oWVlZWU1NRERISE1NKSkgfD4KICBtdXRhdGUoRGF0ZSA9IHN0cmluZ3I6OnN0cl9leHRyYWN0KERhdGVUaW1lLCAiWzAtOV17NH0tWzAtOV17Mn0tWzAtOV17Mn0iKSkgfD4KICBtdXRhdGUoVG9EID0gc3RyaW5ncjo6c3RyX2V4dHJhY3QoRGF0ZVRpbWUsICJbMC05XXsyfTpbMC05XXsyfTpbMC05XXsyfSIpKQoKI2hhY2sgc29sdXRpb24gdG8gZ2V0IGVsYXBzZWQgdGltZTsgZGlmZmljdWx0eSAnc3VidHJhY3RpbmcnIHRpbWVzCnZlcnRfbWlncmF0aW9uIDwtIHZlcnRfbWlncmF0aW9uIHw+CiAgZ3JvdXBfYnkoRGF0ZSkgfD4KICBtdXRhdGUoRV90aW1lX2ggPSBhcy5udW1lcmljKERhdGVUaW1lIC0gRGF0ZVRpbWVbMV0pLzM2MDApIHw+CiAgdW5ncm91cCgpCgprYWJsZSh2ZXJ0X21pZ3JhdGlvbikKYGBgCgoKCmBgYHtyIHNhdmVfdmVydF9taWdyYXRpb259CnNhdmVSRFMob2JqZWN0ID0gdmVydF9taWdyYXRpb24sIGZpbGUgPSBmaWxlLnBhdGgoIi4uIiwgIkRhdGEiLCJDbGVhbkRhdGEiLCAidmVydF9taWdyYXRpb24ucmRzIikpCmBgYAoK</div>
 
 
 
