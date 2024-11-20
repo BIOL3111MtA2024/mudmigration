@@ -34,12 +34,29 @@ vert_migration |>
 # Create top and bottom ratio
 vert_migration contains variable Top_Bottom
 To simplify ratio calculation we 'pivot_wider' the data to separate Top_Bottom into two separate variables, Top & Bottom; that will lower the number of rows and increase the number of columns
-```{r top_bottom}
-vert_migration_wide<- vert_migration |>
-  pivot_wider(vert_migration, id_cols = names_from = Top_Bottom, values_from = Chl_ugcm2)
 
+```{r top_bottom}
+vert_migration_wide <- vert_migration |>
+  select(-c(Tissue_Area_cm2, VolSol_mL, Fluorescence_Reading, `...19`,  Chl_ugL)) |>
+  pivot_wider(id_cols = c(YYYYMMDDHHMM, Replicate, Temp_C, Light, Trial, DateTime, Date, ToD, E_time_h), names_from = Top_Bottom, values_from = Chl_ugcm2, values_fn = mean) |>
+  mutate(TopBottomRatio = top/bottom)
+
+#hack solution to cope with ambiguous row labelling by taking 'mean' of rows with multiple values.
 
 ```
 
+Plot ratio of Top Chl_ugcm2 divided by Bottom Chl_ugcm2
+```{r TopBottomRatio_plot}
+vert_migration_wide |>
+  ggplot() +
+  geom_point(aes(x= ToD, y = TopBottomRatio)) + 
+  facet_grid(cols = vars(Temp_C))
+```
 
+```{r plot Top Chl_ugcm2 vs. Bottom Chl_ugcm2 }
+vert_migration_wide |>
+  ggplot() +
+  geom_point(aes(x= bottom, y = top, size = ToD)) + 
+  facet_grid(cols = vars(Temp_C))
+```
 
