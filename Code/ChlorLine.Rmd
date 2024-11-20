@@ -31,10 +31,13 @@ vert_migration |>
   geom_point(aes(x=ToD, y = Chl_ugcm2 )) + 
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C))
 ```
-created top and bottom ratio
+# Create top and bottom ratio
+vert_migration contains variable Top_Bottom
+To simplify ratio calculation we 'pivot_wider' the data to separate Top_Bottom into two separate variables, Top & Bottom; that will lower the number of rows and increase the number of columns
 ```{r top_bottom}
-vert_migration<- vert_migration |>
-  mutate(Top_Bottom_Ratio =  ) 
+vert_migration_wide<- vert_migration |>
+  pivot_wider(vert_migration, id_cols = names_from = Top_Bottom, values_from = Chl_ugcm2)
+
 
 ```
 
