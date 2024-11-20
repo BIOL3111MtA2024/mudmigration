@@ -83,7 +83,7 @@ vert_migration <- vert_migration |>
   mutate(E_time_h = as.numeric(DateTime - DateTime[1])/3600) |>
   ungroup()
 
-
+kable(vert_migration)
 ```
 
 
