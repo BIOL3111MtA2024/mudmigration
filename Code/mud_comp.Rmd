@@ -277,5 +277,51 @@ ggplot(volume_count, aes(x = MaxVol_Bin, y = Count, fill = Top_Bottom)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+## ANOVA on cell size observed under different temperatures and light levels
+```{r anova_cell_size}
+#One-way ANOVA for Count ~ MaxDim_Bin
+anova_result_2 <- aov(Count ~ MaxDim_Bin, data = dimension_data)
+summary(anova_result_2)
+
+#Factorial ANOVA with interactions for light and temperature for MaxDim_Bin
+anova_result_3 <- aov(Count ~ MaxDim_Bin * Light * Temp_C, data = dimension_data)
+summary(anova_result_3)
+#What about layer????????
+
+#One-way ANOVA for Count ~ MaxVol_Bin
+anova_result_4 <- aov(Count ~ MaxVol_Bin, data = volume_count)
+summary(anova_result_4)
+
+#Factorial ANOVA with interactions for light and temperature for MaxVol_Bin
+anova_result_5 <- aov(Count ~ MaxVol_Bin * Light * Temp_C, data = volume_count)
+summary(anova_result_5)
+#What about layer????????
+```
+
+## ANOVA on cell size observed at each layer
+```{r anova_size_layer}
+#ANOVA for Count ~ Top_Bottom
+anova_result_6 <- aov(Count ~ MaxDim_Bin * Top_Bottom, data = dimension_data)
+summary(anova_result_6)
+```
+
+## PostHoc testing due to significance in MaxDim_Bin and MaxVol_Bin
+```{r tukey}
+#PostHoc for Count ~ MaxDim_Bin with temperature and light
+tukey_result <- TukeyHSD(anova_result_2)
+print(tukey_result)
+
+#PostHoc for Count ~ MaxVol_Bin with temperature and light
+tukey_result_2 <- TukeyHSD(anova_result_4)
+print(tukey_result_2)
+```
+
+
+
+
+
+
+
+
 
 
