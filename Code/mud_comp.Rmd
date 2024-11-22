@@ -172,14 +172,19 @@ ggplot(associated_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = Samp
   geom_bar(stat = "identity") +
   labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count", title = "Number of Cells per Condition") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_fill_manual(values = c("bottom" = "pink", "top" = "orange"))
+
+
 
 #Fill is Temperature
-ggplot(associated_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = Temp_C)) +
+ggplot(associated_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = factor(Temp_C))) +
   geom_bar(stat = "identity") +
   labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count", title = "Number of Cells per Condition") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_fill_manual(values = c("15" = "red", "20" = "purple"))
+
 ```
 
 ## ANOVA on the number of cells observed under each experimental condition
@@ -238,22 +243,25 @@ ggplot(volume_count, aes(x = MaxVol_Bin, y = Count, fill = Light)) +
 ## Temperature: Plot number of observation in each maximum volume and dimension bin
 ```{r temperature_plot_bin_count}
 #Bar graph of maximum dimension
-ggplot(dimension_data, aes(x = MaxDim_Bin, y = Count, fill = Temp_C)) +
+ggplot(dimension_data, aes(x = MaxDim_Bin, y = Count, fill = factor(Temp_C))) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Maximum Dimension Distribution by Temperature Level",
        x = "Maximum Dimension Bin (µm3)",
-       y = "Number of Observations") +
+       y = "Number of Observations",
+       fill = "Temperature (°C)") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("15" = "red", "20" = "purple"))
 
 #Bar graph of maximum volume
-ggplot(volume_count, aes(x = MaxVol_Bin, y = Count, fill = Temp_C)) +
+ggplot(volume_count, aes(x = MaxVol_Bin, y = Count, fill = factor(Temp_C))) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Cell Volume Distribution by Temperature Level",
        x = "Cell Volume (µm3)",
        y = "Number of Observations") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_fill_manual(values = c("15" = "red", "20" = "purple"))
 ```
 
 ## Layer: Plot number of observation in each maximum volume and dimension bin
@@ -265,7 +273,8 @@ ggplot(dimension_data, aes(x = MaxDim_Bin, y = Count, fill = Top_Bottom)) +
        x = "Maximum Dimension Bin (µm3)",
        y = "Number of Observations") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_fill_manual(values = c("bottom" = "pink", "top" = "orange"))
 
 #Bar graph of maximum volume
 ggplot(volume_count, aes(x = MaxVol_Bin, y = Count, fill = Top_Bottom)) +
@@ -274,8 +283,13 @@ ggplot(volume_count, aes(x = MaxVol_Bin, y = Count, fill = Top_Bottom)) +
        x = "Cell Volume (µm3)",
        y = "Number of Observations") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_fill_manual(values = c("bottom" = "pink", "top" = "orange"))
 ```
+
+
+
+### Ask about which ANOVA to use..
 
 ## ANOVA on cell size observed under different temperatures and light levels
 ```{r anova_cell_size}
@@ -316,6 +330,16 @@ tukey_result_2 <- TukeyHSD(anova_result_4)
 print(tukey_result_2)
 ```
 
+## ANOVA on cell size focusing on the interaction between size and layer
+```{r anova_focused}
+#ANOVA on MaxDim_Bin and layer 
+anova_result_7 <- aov(Count ~ MaxDim_Bin * Light * Temp_C + MaxDim_Bin:Top_Bottom, data = dimension_data)
+summary(anova_result_7)
+
+#ANOVA on MaxVol_Bin and layer
+anova_result_8 <- aov(Count ~ MaxVol_Bin * Light * Temp_C + MaxVol_Bin:Top_Bottom, data = volume_count)
+summary(anova_result_8)
+```
 
 
 
