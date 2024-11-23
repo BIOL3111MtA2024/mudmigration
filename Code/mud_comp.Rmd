@@ -29,6 +29,7 @@ community_composition <- read_sheet(googlesheet_url, sheet = "community_composit
 raw_cell_measurements <- read_sheet(googlesheet_url, sheet = "raw_cell_measurements")
 data_dictionary <- read_sheet(googlesheet_url, sheet = "data_dictionary")
 ```
+#### Please fix raw_cell_measurements_3 (order of chunks must work!) and rename all following 
 
 # Set Up
 
@@ -77,7 +78,7 @@ raw_cell_measurements_4 <- raw_cell_measurements_3 |>
                           CellMorphotype == "undefined" ~ 4/3 * pi * (Length_um/2)^3, 
                           CellMorphotype == "peanut" ~   Length_um * Width1_um * Width2_um,
                           CellMorphotype == "rectangular" ~ Length_um * Width1_um * Width2_um,
-                          CellMorphotype == "square"~ Width1_um * Width2_um,
+                          CellMorphotype == "square"~ Width1_um^2 * Width2_um, #check these values
                           CellMorphotype == "other" ~ 4/3 * pi * (Width1_um/2)^3
   )
   )
@@ -92,16 +93,16 @@ raw_cell_measurements_4 <- raw_cell_measurements_4 |>
 ## Check for missing results
 ```{r missing_results}
 #Find empty cells in CellVol
-empty_CellVol <- which(is.na(raw_cell_measurements_4$CellVol))
-raw_cell_measurements_4[empty_CellVol, ]
+#empty_CellVol <- which(is.na(raw_cell_measurements_4$CellVol))
+#raw_cell_measurements_4[empty_CellVol, ]
 
 #Find it's location
-empty_CellVol_location <- cbind(row = empty_CellVol, column = "CellVol")
-empty_CellVol_location
+#empty_CellVol_location <- cbind(row = empty_CellVol, column = "CellVol")
+#empty_CellVol_location
 
 #Find empty cells in MaxDim_um
-empty_MaxDim <- which(is.na(raw_cell_measurements_4$MaxDim_um))
-raw_cell_measurements_4[empty_MaxDim, ]
+#empty_MaxDim <- which(is.na(raw_cell_measurements_4$MaxDim_um))
+#raw_cell_measurements_4[empty_MaxDim, ]
 
 #Corrected these missing results, return to misspelling above ^
 ```
@@ -121,14 +122,15 @@ raw_cell_measurements_4 |>
 
 ## Bin max dimension and cell volume
 ```{r bin_dimension}
+#Maximum Cell Dimension 
 bin_ranges_1 <- c(0, 5, 10, 20, 30, 40, 50, 75, 100, 150, 200)
 raw_cell_measurements_4 <- raw_cell_measurements_4 |>
-  dplyr::mutate(MaxDim_Bin = cut(MaxDim_um, breaks = bin_ranges, include.lowest = TRUE, labels = c("0-5", "5-10", "10-20", "20-30", "30-40", "40-50", "50-75", "75-100", "100-150", "150-200")))
+  dplyr::mutate(MaxDim_Bin = cut(MaxDim_um, breaks = bin_ranges_1, include.lowest = TRUE, labels = c("0-5", "5-10", "10-20", "20-30", "30-40", "40-50", "50-75", "75-100", "100-150", "150-200")))
 
+#Maximum Cell Volume
 bin_ranges_2 <- c(0, 100, 1000, 5000, 10000, 15000, 20000, 25000, 100000)
 raw_cell_measurements_4 <- raw_cell_measurements_4 |>
   dplyr::mutate(MaxVol_Bin = cut(CellVol, breaks = bin_ranges_2, include.lowest = TRUE, labels = c("0-100", "100-1000", "1000-5000", "5000-10000", "10000-15000", "15000-20000", "20000-25000", "25000-100000")))
-
 ```
 
 ## Merge common value between raw data and conditions (light, temp, layer)
@@ -136,19 +138,14 @@ raw_cell_measurements_4 <- raw_cell_measurements_4 |>
 merged_data <- merge(community_composition, raw_cell_measurements_4, by = "SamplePhotoID", all.x = TRUE)
 ```
 
-## Add an identical row for each cell in chains
-```{r count_chains}
-expand_data <- merged_data %>%
-  uncount(ChainNum)
-```
-
 # Cell Count Analysis
 
 ## Create bargraph to visualize cell counts per sample
 ```{r bargraph_sample}
 # Count occurrences of each value
-CellCount <- expand_data %>%
-  count(SamplePhotoID)
+merged_data_cell_count <- merged_data %>%
+  group_by(Light, Temp_C, Top_Bottom) %>%
+  summarize(CellCount = sum(ChainNum), .groups = "drop")
 
 # Create the bar graph
 ggplot(CellCount, aes(x = SamplePhotoID, y = n)) +
@@ -158,64 +155,69 @@ ggplot(CellCount, aes(x = SamplePhotoID, y = n)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+## Graph visualising cell count per condition
+```{r graph_count_per_condition}
+#New Code: Different count function, count using chain number 
+ggplot(expand_data_summary, aes(x = Light, y = CellCount, fill = Light)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Conditions (Light, Temp_C, Top_Bottom)", 
+       y = "Cell Count per Image (NEED AREA)", 
+       title = "Number of Cells per Condition") +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(),  
+        axis.title.x = element_text(size = 12))  
+```
+
 ## Bargraph using associated data
 ```{r bargraph_associated}
 #Fill is Light
-ggplot(associated_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = Light)) +
+ggplot(expand_data, aes(x = Light, y = SamplePhotoID, fill = Light)) +
   geom_bar(stat = "identity") +
   labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count", title = "Number of Cells per Condition") +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 #Fill is Top or Bottom
-ggplot(associated_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = Top_Bottom)) +
+ggplot(expand_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = Top_Bottom)) +
   geom_bar(stat = "identity") +
   labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count", title = "Number of Cells per Condition") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   scale_fill_manual(values = c("bottom" = "pink", "top" = "orange"))
 
-
-
 #Fill is Temperature
-ggplot(associated_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = factor(Temp_C))) +
+ggplot(expand_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = factor(Temp_C))) +
   geom_bar(stat = "identity") +
   labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count", title = "Number of Cells per Condition") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   scale_fill_manual(values = c("15" = "red", "20" = "purple"))
-
 ```
+#### EXPANDED DATA IS NO LONGER IN USE, BELOW MUST BE UPDATED WITH THIS CHANGE!
 
-## ANOVA on the number of cells observed under each experimental condition
-```{r anova_cell_count}
-#Count the number of cells per condition
-count_data <- expand_data %>%
-  group_by(Temp_C, Light, Top_Bottom) %>%
-  summarise(SamplePhotoID = n()) %>%
-  ungroup()
 
-#Run the anova
-anova_result <- aov(SamplePhotoID ~ Temp_C * Light * Top_Bottom, data = count_data)
-summary(anova_result)
-```
 
 # Cell Size Analysis
 
 ## Count number of observation in each maximum volume and dimension bin per condition
 ```{r bin_count}
-#Summarize the counts for each maximum dimension bin and light level
+ #Summarize the counts for each maximum dimension bin and light level
 dimension_data <- expand_data |>
   dplyr::group_by(MaxDim_Bin, Light, Temp_C, Top_Bottom) |> 
-  dplyr::summarize(Count = dplyr::n(), .groups = "drop")
-
+  dplyr::summarize(MaxDim_Count = dplyr::n(), .groups = "drop") |> 
+  ungroup() |>
+  group_by(Light, Temp_C, Top_Bottom) |> 
+  dplyr::summarize(Treat_Count = dplyr::n(), .groups = "drop")
+                   #MaxDim_Frac = MaxDim_Count/5)
 print(dimension_data)
 
 #Summarize the counts for each cell volume bin and light level
 volume_count <- expand_data |>
   dplyr::group_by(MaxVol_Bin, Light, Temp_C, Top_Bottom) |>
-  dplyr::summarize(Count = dplyr::n(), .groups = "drop")
-
+  dplyr::summarize(Count = dplyr::n(), .groups = "drop")  
+  
 print(volume_count)
 ```
 
