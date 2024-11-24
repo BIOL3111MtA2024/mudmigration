@@ -35,13 +35,13 @@ data_dictionary <- read_sheet(googlesheet_url, sheet = "data_dictionary")
 
 ## Set missing values of width_1 and width_2
 ```{r missing_widths}
-raw_cell_measurements_2 <- raw_cell_measurements |>
+corrected_width_data <- raw_cell_measurements |>
   mutate(Width1_um = case_when(
     is.na(Width1_um) ~ 1,
     TRUE ~ Width1_um
   ))
 
-raw_cell_measurements_3 <- raw_cell_measurements_2 |>
+corrected_width_data <- corrected_width_data |>
   mutate(Width2_um = case_when(is.na(Width2_um) ~ Width1_um,
                                !is.na(Width2_um) ~ Width2_um
   ))
@@ -49,30 +49,30 @@ raw_cell_measurements_3 <- raw_cell_measurements_2 |>
 
 ## List of morphotypes obseved 
 ```{r unqiue_morphotypes}
-unique_morphotypes <- unique(raw_cell_measurements_3$CellMorphotype)
+unique_morphotypes <- unique(corrected_width_data$CellMorphotype)
 print(unique_morphotypes)
 ```
 
 ## Correct mispelled pennate
 ```{r correct_mispelling}
 #Find cell containing the misspelled word
-mislabel_pennate <- which(raw_cell_measurements_3 == "penate", arr.ind = TRUE)
+mislabel_pennate <- which(corrected_width_data  == "penate", arr.ind = TRUE)
 mislabel_pennate
 
 #Indicate the cell which was mislabeled
-raw_cell_measurements_3[106, "CellMorphotype"] <- "pennate"
+corrected_width_data[106, "CellMorphotype"] <- "pennate"
 ```
 
 ## Fix missing CellVol
 ```{r fix_missing_undefined}
 #Rename morphotype to better calculate cell volume
-raw_cell_measurements_3[12, "CellMorphotype"] <- "other"
+corrected_width_data[12, "CellMorphotype"] <- "other"
 ```
 
 ## Estimate volumes & maximum linear dimension
 ```{r volumes_maxlinear}
 #Calculate Cell Volume for each Morphotype
-raw_cell_measurements_4 <- raw_cell_measurements_3 |>
+volume_dimension_data <- corrected_width_data |>
   mutate(CellVol = case_when(CellMorphotype == "centric" ~ pi * (Width1_um/2)^2 *  Width2_um,
                           CellMorphotype == "pennate" ~  Length_um * Width1_um * Width2_um,
                           CellMorphotype == "undefined" ~ 4/3 * pi * (Length_um/2)^3, 
@@ -84,7 +84,7 @@ raw_cell_measurements_4 <- raw_cell_measurements_3 |>
   )
 
 #Calculate Maximum Dimension
-raw_cell_measurements_4 <- raw_cell_measurements_4 |>
+volume_dimension_data <- volume_dimension_data |>
   rowwise() |>
   mutate(MaxDim_um = max(Length_um, Width1_um, Width2_um, na.rm = TRUE)
   )
@@ -93,72 +93,79 @@ raw_cell_measurements_4 <- raw_cell_measurements_4 |>
 ## Check for missing results
 ```{r missing_results}
 #Find empty cells in CellVol
-#empty_CellVol <- which(is.na(raw_cell_measurements_4$CellVol))
-#raw_cell_measurements_4[empty_CellVol, ]
+#empty_CellVol <- which(is.na(volume_dimension_data$CellVol))
+#volume_dimension_data[empty_CellVol, ]
 
 #Find it's location
 #empty_CellVol_location <- cbind(row = empty_CellVol, column = "CellVol")
 #empty_CellVol_location
 
 #Find empty cells in MaxDim_um
-#empty_MaxDim <- which(is.na(raw_cell_measurements_4$MaxDim_um))
-#raw_cell_measurements_4[empty_MaxDim, ]
+#empty_MaxDim <- which(is.na(volume_dimension_data$MaxDim_um))
+#volume_dimension_data[empty_MaxDim, ]
 
 #Corrected these missing results, return to misspelling above ^
+```
+
+## Control for chain sizes
+```{r size_chain}
+volume_dimension_data <- volume_dimension_data %>%
+  mutate(CellVol_Total = CellVol * ChainNum) %>%
+  mutate(MaxDim_Total = MaxDim_um * ChainNum)
 ```
 
 ## Histogram of volumes and max dimension
 ```{r histogram}
 #Plot Cell Volumes
-raw_cell_measurements_4 |>
+volume_dimension_data |>
   ggplot()+
-  geom_histogram(aes(CellVol))
+  geom_histogram(aes(CellVol_Total))
 
 #Plot Maximum Dimensions
-raw_cell_measurements_4 |>
+volume_dimension_data |>
   ggplot()+
-  geom_histogram(aes(MaxDim_um))
+  geom_histogram(aes(MaxDim_Total))
 ```
 
 ## Bin max dimension and cell volume
 ```{r bin_dimension}
 #Maximum Cell Dimension 
 bin_ranges_1 <- c(0, 5, 10, 20, 30, 40, 50, 75, 100, 150, 200)
-raw_cell_measurements_4 <- raw_cell_measurements_4 |>
-  dplyr::mutate(MaxDim_Bin = cut(MaxDim_um, breaks = bin_ranges_1, include.lowest = TRUE, labels = c("0-5", "5-10", "10-20", "20-30", "30-40", "40-50", "50-75", "75-100", "100-150", "150-200")))
+volume_dimension_data <- volume_dimension_data |>
+  dplyr::mutate(MaxDim_Bin = cut(MaxDim_Total, breaks = bin_ranges_1, include.lowest = TRUE, labels = c("0-5", "5-10", "10-20", "20-30", "30-40", "40-50", "50-75", "75-100", "100-150", "150-200")))
 
 #Maximum Cell Volume
 bin_ranges_2 <- c(0, 100, 1000, 5000, 10000, 15000, 20000, 25000, 100000)
-raw_cell_measurements_4 <- raw_cell_measurements_4 |>
-  dplyr::mutate(MaxVol_Bin = cut(CellVol, breaks = bin_ranges_2, include.lowest = TRUE, labels = c("0-100", "100-1000", "1000-5000", "5000-10000", "10000-15000", "15000-20000", "20000-25000", "25000-100000")))
+volume_dimension_data <- volume_dimension_data |>
+  dplyr::mutate(MaxVol_Bin = cut(CellVol_Total, breaks = bin_ranges_2, include.lowest = TRUE, labels = c("0-100", "100-1000", "1000-5000", "5000-10000", "10000-15000", "15000-20000", "20000-25000", "25000-100000")))
 ```
 
 ## Merge common value between raw data and conditions (light, temp, layer)
 ```{r merge_sheets}
-merged_data <- merge(community_composition, raw_cell_measurements_4, by = "SamplePhotoID", all.x = TRUE)
+merged_data <- merge(community_composition, volume_dimension_data, by = "SamplePhotoID", all.x = TRUE)
 ```
 
 # Cell Count Analysis
 
 ## Create bargraph to visualize cell counts per sample
 ```{r bargraph_sample}
-# Count occurrences of each value
+#Summarize data with chain number
 merged_data_cell_count <- merged_data %>%
-  group_by(Light, Temp_C, Top_Bottom) %>%
+  group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
   summarize(CellCount = sum(ChainNum), .groups = "drop")
 
-# Create the bar graph
-ggplot(CellCount, aes(x = SamplePhotoID, y = n)) +
-  geom_bar(stat = "identity", fill = "skyblue") +
+#Create bar graph
+ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
+  geom_bar(stat = "identity", fill = "purple") +
   labs(x = "Sample", y = "Number of Cells", title = "Number of Cells per Sample") +
-  theme_minimal()+
+  theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ## Graph visualising cell count per condition
 ```{r graph_count_per_condition}
 #New Code: Different count function, count using chain number 
-ggplot(expand_data_summary, aes(x = Light, y = CellCount, fill = Light)) +
+ggplot(merged_data_cell_count, aes(x = Light, y = CellCount, fill = Light)) +
   geom_bar(stat = "identity") +
   labs(x = "Conditions (Light, Temp_C, Top_Bottom)", 
        y = "Cell Count per Image (NEED AREA)", 
@@ -169,179 +176,166 @@ ggplot(expand_data_summary, aes(x = Light, y = CellCount, fill = Light)) +
         axis.title.x = element_text(size = 12))  
 ```
 
-## Bargraph using associated data
-```{r bargraph_associated}
-#Fill is Light
-ggplot(expand_data, aes(x = Light, y = SamplePhotoID, fill = Light)) +
-  geom_bar(stat = "identity") +
-  labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count", title = "Number of Cells per Condition") +
-  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-#Fill is Top or Bottom
-ggplot(expand_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = Top_Bottom)) +
-  geom_bar(stat = "identity") +
-  labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count", title = "Number of Cells per Condition") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
-  scale_fill_manual(values = c("bottom" = "pink", "top" = "orange"))
-
-#Fill is Temperature
-ggplot(expand_data, aes(x = interaction(Light, Temp_C, Top_Bottom), y = SamplePhotoID, fill = factor(Temp_C))) +
-  geom_bar(stat = "identity") +
-  labs(x = "Condition (Light, Temp_C, Top_Bottom)", y = "Cell Count", title = "Number of Cells per Condition") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
-  scale_fill_manual(values = c("15" = "red", "20" = "purple"))
-```
-#### EXPANDED DATA IS NO LONGER IN USE, BELOW MUST BE UPDATED WITH THIS CHANGE!
-
-
-
 # Cell Size Analysis
 
 ## Count number of observation in each maximum volume and dimension bin per condition
-```{r bin_count}
- #Summarize the counts for each maximum dimension bin and light level
-dimension_data <- expand_data |>
+```{r bin_size_count}
+ #Summarize the counts for each maximum dimension bin per condition
+dimension_data <- merged_data |>
   dplyr::group_by(MaxDim_Bin, Light, Temp_C, Top_Bottom) |> 
-  dplyr::summarize(MaxDim_Count = dplyr::n(), .groups = "drop") |> 
-  ungroup() |>
-  group_by(Light, Temp_C, Top_Bottom) |> 
-  dplyr::summarize(Treat_Count = dplyr::n(), .groups = "drop")
-                   #MaxDim_Frac = MaxDim_Count/5)
+  dplyr::summarize(MaxDim_Count = dplyr::n(), .groups = "drop") 
+
 print(dimension_data)
 
-#Summarize the counts for each cell volume bin and light level
-volume_count <- expand_data |>
+#Summarize the counts for each cell volume bin per condition
+volume_data <- merged_data |>
   dplyr::group_by(MaxVol_Bin, Light, Temp_C, Top_Bottom) |>
-  dplyr::summarize(Count = dplyr::n(), .groups = "drop")  
+  dplyr::summarize(MaxVol_Count = dplyr::n(), .groups = "drop") 
   
-print(volume_count)
+print(volume_data)
 ```
 
-## Light: Plot number of observation in each maximum volume and dimension bin
-```{r light_plot_bin_count}
-#Bar graph of maximum dimension
-ggplot(dimension_data, aes(x = MaxDim_Bin, y = Count, fill = Light)) +
+## Plot number of observation in each maximum volume and dimension bin per condition
+```{r graph_size_count_condition}
+#Cell Count per Condition and Dimension
+ggplot(dimension_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = Light)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Maximum Dimension Distribution by Light Level",
-       x = "Maximum Dimension Bin (µm3)",
-       y = "Number of Observations") +
+  labs(x = "Maximum Dimension Bins (um)", 
+       y = "Cell Count per Image (NEED AREA)", 
+       title = "Cell Count per Condition and Dimension") +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    axis.title.x = element_text(size = 12)           
+  )
 
-#Bar graph of maximum volume
-ggplot(volume_count, aes(x = MaxVol_Bin, y = Count, fill = Light)) +
+#Cell Count per Condition and Volume 
+ggplot(volume_data, aes(x = MaxVol_Bin, y = MaxVol_Count, fill = Light)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Cell Volume Distribution by Light Level",
-       x = "Cell Volume (µm3)",
-       y = "Number of Observations") +
+  labs(x = "Maximum Volume Bins (um3)", 
+       y = "Cell Count per Image (NEED AREA)", 
+       title = "Cell Count per Condition and Volume") +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    axis.title.x = element_text(size = 12)           
+  )
 ```
 
-## Temperature: Plot number of observation in each maximum volume and dimension bin
-```{r temperature_plot_bin_count}
-#Bar graph of maximum dimension
-ggplot(dimension_data, aes(x = MaxDim_Bin, y = Count, fill = factor(Temp_C))) +
+# New data set with morphotypes included for more specific analysis
+```{r morphotype_size_count}
+#Maximum dimension binned per condition and morphology
+dimension_morphotype_data <- merged_data |>
+  dplyr::group_by(MaxDim_Bin, Light, Temp_C, Top_Bottom, CellMorphotype) |> 
+  dplyr::summarize(MaxDim_Count = dplyr::n(), .groups = "drop") |>
+
+print(dimension_morphotype_data)
+
+#Maximum volume binned per condition and morphology
+volume_morphotype_data <- merged_data |>
+  dplyr::group_by(MaxVol_Bin, Light, Temp_C, Top_Bottom, CellMorphotype) |> 
+  dplyr::summarize(MaxVol_Count = dplyr::n(), .groups = "drop") |> 
+
+print(volume_morphotype_data)
+
+```
+
+## Plot of pennate and centric volumes per condition
+```{r pennate_centric_volume}
+#Pennate diatoms ONLY
+pennate_volume_data <- volume_morphotype_data %>%
+  filter(CellMorphotype == "pennate")
+
+ggplot(pennate_volume_data, aes(x = MaxVol_Bin, y = MaxVol_Count, fill = Light)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Maximum Dimension Distribution by Temperature Level",
-       x = "Maximum Dimension Bin (µm3)",
-       y = "Number of Observations",
-       fill = "Temperature (°C)") +
+  labs(
+    x = "Maximum Volume Bins (um³)", 
+    y = "Cell Count per Image (NEED AREA)", 
+    title = "Cell Count per Condition and Maximum Volume (Pennate Only)"
+  ) +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_manual(values = c("15" = "red", "20" = "purple"))
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    axis.title.x = element_text(size = 12)
+  )
 
-#Bar graph of maximum volume
-ggplot(volume_count, aes(x = MaxVol_Bin, y = Count, fill = factor(Temp_C))) +
+#Centric diatoms ONLY
+centric_volume_data <- volume_morphotype_data %>%
+  filter(CellMorphotype == "centric")
+
+ggplot(centric_volume_data, aes(x = MaxVol_Bin, y = MaxVol_Count, fill = Light)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Cell Volume Distribution by Temperature Level",
-       x = "Cell Volume (µm3)",
-       y = "Number of Observations") +
+  labs(
+    x = "Maximum Volume Bins (um³)", 
+    y = "Cell Count per Image (NEED AREA)", 
+    title = "Cell Count per Condition and Maximum Volume (Centric Only)"
+  ) +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
-  scale_fill_manual(values = c("15" = "red", "20" = "purple"))
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    axis.title.x = element_text(size = 12)
+  )
 ```
 
-## Layer: Plot number of observation in each maximum volume and dimension bin
-```{r layer_plot_bin_count}
-#Bar graph of maximum dimension
-ggplot(dimension_data, aes(x = MaxDim_Bin, y = Count, fill = Top_Bottom)) +
+## Plot of pennate and centric maximum dimension per condition
+```{r pennate_centric_dimension}
+#Pennate diatoms ONLY
+pennate_dimension_data <- dimension_morphotype_data %>%
+  filter(CellMorphotype == "pennate")
+
+ggplot(pennate_dimension_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = Light)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Maximum Dimension Distribution by Layer",
-       x = "Maximum Dimension Bin (µm3)",
-       y = "Number of Observations") +
+  labs(
+    x = "Maximum Dimension Bins (um)", 
+    y = "Cell Count per Image (NEED AREA)", 
+    title = "Cell Count per Condition and Maximum Dimension (Pennate Only)"
+  ) +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
-  scale_fill_manual(values = c("bottom" = "pink", "top" = "orange"))
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    axis.title.x = element_text(size = 12)
+  )
 
-#Bar graph of maximum volume
-ggplot(volume_count, aes(x = MaxVol_Bin, y = Count, fill = Top_Bottom)) +
+#Centric diatoms ONLY
+centric_dimension_data <- dimension_morphotype_data %>%
+  filter(CellMorphotype == "centric")
+
+ggplot(centric_dimension_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = Light)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Cell Volume Distribution by Layer",
-       x = "Cell Volume (µm3)",
-       y = "Number of Observations") +
+  labs(
+    x = "Maximum Volume Bins (um³)", 
+    y = "Cell Count per Image (NEED AREA)", 
+    title = "Cell Count per Condition and Maximum Dimension (Centric Only)"
+  ) +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
-  scale_fill_manual(values = c("bottom" = "pink", "top" = "orange"))
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    axis.title.x = element_text(size = 12)
+  )
 ```
 
 
 
-### Ask about which ANOVA to use..
 
-## ANOVA on cell size observed under different temperatures and light levels
-```{r anova_cell_size}
-#One-way ANOVA for Count ~ MaxDim_Bin
-anova_result_2 <- aov(Count ~ MaxDim_Bin, data = dimension_data)
-summary(anova_result_2)
 
-#Factorial ANOVA with interactions for light and temperature for MaxDim_Bin
-anova_result_3 <- aov(Count ~ MaxDim_Bin * Light * Temp_C, data = dimension_data)
-summary(anova_result_3)
-#What about layer????????
 
-#One-way ANOVA for Count ~ MaxVol_Bin
-anova_result_4 <- aov(Count ~ MaxVol_Bin, data = volume_count)
-summary(anova_result_4)
 
-#Factorial ANOVA with interactions for light and temperature for MaxVol_Bin
-anova_result_5 <- aov(Count ~ MaxVol_Bin * Light * Temp_C, data = volume_count)
-summary(anova_result_5)
-#What about layer????????
-```
 
-## ANOVA on cell size observed at each layer
-```{r anova_size_layer}
-#ANOVA for Count ~ Top_Bottom
-anova_result_6 <- aov(Count ~ MaxDim_Bin * Top_Bottom, data = dimension_data)
-summary(anova_result_6)
-```
 
-## PostHoc testing due to significance in MaxDim_Bin and MaxVol_Bin
-```{r tukey}
-#PostHoc for Count ~ MaxDim_Bin with temperature and light
-tukey_result <- TukeyHSD(anova_result_2)
-print(tukey_result)
 
-#PostHoc for Count ~ MaxVol_Bin with temperature and light
-tukey_result_2 <- TukeyHSD(anova_result_4)
-print(tukey_result_2)
-```
 
-## ANOVA on cell size focusing on the interaction between size and layer
-```{r anova_focused}
-#ANOVA on MaxDim_Bin and layer 
-anova_result_7 <- aov(Count ~ MaxDim_Bin * Light * Temp_C + MaxDim_Bin:Top_Bottom, data = dimension_data)
-summary(anova_result_7)
 
-#ANOVA on MaxVol_Bin and layer
-anova_result_8 <- aov(Count ~ MaxVol_Bin * Light * Temp_C + MaxVol_Bin:Top_Bottom, data = volume_count)
-summary(anova_result_8)
-```
+
+
+
+
+
 
 
 
