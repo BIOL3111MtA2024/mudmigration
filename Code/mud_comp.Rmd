@@ -292,7 +292,7 @@ ggplot(pennate_dimension_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = Ligh
   labs(
     x = "Maximum Dimension Bins (um)", 
     y = "Cell Count per Image (NEED AREA)", 
-    title = "Cell Count per Condition and Maximum Dimension (Pennate Only)"
+    title = "Cell Count per Condition and Maximum Dimension (Centric Only)"
   ) +
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
@@ -321,7 +321,78 @@ ggplot(centric_dimension_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = Ligh
 ```
 
 
+```{r}
+ggplot(volume_morphotype_data, aes(x = MaxVol_Bin, y = MaxVol_Count, fill = CellMorphotype)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    x = "Cell Volume Bins (um³)", 
+    y = "Cell Count (NEED AREA)",
+    title = "Cell Volume Bins vs Morphotypes in Different Light Conditions"
+  ) +
+  facet_wrap(~ Light, ncol = 2) + 
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title.x = element_text(size = 12),
+    strip.text = element_text(size = 12)
+  )
 
+ggplot(dimension_morphotype_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = CellMorphotype)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    x = "Cell Maximum Dimension Bins (um)", 
+    y = "Cell Count (NEED AREA)",
+    title = "Cell Maximum Dimension Bins vs Morphotypes in Different Light Conditions"
+  ) +
+  facet_wrap(~ Light, ncol = 2) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title.x = element_text(size = 12),
+    strip.text = element_text(size = 12)
+  )
+```
+
+# Testing 
+
+## ANOVA
+```{r anova}
+#ANOVA of volume
+anova_vol_results <- aov(MaxVol_Count ~ Light * Top_Bottom * Temp_C * CellMorphotype, data = volume_morphotype_data)
+
+summary(anova_vol_results)
+
+#ANOVA of maximum dimension
+anova_dim_results <- aov(MaxDim_Count ~ Light * Top_Bottom * Temp_C * CellMorphotype, data = dimension_morphotype_data)
+
+summary(anova_dim_results)
+```
+
+```{r}
+vol_with_top_bottom <- lm(MaxVol_Count ~ MaxVol_Bin + Light + Temp_C + Top_Bottom + CellMorphotype, 
+                 data = volume_morphotype_data)
+vol_without_top_bottom <- lm(MaxVol_Count ~ MaxVol_Bin + Light + Temp_C + CellMorphotype, 
+                    data = volume_morphotype_data)
+anova(vol_without_top_bottom, vol_with_top_bottom)
+
+dim_with_top_bottom <- lm(MaxDim_Count ~ MaxDim_Bin + Light + Temp_C + Top_Bottom + CellMorphotype, 
+                 data = dimension_morphotype_data)
+dim_without_top_bottom <- lm(MaxDim_Count ~ MaxDim_Bin + Light + Temp_C + CellMorphotype, 
+                    data = dimension_morphotype_data)
+anova(dim_without_top_bottom, dim_with_top_bottom)
+```
+
+## Linear model
+```{r linear}
+#Linear model for maximum volume 
+lm_vol_results <- lm(MaxVol_Count ~ MaxVol_Bin + Light + Temp_C + Top_Bottom + CellMorphotype, data = volume_morphotype_data)
+
+summary(lm_results)
+
+lm_dim_results <- lm(MaxDim_Count ~ MaxDim_Bin + Light + Temp_C + Top_Bottom + CellMorphotype, data = dimension_morphotype_data)
+
+summary(lm_dim_results)
+```
 
 
 
