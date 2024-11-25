@@ -157,7 +157,7 @@ merged_data_cell_count <- merged_data %>%
 #Create bar graph
 ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
   geom_bar(stat = "identity", fill = "purple") +
-  labs(x = "Sample", y = "Number of Cells", title = "Number of Cells per Sample") +
+  labs(x = "Sample", y = "Number of Cells per 0.16mm2", title = "Number of Cells per Sample") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
@@ -168,7 +168,7 @@ ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
 ggplot(merged_data_cell_count, aes(x = Light, y = CellCount, fill = Light)) +
   geom_bar(stat = "identity") +
   labs(x = "Conditions (Light, Temp_C, Top_Bottom)", 
-       y = "Cell Count per Image (NEED AREA)", 
+       y = "Cell Count per 0.32 mm2", 
        title = "Number of Cells per Condition") +
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
@@ -201,7 +201,7 @@ print(volume_data)
 ggplot(dimension_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = Light)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(x = "Maximum Dimension Bins (um)", 
-       y = "Cell Count per Image (NEED AREA)", 
+       y = "Cell Count per 0.32 mm2", 
        title = "Cell Count per Condition and Dimension") +
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
@@ -214,7 +214,7 @@ ggplot(dimension_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = Light)) +
 ggplot(volume_data, aes(x = MaxVol_Bin, y = MaxVol_Count, fill = Light)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(x = "Maximum Volume Bins (um3)", 
-       y = "Cell Count per Image (NEED AREA)", 
+       y = "Cell Count per 0.32 mm2", 
        title = "Cell Count per Condition and Volume") +
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
@@ -252,7 +252,7 @@ ggplot(pennate_volume_data, aes(x = MaxVol_Bin, y = MaxVol_Count, fill = Light))
   geom_bar(stat = "identity", position = "dodge") +
   labs(
     x = "Maximum Volume Bins (um³)", 
-    y = "Cell Count per Image (NEED AREA)", 
+    y = "Cell Count per 0.32 mm2", 
     title = "Cell Count per Condition and Maximum Volume (Pennate Only)"
   ) +
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
@@ -270,7 +270,7 @@ ggplot(centric_volume_data, aes(x = MaxVol_Bin, y = MaxVol_Count, fill = Light))
   geom_bar(stat = "identity", position = "dodge") +
   labs(
     x = "Maximum Volume Bins (um³)", 
-    y = "Cell Count per Image (NEED AREA)", 
+    y = "Cell Count per 0.32 mm2", 
     title = "Cell Count per Condition and Maximum Volume (Centric Only)"
   ) +
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
@@ -291,7 +291,7 @@ ggplot(pennate_dimension_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = Ligh
   geom_bar(stat = "identity", position = "dodge") +
   labs(
     x = "Maximum Dimension Bins (um)", 
-    y = "Cell Count per Image (NEED AREA)", 
+    y = "Cell Count per 0.32 mm2", 
     title = "Cell Count per Condition and Maximum Dimension (Centric Only)"
   ) +
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
@@ -309,7 +309,7 @@ ggplot(centric_dimension_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = Ligh
   geom_bar(stat = "identity", position = "dodge") +
   labs(
     x = "Maximum Volume Bins (um³)", 
-    y = "Cell Count per Image (NEED AREA)", 
+    y = "Cell Count per 0.32 mm2", 
     title = "Cell Count per Condition and Maximum Dimension (Centric Only)"
   ) +
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
@@ -320,13 +320,13 @@ ggplot(centric_dimension_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = Ligh
   )
 ```
 
-
-```{r}
+## Plots of all morphotypes per condition 
+```{r morphotype_conditions}
 ggplot(volume_morphotype_data, aes(x = MaxVol_Bin, y = MaxVol_Count, fill = CellMorphotype)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
     x = "Cell Volume Bins (um³)", 
-    y = "Cell Count (NEED AREA)",
+    y = "Cell Count per 0.32 mm2",
     title = "Cell Volume Bins vs Morphotypes in Different Light Conditions"
   ) +
   facet_wrap(~ Light, ncol = 2) + 
@@ -341,7 +341,7 @@ ggplot(dimension_morphotype_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = C
   geom_bar(stat = "identity", position = "dodge") +
   labs(
     x = "Cell Maximum Dimension Bins (um)", 
-    y = "Cell Count (NEED AREA)",
+    y = "Cell Count per 0.32 mm2",
     title = "Cell Maximum Dimension Bins vs Morphotypes in Different Light Conditions"
   ) +
   facet_wrap(~ Light, ncol = 2) +
@@ -368,13 +368,17 @@ anova_dim_results <- aov(MaxDim_Count ~ Light * Top_Bottom * Temp_C * CellMorpho
 summary(anova_dim_results)
 ```
 
-```{r}
+
+## Testing for the effect of layers 
+```{r top_bottom_analysis}
+#Volume
 vol_with_top_bottom <- lm(MaxVol_Count ~ MaxVol_Bin + Light + Temp_C + Top_Bottom + CellMorphotype, 
                  data = volume_morphotype_data)
 vol_without_top_bottom <- lm(MaxVol_Count ~ MaxVol_Bin + Light + Temp_C + CellMorphotype, 
                     data = volume_morphotype_data)
 anova(vol_without_top_bottom, vol_with_top_bottom)
 
+#Maximum dimension
 dim_with_top_bottom <- lm(MaxDim_Count ~ MaxDim_Bin + Light + Temp_C + Top_Bottom + CellMorphotype, 
                  data = dimension_morphotype_data)
 dim_without_top_bottom <- lm(MaxDim_Count ~ MaxDim_Bin + Light + Temp_C + CellMorphotype, 
@@ -384,11 +388,12 @@ anova(dim_without_top_bottom, dim_with_top_bottom)
 
 ## Linear model
 ```{r linear}
-#Linear model for maximum volume 
+#Linear model for volume 
 lm_vol_results <- lm(MaxVol_Count ~ MaxVol_Bin + Light + Temp_C + Top_Bottom + CellMorphotype, data = volume_morphotype_data)
 
-summary(lm_results)
+summary(lm_vol_results)
 
+#Linear model for maximum dimension
 lm_dim_results <- lm(MaxDim_Count ~ MaxDim_Bin + Light + Temp_C + Top_Bottom + CellMorphotype, data = dimension_morphotype_data)
 
 summary(lm_dim_results)
