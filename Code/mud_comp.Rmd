@@ -113,36 +113,45 @@ volume_dimension_data <- volume_dimension_data %>%
   mutate(CellVol_Total = CellVol * ChainNum) %>%
   mutate(MaxDim_Total = MaxDim_um * ChainNum)
 ```
+#### This conversion works because, chains all centric (dimension)
 
 ## Histogram of volumes and max dimension
 ```{r histogram}
-#Plot Cell Volumes
-volume_dimension_data |>
-  ggplot()+
-  geom_histogram(aes(CellVol_Total))
-
 #Plot Maximum Dimensions
 volume_dimension_data |>
   ggplot()+
   geom_histogram(aes(MaxDim_Total))
 ```
+#### Take the above and facet to replace other with bins
 
 ## Bin max dimension and cell volume
 ```{r bin_dimension}
 #Maximum Cell Dimension 
 bin_ranges_1 <- c(0, 5, 10, 20, 30, 40, 50, 75, 100, 150, 200)
-volume_dimension_data <- volume_dimension_data |>
-  dplyr::mutate(MaxDim_Bin = cut(MaxDim_Total, breaks = bin_ranges_1, include.lowest = TRUE, labels = c("0-5", "5-10", "10-20", "20-30", "30-40", "40-50", "50-75", "75-100", "100-150", "150-200")))
-
-#Maximum Cell Volume
-bin_ranges_2 <- c(0, 100, 1000, 5000, 10000, 15000, 20000, 25000, 100000)
-volume_dimension_data <- volume_dimension_data |>
-  dplyr::mutate(MaxVol_Bin = cut(CellVol_Total, breaks = bin_ranges_2, include.lowest = TRUE, labels = c("0-100", "100-1000", "1000-5000", "5000-10000", "10000-15000", "15000-20000", "20000-25000", "25000-100000")))
+dimension_data <- volume_dimension_data |>
+  dplyr::mutate(MaxDim_Bin = cut(MaxDim_Total, breaks = bin_ranges_1, include.lowest = TRUE, labels = c("0", "5", "10", "20", "30", "40", "50", "75", "100", "150")))
 ```
 
 ## Merge common value between raw data and conditions (light, temp, layer)
 ```{r merge_sheets}
-merged_data <- merge(community_composition, volume_dimension_data, by = "SamplePhotoID", all.x = TRUE)
+merged_data <- merge(community_composition, dimension_data, by = "SamplePhotoID", all.x = TRUE)
+```
+
+```{r}
+#Plot Cell Volumes
+merged_data |>
+  ggplot()+
+  geom_histogram(aes(MaxDim_Total)) +
+    labs(
+    x = "Maximum Dimension (um³)", 
+    y = "Cell Count per 0.32 mm2", 
+    title = "Cell Count per Condition and Maximum Dimension"
+  ) +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C, Light)) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    axis.title.x = element_text(size = 12))
 ```
 
 # Cell Count Analysis
@@ -157,242 +166,48 @@ merged_data_cell_count <- merged_data %>%
 #Create bar graph
 ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
   geom_bar(stat = "identity", fill = "purple") +
-  labs(x = "Sample", y = "Number of Cells", title = "Number of Cells per Sample") +
+  labs(x = "Sample", y = "Number of Cells per 0.16mm2", title = "Number of Cells per Sample") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+### Add caption for each figure to describe the unit on the y-axis, for future review 
+#### Can reorder for bottom on the bottom and dark, med, light
 
-## Graph visualising cell count per condition
-```{r graph_count_per_condition}
-#New Code: Different count function, count using chain number 
-ggplot(merged_data_cell_count, aes(x = Light, y = CellCount, fill = Light)) +
-  geom_bar(stat = "identity") +
-  labs(x = "Conditions (Light, Temp_C, Top_Bottom)", 
-       y = "Cell Count per Image (NEED AREA)", 
-       title = "Number of Cells per Condition") +
-  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
-  theme_minimal() +
-  theme(axis.text.x = element_blank(),  
-        axis.title.x = element_text(size = 12))  
-```
-
-# Cell Size Analysis
-
-## Count number of observation in each maximum volume and dimension bin per condition
+## Count number of observation in each maximum dimension bin for ONLY pennate and centric diatoms per condition
 ```{r bin_size_count}
  #Summarize the counts for each maximum dimension bin per condition
-dimension_data <- merged_data |>
-  dplyr::group_by(MaxDim_Bin, Light, Temp_C, Top_Bottom) |> 
-  dplyr::summarize(MaxDim_Count = dplyr::n(), .groups = "drop") 
+filtered_data <- merged_data |>
+  dplyr::filter(CellMorphotype %in% c("pennate", "centric")) |>
+  dplyr::group_by(MaxDim_Bin, Light, Temp_C, Top_Bottom, CellMorphotype, Patch, ChainNum) |>
+  dplyr::summarize(MaxDim_Count = dplyr::n(), .groups = "drop")
 
-print(dimension_data)
-
-#Summarize the counts for each cell volume bin per condition
-volume_data <- merged_data |>
-  dplyr::group_by(MaxVol_Bin, Light, Temp_C, Top_Bottom) |>
-  dplyr::summarize(MaxVol_Count = dplyr::n(), .groups = "drop") 
-  
-print(volume_data)
+print(filtered_data)
 ```
+#### Add units to dimension and volumn
 
-## Plot number of observation in each maximum volume and dimension bin per condition
-```{r graph_size_count_condition}
-#Cell Count per Condition and Dimension
-ggplot(dimension_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = Light)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(x = "Maximum Dimension Bins (um)", 
-       y = "Cell Count per Image (NEED AREA)", 
-       title = "Cell Count per Condition and Dimension") +
-  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1), 
-    axis.title.x = element_text(size = 12)           
-  )
+```{r ratio__}
+# Ratio of Top and Bottom counts within each Patch
+top_bottom_ratios <- filtered_data |>
+  dplyr::filter(Top_Bottom %in% c("top", "bottom")) |> 
+  dplyr::group_by(Patch, Top_Bottom, Light, Temp_C) |> 
+  dplyr::summarize(Total_Count = sum(ChainNum), .groups = "drop") |> 
+  tidyr::pivot_wider(names_from = Top_Bottom, values_from = Total_Count, values_fill = 0) |>
+  dplyr::mutate(Ratio = top / bottom)
 
-#Cell Count per Condition and Volume 
-ggplot(volume_data, aes(x = MaxVol_Bin, y = MaxVol_Count, fill = Light)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(x = "Maximum Volume Bins (um3)", 
-       y = "Cell Count per Image (NEED AREA)", 
-       title = "Cell Count per Condition and Volume") +
-  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1), 
-    axis.title.x = element_text(size = 12)           
-  )
-```
-
-# New data set with morphotypes included for more specific analysis
-```{r morphotype_size_count}
-#Maximum dimension binned per condition and morphology
-dimension_morphotype_data <- merged_data |>
-  dplyr::group_by(MaxDim_Bin, Light, Temp_C, Top_Bottom, CellMorphotype) |> 
-  dplyr::summarize(MaxDim_Count = dplyr::n(), .groups = "drop") |>
-
-print(dimension_morphotype_data)
-
-#Maximum volume binned per condition and morphology
-volume_morphotype_data <- merged_data |>
-  dplyr::group_by(MaxVol_Bin, Light, Temp_C, Top_Bottom, CellMorphotype) |> 
-  dplyr::summarize(MaxVol_Count = dplyr::n(), .groups = "drop") |> 
-
-print(volume_morphotype_data)
-
-```
-
-## Plot of pennate and centric volumes per condition
-```{r pennate_centric_volume}
-#Pennate diatoms ONLY
-pennate_volume_data <- volume_morphotype_data %>%
-  filter(CellMorphotype == "pennate")
-
-ggplot(pennate_volume_data, aes(x = MaxVol_Bin, y = MaxVol_Count, fill = Light)) +
+ggplot(top_bottom_ratios, aes(x = Patch, y = Ratio, fill = Light)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
-    x = "Maximum Volume Bins (um³)", 
-    y = "Cell Count per Image (NEED AREA)", 
-    title = "Cell Count per Condition and Maximum Volume (Pennate Only)"
+    x = "Patch (Corresponding Top and Bottom Samples)", 
+    y = "Top-to-Bottom Ratio of Cell Counts per 0.32 mm2",
+    title = "Top-to-Bottom Ratio with Temperature and Light Conditions"
   ) +
-  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
+  facet_wrap(~ Temp_C) + 
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1), 
-    axis.title.x = element_text(size = 12)
-  )
-
-#Centric diatoms ONLY
-centric_volume_data <- volume_morphotype_data %>%
-  filter(CellMorphotype == "centric")
-
-ggplot(centric_volume_data, aes(x = MaxVol_Bin, y = MaxVol_Count, fill = Light)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(
-    x = "Maximum Volume Bins (um³)", 
-    y = "Cell Count per Image (NEED AREA)", 
-    title = "Cell Count per Condition and Maximum Volume (Centric Only)"
-  ) +
-  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1), 
-    axis.title.x = element_text(size = 12)
+    axis.text.x = element_text(angle = 45, hjust = 1)
   )
 ```
 
-## Plot of pennate and centric maximum dimension per condition
-```{r pennate_centric_dimension}
-#Pennate diatoms ONLY
-pennate_dimension_data <- dimension_morphotype_data %>%
-  filter(CellMorphotype == "pennate")
-
-ggplot(pennate_dimension_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = Light)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(
-    x = "Maximum Dimension Bins (um)", 
-    y = "Cell Count per Image (NEED AREA)", 
-    title = "Cell Count per Condition and Maximum Dimension (Centric Only)"
-  ) +
-  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1), 
-    axis.title.x = element_text(size = 12)
-  )
-
-#Centric diatoms ONLY
-centric_dimension_data <- dimension_morphotype_data %>%
-  filter(CellMorphotype == "centric")
-
-ggplot(centric_dimension_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = Light)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(
-    x = "Maximum Volume Bins (um³)", 
-    y = "Cell Count per Image (NEED AREA)", 
-    title = "Cell Count per Condition and Maximum Dimension (Centric Only)"
-  ) +
-  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1), 
-    axis.title.x = element_text(size = 12)
-  )
-```
-
-
-```{r}
-ggplot(volume_morphotype_data, aes(x = MaxVol_Bin, y = MaxVol_Count, fill = CellMorphotype)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(
-    x = "Cell Volume Bins (um³)", 
-    y = "Cell Count (NEED AREA)",
-    title = "Cell Volume Bins vs Morphotypes in Different Light Conditions"
-  ) +
-  facet_wrap(~ Light, ncol = 2) + 
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    axis.title.x = element_text(size = 12),
-    strip.text = element_text(size = 12)
-  )
-
-ggplot(dimension_morphotype_data, aes(x = MaxDim_Bin, y = MaxDim_Count, fill = CellMorphotype)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(
-    x = "Cell Maximum Dimension Bins (um)", 
-    y = "Cell Count (NEED AREA)",
-    title = "Cell Maximum Dimension Bins vs Morphotypes in Different Light Conditions"
-  ) +
-  facet_wrap(~ Light, ncol = 2) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    axis.title.x = element_text(size = 12),
-    strip.text = element_text(size = 12)
-  )
-```
-
-# Testing 
-
-## ANOVA
-```{r anova}
-#ANOVA of volume
-anova_vol_results <- aov(MaxVol_Count ~ Light * Top_Bottom * Temp_C * CellMorphotype, data = volume_morphotype_data)
-
-summary(anova_vol_results)
-
-#ANOVA of maximum dimension
-anova_dim_results <- aov(MaxDim_Count ~ Light * Top_Bottom * Temp_C * CellMorphotype, data = dimension_morphotype_data)
-
-summary(anova_dim_results)
-```
-
-```{r}
-vol_with_top_bottom <- lm(MaxVol_Count ~ MaxVol_Bin + Light + Temp_C + Top_Bottom + CellMorphotype, 
-                 data = volume_morphotype_data)
-vol_without_top_bottom <- lm(MaxVol_Count ~ MaxVol_Bin + Light + Temp_C + CellMorphotype, 
-                    data = volume_morphotype_data)
-anova(vol_without_top_bottom, vol_with_top_bottom)
-
-dim_with_top_bottom <- lm(MaxDim_Count ~ MaxDim_Bin + Light + Temp_C + Top_Bottom + CellMorphotype, 
-                 data = dimension_morphotype_data)
-dim_without_top_bottom <- lm(MaxDim_Count ~ MaxDim_Bin + Light + Temp_C + CellMorphotype, 
-                    data = dimension_morphotype_data)
-anova(dim_without_top_bottom, dim_with_top_bottom)
-```
-
-## Linear model
-```{r linear}
-#Linear model for maximum volume 
-lm_vol_results <- lm(MaxVol_Count ~ MaxVol_Bin + Light + Temp_C + Top_Bottom + CellMorphotype, data = volume_morphotype_data)
-
-summary(lm_results)
-
-lm_dim_results <- lm(MaxDim_Count ~ MaxDim_Bin + Light + Temp_C + Top_Bottom + CellMorphotype, data = dimension_morphotype_data)
-
-summary(lm_dim_results)
-```
 
 
 
