@@ -43,7 +43,7 @@ filtered_data <- filter(chl_data, Chl_ugcm2 > 0, YYYYMMDDHHMM == 202410101430)
 filtered_data$Light_Temp <- factor(paste(filtered_data$Temp_C, filtered_data$Light))
 
 Thresholds <- c('top', 'bottom')
-ThresholdColours <- c("green","pink")
+ThresholdColours <- c("blue","red")
 ```
 
 #  Graph 
