@@ -74,7 +74,7 @@ vert_migration_wide |>
   labs(
     x = "Time of Day", 
     y = "Top to Bottom Ratio", 
-    title = "Ratio of Top Chlorophyll µg·cm^2 To Bottom Chlorophyll µg·cm^2",
+    title = "Ratio of Top Chlorophyll µg·cm^2 To Bottom Chlorophyll µg·cm^2",subtitle = "Analyzing chlorophyll concentration top to bottom ratios at temperatures 15°C, 20°C, and 23°C", 
   ) +
   theme(
     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
@@ -95,17 +95,8 @@ At 23°C ratios are all below 1, indicating the lowest amplitude of migration ha
 
 The broader range of ratios at 15°C could indicate more vertical migration at lower temperatures. The decreasing range of ratios as the temperature increased from 15°C to 23°C suggests there is some temperature dependence in migration patterns of diatoms.   
 
-
-
-```{r plot Top Chl_ugcm2 vs. Bottom Chl_ugcm2 }
-vert_migration_wide |>
-  ggplot() +
-  geom_point(aes(x= bottom, y = top, size = ToD)) + 
-  facet_grid(cols = vars(Temp_C))
-```
-
-
-```{r}
+Plot Top Chl_ugcm2 vs Bottom Chl_ugcm2 with visual representation of time of day. 
+```{r plot Top Chl_ugcm2 vs. Bottom Chl_ugcm2}
 vert_migration_wide |>
   ggplot() +
   geom_point(aes(x = bottom, y = top, size = ToD, color = ToD), alpha = 0.7) +
