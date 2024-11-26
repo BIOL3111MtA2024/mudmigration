@@ -101,14 +101,12 @@ Plot Top Chl_ugcm2 vs Bottom Chl_ugcm2 with visual representation of time of day
 vert_migration_wide |>
   ggplot() +
   geom_point(aes(x = bottom, y = top, size = ToD, color = ToD), alpha = 0.7) +
-  
   facet_grid(cols = vars(Temp_C)) +  
   labs(
     x = "Bottom Chlorophyll (µg/cm²)", 
     y = "Top Chlorophyll (µg/cm²)", 
     title = "Top and Bottom Chlorophyll Concentration by Temperature",
     subtitle = "Point size and color represent Time of Day",
-    
   ) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),  
