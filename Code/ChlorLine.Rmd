@@ -131,7 +131,11 @@ As time progresses, it seems that chlorophyll concentration increases, reflected
 
 Temperature 15°C shows higher maximum ratios, while 20°C and 23°C show moderate ranges in ratios.
 
+<<<<<<< HEAD
 At 15°C, the data shows the highest variation with the most extreme values out of the three temperatures, indicating that at 15°C there is greater concentration of chlorophyll at the top surface compared to the bottom, indicating greater diatom migration. Temperatures 20°C and 23°C have less pronounced variations, suggesting that these conditions lead to a more balanced chlorophyll distribution between the top and bottom surfaces.
+=======
+At 15°C, the data shows the highest variation with the most extreme values out of the three temperatures, indicating that at 15°C there is greater concentration of chlorophyll at the top surface compared to the bottom. Temperatures 20°C and 23°C have less pronounced variations, suggesting that these conditions lead to a more balanced chlorophyll distribution between the top and bottom surfaces.
+>>>>>>> 488809052a7baaca84b6944dd5039203b2ffdd7d
 
 
 
