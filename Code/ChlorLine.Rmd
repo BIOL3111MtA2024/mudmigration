@@ -34,7 +34,7 @@ vert_migration |>
     x = "Time of Day", 
     y = expression("Chlorophyll Concentration ("*mu*"g / cm"^2*")"),  
     title = "Chlorophyll Concentrations Across Temperatures", 
-    subtitle = "Analyzing chlorophyll concentration at hight tide in the Bay of Fundy at 15°C, 20°C, and 25°C", 
+    subtitle = "Analyzing chlorophyll concentration at hight tide in the Bay of Fundy at 15°C, 20°C, and 23°C", 
     
   ) +
   theme(
@@ -127,7 +127,7 @@ The graph displays the ratio of chlorophyll concentration (top to bottom) across
 
 Since ratios are predominantly below 2, it shows a general trend where the top surface has slightly more chlorophyll than the bottom, indicating that these diatoms are exhibiting vertical migration in some capacity.
 
-As time progresses, it seems that chlorophyll concentration increases, reflected on time slot 14:30, which shows consistently higher ratios, especially at 15°C. This suggests that vertical migration increases with time.
+As time progresses, it seems that chlorophyll concentration increases, reflected on time slot 14:30, which shows consistently higher ratios, especially at 15°C and 20°C. This suggests that vertical migration increases with time.
 
 Temperature 15°C shows higher maximum ratios, while 20°C and 23°C show moderate ranges in ratios.
 
