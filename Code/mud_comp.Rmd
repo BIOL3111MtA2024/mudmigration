@@ -74,14 +74,14 @@ corrected_width_data[106, "CellMorphotype"] <- "pennate"
 
 ## Fix missing CellVol
 One cell did not fit well into any of the volume calculations 
-```{r fix_missing_undefined}
+```{r fix_missing}
 #Rename morphotype to better calculate cell volume
 corrected_width_data[12, "CellMorphotype"] <- "other"
 ```
 
 ## Estimate volumes & maximum linear dimension
 NEED DISCRIPTION - DELETE VOLUME?
-```{r volumes_maxlinear}
+```{r volumes_dimension}
 #Calculate Cell Volume for each Morphotype
 volume_dimension_data <- corrected_width_data |>
   mutate(CellVol = case_when(CellMorphotype == "centric" ~ pi * (Width1_um/2)^2 *  Width2_um,
@@ -142,7 +142,7 @@ merged_data <- merge(community_composition, volume_dimension_data, by = "SampleP
 ```
 
 ## Count number of observation in each maximum dimension bin for ONLY pennate and centric diatoms per condition
-```{r bin_size_count}
+```{r filtered_data}
  #Summarize the counts for each maximum dimension bin per condition
 filtered_data <- merged_data |>
   dplyr::filter(CellMorphotype %in% c("pennate", "centric")) |>
@@ -157,7 +157,7 @@ filtered_data$Top_Bottom <- factor(filtered_data$Top_Bottom, levels = c("top", "
 ```
 
 # Cell count per maximum dimension and condition
-```{r count_dimension_graph}
+```{r count_dimension}
 filtered_data |>
   ggplot() +
   geom_histogram(aes(x = MaxDim_Total, fill = Light), bins = 30, color = "black", position = "stack") +
@@ -180,7 +180,7 @@ filtered_data |>
 ```
 
 # Cell count per condition 
-```{r}
+```{r cell_count}
 cell_count_data <- filtered_data %>%
   group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
   summarize(CellCount = sum(ChainNum), .groups = "drop")
@@ -198,7 +198,7 @@ ggplot(cell_count_data, aes(x = Light, y = CellCount, fill = Light)) +
 
 # Top-bottom ratio graph per patch and condition
 ASK DR.C ABOUT RATIO CALCULATION
-```{r ratio_conditions}
+```{r top_bottom_ratio}
 # Ratio of Top and Bottom counts within each Patch
 top_bottom_ratio_data <- filtered_data |>
   dplyr::filter(Top_Bottom %in% c("top", "bottom")) |> 
@@ -220,47 +220,6 @@ ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = Light)) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
-```
-
-
-
-# Unused code:
-
-## Create bargraph to visualize cell counts per sample
-```{r bargraph_sample}
-# #Summarize data with chain number
-# merged_data_cell_count <- merged_data %>%
-#    group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
-#    summarize(CellCount = sum(ChainNum), .groups = "drop")
-# 
-# #Create bar graph
-# ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
-#    geom_bar(stat = "identity", fill = "purple") +
-#    labs(x = "Sample", y = "Number of Cells per 0.16mm2", title = "Number of Cells per Sample") +
-#    theme_minimal() +
-#    theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-## Graph without combining cell counts by light
-```{r}
-# # Plot Cell Volumes with Colors Based on Light
-# merged_data |>
-#   ggplot() +
-#   geom_histogram(aes(x = MaxDim_Total, fill = Light), bins = 30, color = "black", position = "stack") + 
-#   labs(
-#     x = "Maximum Dimension (um³)", 
-#     y = "Cell Count per 0.32 mm²", 
-#     title = "Cell Count per Condition and Maximum Dimension"
-#   ) +
-#   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C, Light)) +
-#   scale_fill_brewer(palette = "Set1") +  # Use a Brewer palette for clear colors
-#   theme_minimal() +
-#   theme(
-#     axis.text.x = element_text(angle = 45, hjust = 1), 
-#     axis.title.x = element_text(size = 12),
-#     legend.position = "bottom"  # Move the legend below the plot for clarity
-#   )
-
 ```
 
 
