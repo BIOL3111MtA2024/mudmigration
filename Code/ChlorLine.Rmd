@@ -20,10 +20,13 @@ This .rmd reads chlorophyll data and generates a line graph ...
 library(tidyverse) 
 library(kableExtra)
 ```
+# Reading file
 
 ```{r read_vert_migration}
 vert_migration <- readRDS( file = file.path("..","Data","CleanData","vert_migration.rds"))
 ```
+
+# Plotting Chlorophyll concentration over time at different temperatures 
 
 ```{r chlor_time}
 vert_migration |>
@@ -48,7 +51,7 @@ vert_migration |>
 
 ```
 
-# top and bottom ratio
+# Top and bottom ratio
 
 vert_migration contains variable Top_Bottom To simplify ratio calculation we 'pivot_wider' the data to separate Top_Bottom into two separate variables, Top & Bottom; that will lower the number of rows and increase the number of columns
 
@@ -64,7 +67,7 @@ vert_migration_wide <- vert_migration |>
 
 Plot ratio of Top Chl_ugcm2 divided by Bottom Chl_ugcm2
 
-```{r}
+```{r Ratio Top to Bottom Chl_ugcm2}
 vert_migration_wide |>
   ggplot() +
   geom_point(aes(x = ToD, y = TopBottomRatio), alpha = 0.7) +
