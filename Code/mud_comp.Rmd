@@ -115,7 +115,7 @@ volume_dimension_data <- volume_dimension_data %>%
 ```
 #### This conversion works because, chains all centric (dimension)
 
-## Histogram of volumes and max dimension
+## Histogram of max dimension
 ```{r histogram}
 #Plot Maximum Dimensions
 volume_dimension_data |>
@@ -137,8 +137,8 @@ dimension_data <- volume_dimension_data |>
 merged_data <- merge(community_composition, dimension_data, by = "SamplePhotoID", all.x = TRUE)
 ```
 
-```{r}
-#Plot Cell Volumes
+
+```{r plot max dim}
 merged_data |>
   ggplot()+
   geom_histogram(aes(MaxDim_Total)) +
