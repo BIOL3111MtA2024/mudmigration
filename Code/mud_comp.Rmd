@@ -146,8 +146,7 @@ merged_data <- merge(community_composition, volume_dimension_data, by = "SampleP
  #Summarize the counts for each maximum dimension bin per condition
 filtered_data <- merged_data |>
   dplyr::filter(CellMorphotype %in% c("pennate", "centric")) |>
-  dplyr::group_by(Patch, Light, Temp_C, Top_Bottom, CellMorphotype, ChainNum, MaxDim_Total) |>
-  dplyr::summarize(MaxDim_Count = dplyr::n(), .groups = "drop")
+  dplyr::group_by(Patch, Light, Temp_C, Top_Bottom, CellMorphotype, ChainNum, MaxDim_Total)
 
 #print(filtered_data)
 ```
@@ -157,7 +156,7 @@ filtered_data <- merged_data |>
 filtered_data$Top_Bottom <- factor(filtered_data$Top_Bottom, levels = c("top", "bottom"))
 ```
 
-## Cell count per maximum dimension and condition
+# Cell count per maximum dimension and condition
 ```{r count_dimension_graph}
 filtered_data |>
   ggplot() +
@@ -180,19 +179,36 @@ filtered_data |>
   )
 ```
 
-## Top-bottom ratio graph per patch and condition
+# Cell count per condition 
+```{r}
+cell_count_data <- filtered_data %>%
+  group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
+  summarize(CellCount = sum(ChainNum), .groups = "drop")
+
+ggplot(cell_count_data, aes(x = Light, y = CellCount, fill = Light)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Patch (Corresponding Top and Bottom Samples)", 
+       y = "Cell Count per Image (0.32 mm3)", 
+       title = "Cell Count per Condition") +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(),  
+        axis.title.x = element_text(size = 12))  
+```
+
+# Top-bottom ratio graph per patch and condition
 ASK DR.C ABOUT RATIO CALCULATION
 ```{r ratio_conditions}
 # Ratio of Top and Bottom counts within each Patch
-top_bottom_ratios <- filtered_data |>
+top_bottom_ratio_data <- filtered_data |>
   dplyr::filter(Top_Bottom %in% c("top", "bottom")) |> 
   dplyr::group_by(Patch, Top_Bottom, Light, Temp_C) |> 
   dplyr::summarize(Total_Count = sum(ChainNum), .groups = "drop") |> 
   tidyr::pivot_wider(names_from = Top_Bottom, values_from = Total_Count, values_fill = 0) |>
-  #dplyr::mutate(Ratio = top / bottom)
-  dplyr::mutate(Ratio = bottom / top)
+  dplyr::mutate(Ratio = top / bottom)
+  #dplyr::mutate(Ratio = bottom / top)
 
-ggplot(top_bottom_ratios, aes(x = Patch, y = Ratio, fill = Light)) +
+ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = Light)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
     x = "Patch (Corresponding Top and Bottom Samples)", 
@@ -214,15 +230,15 @@ ggplot(top_bottom_ratios, aes(x = Patch, y = Ratio, fill = Light)) +
 ```{r bargraph_sample}
 # #Summarize data with chain number
 # merged_data_cell_count <- merged_data %>%
-#   group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
-#   summarize(CellCount = sum(ChainNum), .groups = "drop")
+#    group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
+#    summarize(CellCount = sum(ChainNum), .groups = "drop")
 # 
 # #Create bar graph
 # ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
-#   geom_bar(stat = "identity", fill = "purple") +
-#   labs(x = "Sample", y = "Number of Cells per 0.16mm2", title = "Number of Cells per Sample") +
-#   theme_minimal() +
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+#    geom_bar(stat = "identity", fill = "purple") +
+#    labs(x = "Sample", y = "Number of Cells per 0.16mm2", title = "Number of Cells per Sample") +
+#    theme_minimal() +
+#    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ## Graph without combining cell counts by light
