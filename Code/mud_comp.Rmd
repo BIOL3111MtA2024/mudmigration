@@ -27,6 +27,7 @@ googlesheet_url <- "https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1
 ```
 
 # Accessing sheets
+Access each of the three sheets on the spreadsheet
 ```{r accessing_sheets}
 #Accessing sheet with meta data
 community_composition <- read_sheet(googlesheet_url, sheet = "community_composition") 
@@ -39,7 +40,7 @@ data_dictionary <- read_sheet(googlesheet_url, sheet = "data_dictionary")
 Initial steps for setting up the raw data for analysis. 
 
 ## Set missing values of width_1 and width_2
-Some width measurements are blank is a) the cell was undefined or b) the morphology had no unequal widths.
+Some width measurements are blank if a) the cell was undefined or b) the morphology had no unequal widths. This corrects these missing values to 1 um, which is the smallest measurement possible. 
 ```{r missing_widths}
 #Correcting width 1
 corrected_width_data <- raw_cell_measurements |>
@@ -55,14 +56,14 @@ corrected_width_data <- corrected_width_data |>
 ```
 
 ## List of morphotypes obseved 
-Before running any code on morphotypes I wanted to check for any misspelled words.
+Before running any code on morphotypes I wanted to check for any misspelled words. 
 ```{r unqiue_morphotypes}
 unique_morphotypes <- unique(corrected_width_data$CellMorphotype)
 print(unique_morphotypes)
 ```
 
 ## Correct mispelled pennate
-A single morphotype label was misspelled so I corrected it.
+A single morphotype label was misspelled this corrects it.
 ```{r correct_mispelling}
 #Find cell containing the misspelled word
 mislabel_pennate <- which(corrected_width_data  == "penate", arr.ind = TRUE)
@@ -73,14 +74,14 @@ corrected_width_data[106, "CellMorphotype"] <- "pennate"
 ```
 
 ## Fix missing CellVol
-One cell did not fit well into any of the volume calculations 
+One cell did not fit well into any of the volume calculations. Therefore, a new morphotype category was created for it. 
 ```{r fix_missing}
 #Rename morphotype to better calculate cell volume
 corrected_width_data[12, "CellMorphotype"] <- "other"
 ```
 
 ## Estimate volumes & maximum linear dimension
-NEED DISCRIPTION - DELETE VOLUME?
+ADD DISCRIPTION OF CALCULATION!
 ```{r volumes_dimension}
 #Calculate Cell Volume for each Morphotype
 volume_dimension_data <- corrected_width_data |>
@@ -102,7 +103,7 @@ volume_dimension_data <- volume_dimension_data |>
 ```
 
 ## Check for missing results
-NEED DISCRIPTION - DELETE VOLUME?
+This code finds empty cells in the data set. 
 ```{r missing_results}
 #Find empty cells in CellVol
 #empty_CellVol <- which(is.na(volume_dimension_data$CellVol))
@@ -129,6 +130,7 @@ volume_dimension_data <- volume_dimension_data %>%
 ```
 
 ## Histogram of max dimension
+A histogram was created to visualise cell size to get a better idea of the data. 
 ```{r histogram}
 #Plot Maximum Dimensions
 volume_dimension_data |>
@@ -136,42 +138,28 @@ volume_dimension_data |>
   geom_histogram(aes(MaxDim_Total))
 ```
 
-## Merge common value between raw data and conditions (light, temp, layer)
+## Merge corrected data to metadata
+This merges the new data frame corrected above to the metadata about each sample.
 ```{r merge_sheets}
 merged_data <- merge(community_composition, volume_dimension_data, by = "SamplePhotoID", all.x = TRUE)
-```
-
-```{r plot max dim}
-merged_data |>
-  ggplot()+
-  geom_histogram(aes(MaxDim_Total)) +
-    labs(
-    x = "Maximum Dimension (um³)", 
-    y = "Cell Count per 0.32 mm2", 
-    title = "Cell Count per Condition and Maximum Dimension"
-  ) +
-  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C, Light)) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1), 
-    axis.title.x = element_text(size = 12))
 ```
 
 # Cell Count Analysis
 
 ## Create bargraph to visualize cell counts per sample
+DESCRIPTIONS ADDED UP TO THIS POINT 
 ```{r bargraph_sample}
-#Summarize data with chain number
-merged_data_cell_count <- merged_data %>%
-  group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
-  summarize(CellCount = sum(ChainNum), .groups = "drop")
-
-#Create bar graph
-ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
-  geom_bar(stat = "identity", fill = "purple") +
-  labs(x = "Sample", y = "Number of Cells per 0.16mm2", title = "Number of Cells per Sample") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+# #Summarize data with chain number
+# merged_data_cell_count <- merged_data %>%
+#   group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
+#   summarize(CellCount = sum(ChainNum), .groups = "drop")
+# 
+# #Create bar graph
+# ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
+#   geom_bar(stat = "identity", fill = "purple") +
+#   labs(x = "Sample", y = "Number of Cells per 0.16mm2", title = "Number of Cells per Sample") +
+#   theme_minimal() +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 ### Add caption for each figure to describe the unit on the y-axis, for future review 
 #### Can reorder for bottom on the bottom and dark, med, light
@@ -217,7 +205,7 @@ filtered_data |>
 # Cell count per condition 
 ```{r cell_count}
 cell_count_data <- filtered_data %>%
-  group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
+  group_by(Light, Temp_C, Top_Bottom, SampleID) %>%
   summarize(CellCount = sum(ChainNum), .groups = "drop")
 
 ggplot(cell_count_data, aes(x = Light, y = CellCount, fill = Light)) +
@@ -237,7 +225,7 @@ ASK DR.C ABOUT RATIO CALCULATION
 # Ratio of Top and Bottom counts within each Patch
 top_bottom_ratio_data <- filtered_data |>
   dplyr::filter(Top_Bottom %in% c("top", "bottom")) |> 
-  dplyr::group_by(Patch, Top_Bottom, Light, Temp_C) |> 
+  dplyr::group_by(Patch, Top_Bottom, Light, Temp_C, CellMorphotype) |> 
   dplyr::summarize(Total_Count = sum(ChainNum), .groups = "drop") |> 
   tidyr::pivot_wider(names_from = Top_Bottom, values_from = Total_Count, values_fill = 0) |>
   dplyr::mutate(Ratio = top / bottom)
@@ -250,12 +238,31 @@ ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = Light)) +
     y = "Top-to-Bottom Ratio of Cell Counts per 0.32 mm2",
     title = "Top-to-Bottom Ratio with Temperature and Light Conditions"
   ) +
-  facet_wrap(~ Temp_C) + 
+  facet_grid(~ Temp_C) + 
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 ```
+
+```{r}
+ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = CellMorphotype)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    x = "Patch (Corresponding Top and Bottom Samples)", 
+    y = "Top-to-Bottom Ratio of Cell Counts per 0.32 mm2",
+    title = "Top-to-Bottom Ratio with Temperature and Light Conditions"
+  ) +
+  facet_grid(~ Temp_C ~ Light) + 
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+
+
+
 
 
 
