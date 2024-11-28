@@ -20,10 +20,13 @@ This .rmd reads chlorophyll data and generates a line graph ...
 library(tidyverse) 
 library(kableExtra)
 ```
+# Reading file
 
 ```{r read_vert_migration}
 vert_migration <- readRDS( file = file.path("..","Data","CleanData","vert_migration.rds"))
 ```
+
+# Plotting Chlorophyll concentration over time at different temperatures 
 
 ```{r chlor_time}
 vert_migration |>
@@ -34,7 +37,7 @@ vert_migration |>
     x = "Time of Day", 
     y = expression("Chlorophyll Concentration ("*mu*"g / cm"^2*")"),  
     title = "Chlorophyll Concentrations Across Temperatures", 
-    subtitle = "Analyzing chlorophyll concentration at hight tide in the Bay of Fundy at 15°C, 20°C, and 25°C", 
+    subtitle = "Analyzing chlorophyll concentration at hight tide in the Bay of Fundy at 15°C, 20°C, and 23°C", 
     
   ) +
   theme(
@@ -48,7 +51,7 @@ vert_migration |>
 
 ```
 
-# top and bottom ratio
+# Top and bottom ratio
 
 vert_migration contains variable Top_Bottom To simplify ratio calculation we 'pivot_wider' the data to separate Top_Bottom into two separate variables, Top & Bottom; that will lower the number of rows and increase the number of columns
 
@@ -64,7 +67,7 @@ vert_migration_wide <- vert_migration |>
 
 Plot ratio of Top Chl_ugcm2 divided by Bottom Chl_ugcm2
 
-```{r}
+```{r Ratio Top to Bottom Chl_ugcm2}
 vert_migration_wide |>
   ggplot() +
   geom_point(aes(x = ToD, y = TopBottomRatio), alpha = 0.7) +
@@ -89,12 +92,15 @@ General trends:
 
 At 15°C there is a broader spread of ratios and the highest amount of ratios exceeding 2 (at noon and one replicate taken at 1 pm). This shows that the highest concentration of chlorophyll was found on these papers, suggesting the highest amplitude of diatom migration happens at 15°C.
 
-At 20°C ratios are generally lower, slightly below 2, with one exceeding 2 (at 11 am).
+At 20°C ratios are generally lower, slightly below 2, with one exceeding 2 (at 11 am).There is a 
 
 At 23°C ratios are all below 1, indicating the lowest amplitude of migration happens at 23°C and shows the least variability between the three temperatures.
 
 The broader range of ratios at 15°C could indicate more vertical migration at lower temperatures. The decreasing range of ratios as the temperature increased from 15°C to 23°C suggests there is some temperature dependence in migration patterns of diatoms.
 
+There is an apparent lag in vertical migration at 15ºC, taking an extra hour for to achieve the same chlorophyll concentration relative to at 20ºC (at 11:00 am vs 10:10 am).
+
+To determine significant difference between vertical migration abundance between 15ºC and 20ºC, apparent trends vs statistical tests.
 
 # Plot Top Chl_ugcm2 vs Bottom Chl_ugcm2 with visual representation of time of day.
 
@@ -127,6 +133,7 @@ The graph displays the ratio of chlorophyll concentration (top to bottom) across
 
 Since ratios are predominantly below 2, it shows a general trend where the top surface has slightly more chlorophyll than the bottom, indicating that these diatoms are exhibiting vertical migration in some capacity.
 
+<<<<<<< HEAD
 As time progresses, it seems that chlorophyll concentration increases, reflected on time slot 14:30, which shows consistently higher ratios, especially at 15°C. This suggests that vertical migration increases with time.
 
 Temperature 15°C shows higher maximum ratios, while 20°C and 23°C show moderate ranges in ratios.
@@ -138,4 +145,10 @@ At 15°C, the data shows the highest variation with the most extreme values out 
 >>>>>>> 488809052a7baaca84b6944dd5039203b2ffdd7d
 
 
+=======
+As time progresses, it seems that chlorophyll concentration increases, reflected on time slot 14:30, which shows consistently higher ratios, especially at 15°C an 20ºC. This suggests that vertical migration increases with time.
+>>>>>>> e590ccd4516aafd4c3244e40a5281a42e38d287c
 
+Migration did happen
+Temperature maybe did not make much difference between 15 and 20 (need to run statistics)
+23: less motility
