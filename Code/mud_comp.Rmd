@@ -1,6 +1,9 @@
 ---
 title: "Mud Migration Community Compositon"
 output: html_notebook
+author:
+  Paige Stuart
+  Douglass Campbell
 ---
 # Install packages if needed
 ```{r install_packages}
@@ -17,7 +20,7 @@ library(tidyverse)
 ```
 
 # Connect to google account
-Deauthorize google account to allow universal access to the raw data sheet.Then retrive data sheet from where it's stored on google drive.
+De-authorize Google account to allow universal access to the raw data sheet.Then retrieve data sheet from where it's stored on google drive.
 ```{r connect_google}
 gs4_deauth()
 googlesheet_url <- "https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1iz1L2MoCAyF0O4x3D6mCePw/edit?gid=405129858#gid=405129858"
@@ -25,22 +28,26 @@ googlesheet_url <- "https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1
 
 # Accessing sheets
 ```{r accessing_sheets}
-community_composition <- read_sheet(googlesheet_url, sheet = "community_composition")
-raw_cell_measurements <- read_sheet(googlesheet_url, sheet = "raw_cell_measurements")
+#Accessing sheet with meta data
+community_composition <- read_sheet(googlesheet_url, sheet = "community_composition") 
+#Accessing sheet with raw data 
+raw_cell_measurements <- read_sheet(googlesheet_url, sheet = "raw_cell_measurements") 
+#Accessing data dictionary for reference to column values
 data_dictionary <- read_sheet(googlesheet_url, sheet = "data_dictionary")
 ```
-#### Please fix raw_cell_measurements_3 (order of chunks must work!) and rename all following 
-
 # Set Up
+Initial steps for setting up the raw data for analysis. 
 
 ## Set missing values of width_1 and width_2
+Some width measurements are blank is a) the cell was undefined or b) the morphology had no unequal widths.
 ```{r missing_widths}
+#Correcting width 1
 corrected_width_data <- raw_cell_measurements |>
   mutate(Width1_um = case_when(
     is.na(Width1_um) ~ 1,
     TRUE ~ Width1_um
   ))
-
+#Correcting width 2
 corrected_width_data <- corrected_width_data |>
   mutate(Width2_um = case_when(is.na(Width2_um) ~ Width1_um,
                                !is.na(Width2_um) ~ Width2_um
@@ -48,12 +55,14 @@ corrected_width_data <- corrected_width_data |>
 ```
 
 ## List of morphotypes obseved 
+Before running any code on morphotypes I wanted to check for any misspelled words.
 ```{r unqiue_morphotypes}
 unique_morphotypes <- unique(corrected_width_data$CellMorphotype)
 print(unique_morphotypes)
 ```
 
 ## Correct mispelled pennate
+A single morphotype label was misspelled so I corrected it.
 ```{r correct_mispelling}
 #Find cell containing the misspelled word
 mislabel_pennate <- which(corrected_width_data  == "penate", arr.ind = TRUE)
@@ -64,13 +73,15 @@ corrected_width_data[106, "CellMorphotype"] <- "pennate"
 ```
 
 ## Fix missing CellVol
-```{r fix_missing_undefined}
+One cell did not fit well into any of the volume calculations 
+```{r fix_missing}
 #Rename morphotype to better calculate cell volume
 corrected_width_data[12, "CellMorphotype"] <- "other"
 ```
 
 ## Estimate volumes & maximum linear dimension
-```{r volumes_maxlinear}
+NEED DISCRIPTION - DELETE VOLUME?
+```{r volumes_dimension}
 #Calculate Cell Volume for each Morphotype
 volume_dimension_data <- corrected_width_data |>
   mutate(CellVol = case_when(CellMorphotype == "centric" ~ pi * (Width1_um/2)^2 *  Width2_um,
@@ -91,6 +102,7 @@ volume_dimension_data <- volume_dimension_data |>
 ```
 
 ## Check for missing results
+NEED DISCRIPTION - DELETE VOLUME?
 ```{r missing_results}
 #Find empty cells in CellVol
 #empty_CellVol <- which(is.na(volume_dimension_data$CellVol))
@@ -108,37 +120,28 @@ volume_dimension_data <- volume_dimension_data |>
 ```
 
 ## Control for chain sizes
+NEED DISCRIPTION - DELETE VOLUME?
+This conversion works because, chains all centric
 ```{r size_chain}
 volume_dimension_data <- volume_dimension_data %>%
   mutate(CellVol_Total = CellVol * ChainNum) %>%
   mutate(MaxDim_Total = MaxDim_um * ChainNum)
 ```
-#### This conversion works because, chains all centric (dimension)
 
-## Histogram of volumes and max dimension
+## Histogram of max dimension
 ```{r histogram}
 #Plot Maximum Dimensions
 volume_dimension_data |>
   ggplot()+
   geom_histogram(aes(MaxDim_Total))
 ```
-#### Take the above and facet to replace other with bins
-
-## Bin max dimension and cell volume
-```{r bin_dimension}
-#Maximum Cell Dimension 
-bin_ranges_1 <- c(0, 5, 10, 20, 30, 40, 50, 75, 100, 150, 200)
-dimension_data <- volume_dimension_data |>
-  dplyr::mutate(MaxDim_Bin = cut(MaxDim_Total, breaks = bin_ranges_1, include.lowest = TRUE, labels = c("0", "5", "10", "20", "30", "40", "50", "75", "100", "150")))
-```
 
 ## Merge common value between raw data and conditions (light, temp, layer)
 ```{r merge_sheets}
-merged_data <- merge(community_composition, dimension_data, by = "SamplePhotoID", all.x = TRUE)
+merged_data <- merge(community_composition, volume_dimension_data, by = "SamplePhotoID", all.x = TRUE)
 ```
 
-```{r}
-#Plot Cell Volumes
+```{r plot max dim}
 merged_data |>
   ggplot()+
   geom_histogram(aes(MaxDim_Total)) +
@@ -174,27 +177,73 @@ ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
 #### Can reorder for bottom on the bottom and dark, med, light
 
 ## Count number of observation in each maximum dimension bin for ONLY pennate and centric diatoms per condition
-```{r bin_size_count}
+```{r filtered_data}
  #Summarize the counts for each maximum dimension bin per condition
 filtered_data <- merged_data |>
   dplyr::filter(CellMorphotype %in% c("pennate", "centric")) |>
-  dplyr::group_by(MaxDim_Bin, Light, Temp_C, Top_Bottom, CellMorphotype, Patch, ChainNum) |>
-  dplyr::summarize(MaxDim_Count = dplyr::n(), .groups = "drop")
+  dplyr::group_by(Patch, Light, Temp_C, Top_Bottom, CellMorphotype, ChainNum, MaxDim_Total)
 
-print(filtered_data)
+#print(filtered_data)
 ```
-#### Add units to dimension and volumn
 
-```{r ratio__}
+## Reorder top and bottom
+```{r reorder_top_bottom}
+filtered_data$Top_Bottom <- factor(filtered_data$Top_Bottom, levels = c("top", "bottom"))
+```
+
+# Cell count per maximum dimension and condition
+```{r count_dimension}
+filtered_data |>
+  ggplot() +
+  geom_histogram(aes(x = MaxDim_Total, fill = Light), bins = 30, color = "black", position = "stack") +
+  labs(
+    x = "Maximum Dimension (um³)", 
+    y = "Cell Count per 0.32 mm²", 
+    title = "Total Cell Count per Condition and Maximum Dimension"
+  ) +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) + 
+  scale_fill_brewer(palette = "Set1") + 
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    axis.title.x = element_text(size = 12),
+    strip.text.y = element_text(size = 12), 
+    strip.text.x = element_text(size = 14), 
+    legend.position = "bottom", 
+    strip.text = element_blank() 
+  )
+```
+
+# Cell count per condition 
+```{r cell_count}
+cell_count_data <- filtered_data %>%
+  group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
+  summarize(CellCount = sum(ChainNum), .groups = "drop")
+
+ggplot(cell_count_data, aes(x = Light, y = CellCount, fill = Light)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Patch (Corresponding Top and Bottom Samples)", 
+       y = "Cell Count per Image (0.32 mm3)", 
+       title = "Cell Count per Condition") +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(),  
+        axis.title.x = element_text(size = 12))  
+```
+
+# Top-bottom ratio graph per patch and condition
+ASK DR.C ABOUT RATIO CALCULATION
+```{r top_bottom_ratio}
 # Ratio of Top and Bottom counts within each Patch
-top_bottom_ratios <- filtered_data |>
+top_bottom_ratio_data <- filtered_data |>
   dplyr::filter(Top_Bottom %in% c("top", "bottom")) |> 
   dplyr::group_by(Patch, Top_Bottom, Light, Temp_C) |> 
   dplyr::summarize(Total_Count = sum(ChainNum), .groups = "drop") |> 
   tidyr::pivot_wider(names_from = Top_Bottom, values_from = Total_Count, values_fill = 0) |>
   dplyr::mutate(Ratio = top / bottom)
+  #dplyr::mutate(Ratio = bottom / top)
 
-ggplot(top_bottom_ratios, aes(x = Patch, y = Ratio, fill = Light)) +
+ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = Light)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
     x = "Patch (Corresponding Top and Bottom Samples)", 
@@ -207,12 +256,6 @@ ggplot(top_bottom_ratios, aes(x = Patch, y = Ratio, fill = Light)) +
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 ```
-
-
-
-
-
-
 
 
 
