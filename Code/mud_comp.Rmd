@@ -128,7 +128,7 @@ volume_dimension_data <- volume_dimension_data %>%
   mutate(MaxDim_Total = MaxDim_um * ChainNum)
 ```
 
-## Histogram of volumes and max dimension
+## Histogram of max dimension
 ```{r histogram}
 #Plot Maximum Dimensions
 volume_dimension_data |>
@@ -140,6 +140,41 @@ volume_dimension_data |>
 ```{r merge_sheets}
 merged_data <- merge(community_composition, volume_dimension_data, by = "SamplePhotoID", all.x = TRUE)
 ```
+
+```{r plot max dim}
+merged_data |>
+  ggplot()+
+  geom_histogram(aes(MaxDim_Total)) +
+    labs(
+    x = "Maximum Dimension (um³)", 
+    y = "Cell Count per 0.32 mm2", 
+    title = "Cell Count per Condition and Maximum Dimension"
+  ) +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C, Light)) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    axis.title.x = element_text(size = 12))
+```
+
+# Cell Count Analysis
+
+## Create bargraph to visualize cell counts per sample
+```{r bargraph_sample}
+#Summarize data with chain number
+merged_data_cell_count <- merged_data %>%
+  group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
+  summarize(CellCount = sum(ChainNum), .groups = "drop")
+
+#Create bar graph
+ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
+  geom_bar(stat = "identity", fill = "purple") +
+  labs(x = "Sample", y = "Number of Cells per 0.16mm2", title = "Number of Cells per Sample") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+### Add caption for each figure to describe the unit on the y-axis, for future review 
+#### Can reorder for bottom on the bottom and dark, med, light
 
 ## Count number of observation in each maximum dimension bin for ONLY pennate and centric diatoms per condition
 ```{r filtered_data}
