@@ -142,6 +142,48 @@ Temperature 15°C shows higher maximum ratios, while 20°C and 23°C show modera
 At 15°C, the data shows the highest variation with the most extreme values out of the three temperatures, indicating that at 15°C there is greater concentration of chlorophyll at the top surface compared to the bottom, indicating greater diatom migration. Temperatures 20°C and 23°C have less pronounced variations, suggesting that these conditions lead to a more balanced chlorophyll distribution between the top and bottom surfaces.
 
 
-Migration did happen
+Migration did happen. 
 Temperature maybe did not make much difference between 15 and 20 (need to run statistics)
-23: less motility
+23 - less motility as temperature increases???
+
+```{r linear regression}
+summary(lm(TopBottomRatio ~ ToD * Temp_C,
+           data = vert_migration_wide))
+
+```
+
+No extreme skewness in the residuals
+No P value shows significance 
+R value is very low, over fitted?
+P value for F statistic indicates no significance overall, so we can assume that there is no significant difference between 15ºC and 20ºC
+
+```{r lag phase quantitavely}
+
+vert_migration_wide |>
+  ggplot() +
+  geom_point(aes(x = ToD, y = TopBottomRatio), alpha = 0.7) +
+  geom_smooth(aes(x = ToD, y = TopBottomRatio), method = "lm", se = FALSE, color = "blue", linetype = "dashed") +
+  geom_smooth(aes(x = ToD, y = TopBottomRatio), method = "lm", color = "red", linetype = "solid", linewidth = 1.2) +  # New geom_smooth layer
+  facet_grid(cols = vars(Temp_C)) +
+  labs(
+    x = "Time of Day", 
+    y = "Top to Bottom Ratio", 
+    title = "Ratio of Top Chlorophyll µg·cm^2 To Bottom Chlorophyll µg·cm^2",
+    subtitle = "Analyzing chlorophyll concentration top to bottom ratios at temperatures 15°C, 20°C, and 23°C"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+    panel.background = element_rect(fill = "gray90"),
+    panel.grid.major = element_line(color = "white"),
+    panel.grid.minor = element_blank(),
+    strip.background = element_rect(fill = "lightgray"),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+so geom_smooth and geom_point are skipping values because they are either missing, or NA. so we can't really fit a line through to check for lag phase. 
+There is a way we can erase the points, I just don't want to mess things up and not know how to get back to the start... 
+Is it possible to check for lag phase in another way?
+
+
