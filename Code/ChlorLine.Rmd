@@ -72,7 +72,7 @@ Plot ratio of Top Chl_ugcm2 divided by Bottom Chl_ugcm2
 vert_migration_wide |>
   ggplot() +
   geom_point(aes(x = ToD, y = TopBottomRatio), alpha = 0.7) +
-  geom_smooth(aes(x = ToD, y = TopBottomRatio), method = "lm", se = FALSE, color = "blue", linetype = "dashed") +
+  geom_smooth(aes(x = ToD, y = TopBottomRatio), method = "lm", se = TRUE, color = "blue", linetype = "dashed") +
   facet_grid(cols = vars(Temp_C)) +
   labs(
     x = "Time of Day", 
