@@ -157,7 +157,7 @@ No P value shows significance
 R value is very low, over fitted?
 P value for F statistic indicates no significance overall, so we can assume that there is no significant difference between 15ºC and 20ºC
 
-```{r lag phase quantitavely}
+```{r lag phase}
 
 vert_migration_wide |>
   ggplot() +
@@ -180,10 +180,41 @@ vert_migration_wide |>
     strip.text = element_text(face = "bold")
   )
 
+
 ```
 
 so geom_smooth and geom_point are skipping values because they are either missing, or NA. so we can't really fit a line through to check for lag phase. 
 There is a way we can erase the points, I just don't want to mess things up and not know how to get back to the start... 
 Is it possible to check for lag phase in another way?
+
+
+
+
+
+-
+
+There are a few rows in vert_migration_wide that read N/A that are not missing from the original dataset. So I'm trying to see if I can fix that so we can have a regression line
+
+```{r problematic, N/A rows}
+sum(is.na(vert_migration$Chl_ugcm2))
+
+sum(is.na(vert_migration_wide$bottom))
+sum(vert_migration_wide$bottom == 0, na.rm = TRUE)
+
+problematic_rows <- filter(vert_migration_wide, is.na(TopBottomRatio))
+
+problematic_rows |>
+  select(YYYYMMDDHHMM, top, bottom, TopBottomRatio)
+
+```
+Now looking at if the issue comes from missing values on the original data - it does not
+```{r}
+vert_migration |>
+  filter(YYYYMMDDHHMM %in% problematic_rows$YYYYMMDDHHMM)
+```
+
+
+
+
 
 
