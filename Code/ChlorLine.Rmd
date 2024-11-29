@@ -31,7 +31,7 @@ vert_migration <- readRDS( file = file.path("..","Data","CleanData","vert_migrat
 ```{r chlor_time}
 vert_migration |>
   ggplot() +
-  geom_point(aes(x = ToD, y = Chl_ugcm2), alpha = 0.7) +  
+  geom_point(aes(x = ToD, y = Chl_ugcm2), alpha = 0.4) +  
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) + 
   labs(
     x = "Time of Day", 
