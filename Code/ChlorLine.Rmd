@@ -20,10 +20,13 @@ This .rmd reads chlorophyll data and generates a line graph ...
 library(tidyverse) 
 library(kableExtra)
 ```
+# Reading file
 
 ```{r read_vert_migration}
 vert_migration <- readRDS( file = file.path("..","Data","CleanData","vert_migration.rds"))
 ```
+
+# Plotting Chlorophyll concentration over time at different temperatures 
 
 ```{r chlor_time}
 vert_migration |>
@@ -48,7 +51,7 @@ vert_migration |>
 
 ```
 
-# top and bottom ratio
+# Top and bottom ratio
 
 vert_migration contains variable Top_Bottom To simplify ratio calculation we 'pivot_wider' the data to separate Top_Bottom into two separate variables, Top & Bottom; that will lower the number of rows and increase the number of columns
 
@@ -64,7 +67,7 @@ vert_migration_wide <- vert_migration |>
 
 Plot ratio of Top Chl_ugcm2 divided by Bottom Chl_ugcm2
 
-```{r}
+```{r Ratio Top to Bottom Chl_ugcm2}
 vert_migration_wide |>
   ggplot() +
   geom_point(aes(x = ToD, y = TopBottomRatio), alpha = 0.7) +
@@ -89,12 +92,15 @@ General trends:
 
 At 15°C there is a broader spread of ratios and the highest amount of ratios exceeding 2 (at noon and one replicate taken at 1 pm). This shows that the highest concentration of chlorophyll was found on these papers, suggesting the highest amplitude of diatom migration happens at 15°C.
 
-At 20°C ratios are generally lower, slightly below 2, with one exceeding 2 (at 11 am).
+At 20°C ratios are generally lower, slightly below 2, with one exceeding 2 (at 11 am).There is a 
 
 At 23°C ratios are all below 1, indicating the lowest amplitude of migration happens at 23°C and shows the least variability between the three temperatures.
 
 The broader range of ratios at 15°C could indicate more vertical migration at lower temperatures. The decreasing range of ratios as the temperature increased from 15°C to 23°C suggests there is some temperature dependence in migration patterns of diatoms.
 
+There is an apparent lag in vertical migration at 15ºC, taking an extra hour for to achieve the same chlorophyll concentration relative to at 20ºC (at 11:00 am vs 10:10 am).
+
+To determine significant difference between vertical migration abundance between 15ºC and 20ºC, apparent trends vs statistical tests.
 
 # Plot Top Chl_ugcm2 vs Bottom Chl_ugcm2 with visual representation of time of day.
 
@@ -127,15 +133,92 @@ The graph displays the ratio of chlorophyll concentration (top to bottom) across
 
 Since ratios are predominantly below 2, it shows a general trend where the top surface has slightly more chlorophyll than the bottom, indicating that these diatoms are exhibiting vertical migration in some capacity.
 
+<<<<<<< HEAD
 As time progresses, it seems that chlorophyll concentration increases, reflected on time slot 14:30, which shows consistently higher ratios, especially at 15°C and 20°C. This suggests that vertical migration increases with time.
+=======
+
+As time progresses, it seems that chlorophyll concentration increases, reflected on time slot 14:30, which shows consistently higher ratios, especially at 15°C. This suggests that vertical migration increases with time.
+>>>>>>> 58082d44ee0fdfecb9f46d0725cf0d7c3fc68abc
 
 Temperature 15°C shows higher maximum ratios, while 20°C and 23°C show moderate ranges in ratios.
 
-<<<<<<< HEAD
+
 At 15°C, the data shows the highest variation with the most extreme values out of the three temperatures, indicating that at 15°C there is greater concentration of chlorophyll at the top surface compared to the bottom, indicating greater diatom migration. Temperatures 20°C and 23°C have less pronounced variations, suggesting that these conditions lead to a more balanced chlorophyll distribution between the top and bottom surfaces.
-=======
-At 15°C, the data shows the highest variation with the most extreme values out of the three temperatures, indicating that at 15°C there is greater concentration of chlorophyll at the top surface compared to the bottom. Temperatures 20°C and 23°C have less pronounced variations, suggesting that these conditions lead to a more balanced chlorophyll distribution between the top and bottom surfaces.
->>>>>>> 488809052a7baaca84b6944dd5039203b2ffdd7d
+
+
+Migration did happen. 
+Temperature maybe did not make much difference between 15 and 20 (need to run statistics)
+23 - less motility as temperature increases???
+
+```{r linear regression}
+summary(lm(TopBottomRatio ~ ToD * Temp_C,
+           data = vert_migration_wide))
+
+```
+
+No extreme skewness in the residuals
+No P value shows significance 
+R value is very low, over fitted?
+P value for F statistic indicates no significance overall, so we can assume that there is no significant difference between 15ºC and 20ºC
+
+```{r lag phase}
+
+vert_migration_wide |>
+  ggplot() +
+  geom_point(aes(x = ToD, y = TopBottomRatio), alpha = 0.7) +
+  geom_smooth(aes(x = ToD, y = TopBottomRatio), method = "lm", se = FALSE, color = "blue", linetype = "dashed") +
+  geom_smooth(aes(x = ToD, y = TopBottomRatio), method = "lm", color = "red", linetype = "solid", linewidth = 1.2) +  # New geom_smooth layer
+  facet_grid(cols = vars(Temp_C)) +
+  labs(
+    x = "Time of Day", 
+    y = "Top to Bottom Ratio", 
+    title = "Ratio of Top Chlorophyll µg·cm^2 To Bottom Chlorophyll µg·cm^2",
+    subtitle = "Analyzing chlorophyll concentration top to bottom ratios at temperatures 15°C, 20°C, and 23°C"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+    panel.background = element_rect(fill = "gray90"),
+    panel.grid.major = element_line(color = "white"),
+    panel.grid.minor = element_blank(),
+    strip.background = element_rect(fill = "lightgray"),
+    strip.text = element_text(face = "bold")
+  )
+
+
+```
+
+so geom_smooth and geom_point are skipping values because they are either missing, or NA. so we can't really fit a line through to check for lag phase. 
+There is a way we can erase the points, I just don't want to mess things up and not know how to get back to the start... 
+Is it possible to check for lag phase in another way?
+
+
+
+
+
+-
+
+There are a few rows in vert_migration_wide that read N/A that are not missing from the original dataset. So I'm trying to see if I can fix that so we can have a regression line
+
+```{r problematic, N/A rows}
+sum(is.na(vert_migration$Chl_ugcm2))
+
+sum(is.na(vert_migration_wide$bottom))
+sum(vert_migration_wide$bottom == 0, na.rm = TRUE)
+
+problematic_rows <- filter(vert_migration_wide, is.na(TopBottomRatio))
+
+problematic_rows |>
+  select(YYYYMMDDHHMM, top, bottom, TopBottomRatio)
+
+```
+Now looking at if the issue comes from missing values on the original data - it does not
+```{r}
+vert_migration |>
+  filter(YYYYMMDDHHMM %in% problematic_rows$YYYYMMDDHHMM)
+```
+
+
+
 
 
 
