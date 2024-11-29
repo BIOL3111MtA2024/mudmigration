@@ -27,7 +27,7 @@ googlesheet_url <- "https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1
 ```
 
 # Accessing sheets
-Access each of the three sheets on the spreadsheet
+Access each of the three sheets on the spreadsheet.
 ```{r accessing_sheets}
 #Accessing sheet with meta data
 community_composition <- read_sheet(googlesheet_url, sheet = "community_composition") 
@@ -56,7 +56,7 @@ corrected_width_data <- corrected_width_data |>
 ```
 
 ## List of morphotypes obseved 
-Before running any code on morphotypes I wanted to check for any misspelled words. 
+Before graphing anything with morphotypes check for any misspelled variables.
 ```{r unqiue_morphotypes}
 unique_morphotypes <- unique(corrected_width_data$CellMorphotype)
 print(unique_morphotypes)
@@ -90,7 +90,7 @@ volume_dimension_data <- corrected_width_data |>
                           CellMorphotype == "undefined" ~ 4/3 * pi * (Length_um/2)^3, 
                           CellMorphotype == "peanut" ~   Length_um * Width1_um * Width2_um,
                           CellMorphotype == "rectangular" ~ Length_um * Width1_um * Width2_um,
-                          CellMorphotype == "square"~ Width1_um^2 * Width2_um, #check these values
+                          CellMorphotype == "square"~ Width1_um^2 * Width2_um, 
                           CellMorphotype == "other" ~ 4/3 * pi * (Width1_um/2)^3
   )
   )
@@ -161,10 +161,9 @@ DESCRIPTIONS ADDED UP TO THIS POINT
 #   theme_minimal() +
 #   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
-### Add caption for each figure to describe the unit on the y-axis, for future review 
-#### Can reorder for bottom on the bottom and dark, med, light
 
-## Count number of observation in each maximum dimension bin for ONLY pennate and centric diatoms per condition
+## Filter data for ONLY centric and pennate morphotypes and then group. 
+Filtered data for only the morphotypes of focus, pennate and centric. These were chosen because of their observational frequency. Further, group by patch, light, temperature, layer, morphotype, chain number, and maximum dimension.  
 ```{r filtered_data}
  #Summarize the counts for each maximum dimension bin per condition
 filtered_data <- merged_data |>
@@ -175,17 +174,19 @@ filtered_data <- merged_data |>
 ```
 
 ## Reorder top and bottom
+Ordered the filtered data to make top layer samples first and then all bottom layers. This insures that all top layer samples are displayed on the higher chunk of every graph.  
 ```{r reorder_top_bottom}
 filtered_data$Top_Bottom <- factor(filtered_data$Top_Bottom, levels = c("top", "bottom"))
 ```
 
 # Cell count per maximum dimension and condition
+Created a histogram of the filtered data with maximum dimension in um and a generated cell count per facet of top and bottom layers and temperature. Light was included as fill. The generated cell count is per 0.32 mm2 which accounts for the area of two 0.16mm2 images per sample.  
 ```{r count_dimension}
 filtered_data |>
   ggplot() +
   geom_histogram(aes(x = MaxDim_Total, fill = Light), bins = 30, color = "black", position = "stack") +
   labs(
-    x = "Maximum Dimension (um³)", 
+    x = "Maximum Dimension (um)", 
     y = "Cell Count per 0.32 mm²", 
     title = "Total Cell Count per Condition and Maximum Dimension"
   ) +
@@ -203,6 +204,7 @@ filtered_data |>
 ```
 
 # Cell count per condition 
+Created a new data set that groups entries based on light, temperature, lens paper layer, and SampleID. Then a summarized function created a cell count based on ChainNum. This is graphed using ggplot per patch (= corresponding top and bottom) and per light and temperature with cell count of the y-axis. Cell counts are per 0.32 mm2 because two images were taken per sample each with an area of 0.16 mm2. 
 ```{r cell_count}
 cell_count_data <- filtered_data %>%
   group_by(Light, Temp_C, Top_Bottom, SampleID) %>%
@@ -211,7 +213,7 @@ cell_count_data <- filtered_data %>%
 ggplot(cell_count_data, aes(x = Light, y = CellCount, fill = Light)) +
   geom_bar(stat = "identity") +
   labs(x = "Patch (Corresponding Top and Bottom Samples)", 
-       y = "Cell Count per Image (0.32 mm3)", 
+       y = "Cell Count per Image (0.32 mm2)", 
        title = "Cell Count per Condition") +
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
@@ -245,6 +247,7 @@ ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = Light)) +
   )
 ```
 
+# IN PROGRESS 
 ```{r}
 ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = CellMorphotype)) +
   geom_bar(stat = "identity", position = "dodge") +
