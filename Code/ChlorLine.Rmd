@@ -19,6 +19,7 @@ This .rmd reads chlorophyll data and generates a line graph ...
 ```{r load packages}
 library(tidyverse) 
 library(kableExtra)
+library(broom)
 ```
 # Reading file
 
@@ -150,10 +151,32 @@ Migration did happen.
 Temperature maybe did not make much difference between 15 and 20 (need to run statistics)
 23 - less motility as temperature increases???
 
+```{r nested regression}
+vert_nest <- vert_migration_wide |>
+  nest(.by = Temp_C) |>
+  mutate(LinearFit = purrr::map(data, ~lm(TopBottomRatio ~ ToD,
+                                            data = .x)),
+         LinearTidy = purrr::map(LinearFit, tidy),
+         LinearParam = purrr::map(LinearFit, glance),
+         LinearPredict = purrr::map(LinearFit, augment)
+         )
+
+
+vert_nest |>
+unnest(cols = c(LinearTidy)) |>
+ select(-c(data, LinearFit, LinearParam, LinearPredict)) |>
+  select(-c(statistic)) |>
+  pivot_wider(id_cols = c(Temp_C), names_from = term, values_from = c(estimate, std.error, p.value)) |>
+  kable()
+```
+
+
 ```{r linear regression}
 summary(lm(TopBottomRatio ~ ToD * Temp_C,
            data = vert_migration_wide))
 
+summary(aov(TopBottomRatio ~ ToD * Temp_C,
+           data = vert_migration_wide))
 ```
 
 No extreme skewness in the residuals
