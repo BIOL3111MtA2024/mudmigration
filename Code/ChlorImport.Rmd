@@ -25,6 +25,7 @@ library(tidyverse)
 library(googlesheets4)
 library(googledrive)
 library(kableExtra)
+library(hms)
 ```
 
 
@@ -74,19 +75,14 @@ kable(vert_migration)
 Working with Dates & Times is tricky!
 ```{r elapsed_time}
 
-#Issue converting HHMM to ToD b/c leading 0 on 0900 messes up conversions & we do not have SS data to use simple lubridate::hms() function
-vert_migration_2 <- vert_migration |>
+#Issue converting HHMM to ToD b/c leading 0 on 0900 messes up conversions & we do not have SS data to use simple 
+
+vert_migration <- vert_migration |>
   mutate(DateTime = lubridate::ymd_hm(YYYYMMDDHHMM)) |>
-  
-  mutate(HHMM = lubridate::hms(str_split(DateTime, pattern = " ")))
-  
-  
-  
+  mutate(HHMM = as_hms(DateTime)) |>
+  mutate(ToD = as.numeric(HHMM)/3600) |>
   mutate(Date = stringr::str_extract(DateTime, "[0-9]{4}-[0-9]{2}-[0-9]{2}"))
 
-
-|>
-  mutate(ToD = stringr::str_extract(DateTime, "[0-9]{2}:[0-9]{2}:[0-9]{2}"))
 
 #hack solution to get elapsed time; difficulty 'subtracting' times
 vert_migration <- vert_migration |>
