@@ -88,7 +88,7 @@ vert_migration_wide |>
   )
 ```
 
-General trends:
+Visual trends:
 
 At 15°C there is a broader spread of ratios and the highest amount of ratios exceeding 2 (at noon and one replicate taken at 1 pm). This shows that the highest concentration of chlorophyll was found on these papers, suggesting the highest amplitude of diatom migration happens at 15°C.
 
