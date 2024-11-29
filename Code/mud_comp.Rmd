@@ -87,10 +87,10 @@ ADD DISCRIPTION OF CALCULATION!
 volume_dimension_data <- corrected_width_data |>
   mutate(CellVol = case_when(CellMorphotype == "centric" ~ pi * (Width1_um/2)^2 *  Width2_um,
                           CellMorphotype == "pennate" ~  Length_um * Width1_um * Width2_um,
-                          CellMorphotype == "undefined" ~ 4/3 * pi * (Length_um/2)^3, 
+                          CellMorphotype == "undefined" ~ 4/3 * pi * (Length_um/2)^3,
                           CellMorphotype == "peanut" ~   Length_um * Width1_um * Width2_um,
                           CellMorphotype == "rectangular" ~ Length_um * Width1_um * Width2_um,
-                          CellMorphotype == "square"~ Width1_um^2 * Width2_um, 
+                          CellMorphotype == "square"~ Width1_um^2 * Width2_um,
                           CellMorphotype == "other" ~ 4/3 * pi * (Width1_um/2)^3
   )
   )
@@ -149,17 +149,17 @@ merged_data <- merge(community_composition, volume_dimension_data, by = "SampleP
 ## Create bargraph to visualize cell counts per sample
 DESCRIPTIONS ADDED UP TO THIS POINT 
 ```{r bargraph_sample}
-# #Summarize data with chain number
-# merged_data_cell_count <- merged_data %>%
-#   group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
-#   summarize(CellCount = sum(ChainNum), .groups = "drop")
-# 
-# #Create bar graph
-# ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
-#   geom_bar(stat = "identity", fill = "purple") +
-#   labs(x = "Sample", y = "Number of Cells per 0.16mm2", title = "Number of Cells per Sample") +
-#   theme_minimal() +
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+#Summarize data with chain number
+merged_data_cell_count <- merged_data %>%
+  group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
+  summarize(CellCount = sum(ChainNum), .groups = "drop")
+
+#Create bar graph
+ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
+  geom_bar(stat = "identity", fill = "purple") +
+  labs(x = "Sample", y = "Number of Cells per 0.16mm2", title = "Number of Cells per Sample") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ## Filter data for ONLY centric and pennate morphotypes and then group. 
@@ -168,7 +168,13 @@ Filtered data for only the morphotypes of focus, pennate and centric. These were
  #Summarize the counts for each maximum dimension bin per condition
 filtered_data <- merged_data |>
   dplyr::filter(CellMorphotype %in% c("pennate", "centric")) |>
-  dplyr::group_by(Patch, Light, Temp_C, Top_Bottom, CellMorphotype, ChainNum, MaxDim_Total)
+  mutate(MorphoSize = case_when(CellMorphotype == "pennate" & MaxDim_Total <= 50 ~ "PennateSmall", 
+                                CellMorphotype == "pennate" & MaxDim_Total > 50 ~ "PennateLarge",
+                                CellMorphotype == "centric" & MaxDim_Total <= 50 ~ "CentricSmall", 
+                                CellMorphotype == "centric" & MaxDim_Total > 50 ~ "CentricLarge"))
+
+
+  #dplyr::group_by(Patch, Light, Temp_C, Top_Bottom, CellMorphotype, ChainNum, MaxDim_Total)
 
 #print(filtered_data)
 ```
@@ -177,20 +183,23 @@ filtered_data <- merged_data |>
 Ordered the filtered data to make top layer samples first and then all bottom layers. This insures that all top layer samples are displayed on the higher chunk of every graph.  
 ```{r reorder_top_bottom}
 filtered_data$Top_Bottom <- factor(filtered_data$Top_Bottom, levels = c("top", "bottom"))
+filtered_data$Light <- factor(filtered_data$Light, levels = c("light", "med", "dark"))
 ```
 
 # Cell count per maximum dimension and condition
 Created a histogram of the filtered data with maximum dimension in um and a generated cell count per facet of top and bottom layers and temperature. Light was included as fill. The generated cell count is per 0.32 mm2 which accounts for the area of two 0.16mm2 images per sample.  
+#### fix title 
 ```{r count_dimension}
 filtered_data |>
+  filter(Light != "med") |>
   ggplot() +
-  geom_histogram(aes(x = MaxDim_Total, fill = Light), bins = 30, color = "black", position = "stack") +
+  geom_histogram(aes(x = MaxDim_Total, fill = Light), breaks = c(0, 50, 150), color = "black", position = "stack") +
   labs(
     x = "Maximum Dimension (um)", 
     y = "Cell Count per 0.32 mm²", 
-    title = "Total Cell Count per Condition and Maximum Dimension"
+    title = "Total Cell Count versus Maximum Dimension, faceted by Temperature and Layer, light level as indicated by colour"
   ) +
-  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) + 
+  facet_grid(rows = vars(Light, Top_Bottom), cols = vars(Temp_C)) + 
   scale_fill_brewer(palette = "Set1") + 
   theme_minimal() +
   theme(
@@ -226,12 +235,12 @@ ASK DR.C ABOUT RATIO CALCULATION
 ```{r top_bottom_ratio}
 # Ratio of Top and Bottom counts within each Patch
 top_bottom_ratio_data <- filtered_data |>
+  filter(Light != "med") |>
   dplyr::filter(Top_Bottom %in% c("top", "bottom")) |> 
-  dplyr::group_by(Patch, Top_Bottom, Light, Temp_C, CellMorphotype) |> 
+  dplyr::group_by(Patch, Top_Bottom, Light, Temp_C, MorphoSize) |> 
   dplyr::summarize(Total_Count = sum(ChainNum), .groups = "drop") |> 
   tidyr::pivot_wider(names_from = Top_Bottom, values_from = Total_Count, values_fill = 0) |>
   dplyr::mutate(Ratio = top / bottom)
-  #dplyr::mutate(Ratio = bottom / top)
 
 ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = Light)) +
   geom_bar(stat = "identity", position = "dodge") +
@@ -249,14 +258,14 @@ ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = Light)) +
 
 # IN PROGRESS 
 ```{r}
-ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = CellMorphotype)) +
+ggplot(top_bottom_ratio_data, aes(x = MorphoSize, y = Ratio)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
-    x = "Patch (Corresponding Top and Bottom Samples)", 
+    x = "Cell Morphotype", 
     y = "Top-to-Bottom Ratio of Cell Counts per 0.32 mm2",
     title = "Top-to-Bottom Ratio with Temperature and Light Conditions"
   ) +
-  facet_grid(~ Temp_C ~ Light) + 
+  facet_grid(~ Light ~ Temp_C) + 
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1)
