@@ -73,9 +73,19 @@ kable(vert_migration)
 # Generate Time of Day & elapsed time
 Working with Dates & Times is tricky!
 ```{r elapsed_time}
-vert_migration <- vert_migration |>
+
+#Issue converting HHMM to ToD b/c leading 0 on 0900 messes up conversions & we do not have SS data to use simple lubridate::hms() function
+vert_migration_2 <- vert_migration |>
   mutate(DateTime = lubridate::ymd_hm(YYYYMMDDHHMM)) |>
-  mutate(Date = stringr::str_extract(DateTime, "[0-9]{4}-[0-9]{2}-[0-9]{2}")) |>
+  
+  mutate(HHMM = lubridate::hms(str_split(DateTime, pattern = " ")))
+  
+  
+  
+  mutate(Date = stringr::str_extract(DateTime, "[0-9]{4}-[0-9]{2}-[0-9]{2}"))
+
+
+|>
   mutate(ToD = stringr::str_extract(DateTime, "[0-9]{2}:[0-9]{2}:[0-9]{2}"))
 
 #hack solution to get elapsed time; difficulty 'subtracting' times
