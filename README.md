@@ -3,6 +3,11 @@
 ## Summary
 
 Provide a brief description of the project - 150 words.
+Diatom vertical migration is a worldwide phenomenon that affects tracking of diatom blooms from satellites. Understanding when the diatoms emerge from the sediment during the tidal cycle will improve tracking of diatom blooms. 
+Temperature could affect the rate of photosynthesis and degradation of diatoms. In different light conditions, there might be less vertical migration occurring.
+Sediment from the Bay of Fundy was incubated at 15°C, 20°C, and 23°C under medium, dim, and full light conditions and analyzed in several different ways. 
+To determine if temperature and light influenced vertical migration, lens paper was added onto the surface of the sediment of all conditions and removed after a 6.5-hour period. The lens paper then underwent chlorophyll extraction and analysis. 
+
 
 ## Highly Qualified Personnel
 
@@ -26,7 +31,7 @@ Provide a brief description of the project - 150 words.
 
 ## Keywords
 
-List keywords separated by commas
+Diatoms, vertical migration, Bay of Fundy, Tides
 
 ## Additional information and support
 
