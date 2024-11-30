@@ -1,8 +1,10 @@
 ---
-title: "R Notebook"
+title: "light_dark"
 output: html_notebook
 ---
 
+# Instruction 
+This .Rmd reads in the chlorophyll data and analyzes the Light and Temperature conditions on Chlorophyll ugcm2 after a 6.5 hour period. 
 
 # Loading Packages 
 ```{r loading_packages}
@@ -12,11 +14,10 @@ library(knitr)
 library(googlesheets4)
 library(googledrive)
 library(ggplot2)
-#library(dplyr)
 ```
 
 # chl_data
-Loading in the data from our personal computer files. Edit here if we need to switch what data is being used.
+Data is stored on Google docs and loaded into RStudio. 
 ```{r accessing_data}
 gs4_deauth()
 googlesheet_url <- "https://docs.google.com/spreadsheets/d/16DxWZhYw69ZgACGu82szN9tpgpYYPWIxPXOcSLM2Bo0/edit?usp=sharing"
@@ -24,9 +25,6 @@ chl_data <- read_sheet(googlesheet_url, sheet = "vert_migration")
 ```
 
 # Transforming our numbers into Chl/cm^2
-We need to make it so that we are looking directly at how much chlorophyll per cm^2. I don't know how to do this calculation with VolSol.
-I am going to make preliminary graphs by dividing off the Tissue Area and timesing by VolSol. When we know correct calculations, we can change this.
-This will go into a new column called Chl_cm2
 Instructions for the chlorophyll calculations come from CampbellSOP28ChlorophyllaTurner.pdf
  7.0314 RFU/ug L-1 and intercept of 0.9791
  
@@ -37,27 +35,81 @@ kable(chl_data)
 ```
 
 # Sorting the data
- 
 ```{r filter_data}
-filtered_data <- filter(chl_data, Chl_ugcm2 > 0, YYYYMMDDHHMM == 202410101430)
+filtered_data <- filter(chl_data, Chl_ugcm2 > 0, YYYYMMDDHHMM %in% c(202410101430,
+                                                                     202409261400))
 filtered_data$Light_Temp <- factor(paste(filtered_data$Temp_C, filtered_data$Light))
 
-Thresholds <- c('top', 'bottom')
-ThresholdColours <- c("blue","red")
 ```
 
-#  Graph 
+# Temperature and Light Graph 
+The chlorophyll Chl_ugcm2 is plotted across 15°C, 20°C, and 23°C and different light conditions. 
+
 ```{r graph}
 filtered_data %>%
   ggplot() +
-  geom_point(aes(x = as.factor(Light_Temp), y = Chl_ugcm2, colour = as.factor(Top_Bottom))) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
-  scale_colour_manual(values = ThresholdColours)
+  geom_point(aes(x = Light, y = Chl_ugcm2), alpha = 0.7) +
+  facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
+  labs(
+    x = "Light Condition", 
+    y = expression("Chlorophyll Concentration ("*mu*"g / cm"^2*")"),  
+    title = "Chlorophyll Concentrations Across Light and Temperature Variation", 
+    subtitle = "Analyzing chlorophyll concentration in Bay of Fundy sediments at 15°C, 20°C, and 23°C and different light levels"
+    
+  ) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    plot.subtitle = element_text(size = 9.8),
+    panel.background = element_rect(fill = "gray90"),  
+    panel.grid.major = element_line(color = "white"), 
+    panel.grid.minor = element_blank(),  
+    strip.background = element_rect(fill = "lightgray"), 
+    strip.text = element_text(face = "bold"))
+ 
+```
 
+# Top Bottom Ratio
+Filtered_data_wide is created using pivot wider with the Top/Bottom ratios of Chl_ugcm2 Chlorophyll. The top and bottom chlorophyll are now in columns, which widens and shortens the dataframe. This makes the calculations easier to complete.
+
+```{r top_bottom}
+filtered_data_wide <- filtered_data |>
+  select(-c(Tissue_Area_cm2, VolSol_mL, Fluorescence_Reading, `...19`,  Chl_ugL)) |>
+  pivot_wider(id_cols = c(YYYYMMDDHHMM, Replicate, Temp_C, Light), names_from = Top_Bottom, values_from = Chl_ugcm2, values_fn = mean) |>
+  mutate(TopBottomRatio = top/bottom)
+
+```
+
+# Top Bottom Ratio Graph 
+The Top/Bottom ratio is analyzed with the variables of 15°C, 20°C, and 23°C and the different light conditions.
+
+```{r graph}
+filtered_data_wide %>%
+  ggplot() +
+  geom_point(aes(x = Light, y = TopBottomRatio), alpha = 0.7) +
+  facet_wrap(vars(Temp_C)) +
+  labs(
+    x = "Light Condition", 
+    y = expression("Chlorophyll Concentration ("*mu*"g / cm"^2*")"),  
+    title = "Chlorophyll Concentrations Across Light and Temperature Variation", 
+    subtitle = "Analyzing chlorophyll concentration in Bay of Fundy sediments at 15°C, 20°C, and 23°C and different light levels"
+    
+  ) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    plot.subtitle = element_text(size = 9.8),
+    panel.background = element_rect(fill = "gray90"),  
+    panel.grid.major = element_line(color = "white"), 
+    panel.grid.minor = element_blank(),  
+    strip.background = element_rect(fill = "lightgray"), 
+    strip.text = element_text(face = "bold"))
  
 ```
 
 
 
+# Anova 
+A two factor anova is run on  the TopBottomRatio on light conditions and the temperatures 15°C, 20°C, and 23°C.
+
+```{r anova}
+summary(aov(TopBottomRatio ~ Light * Temp_C,
+           data =  filtered_data_wide))
+```
 
