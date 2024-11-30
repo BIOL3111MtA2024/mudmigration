@@ -63,7 +63,7 @@ print(unique_morphotypes)
 ```
 
 ## Correct mispelled pennate
-A single morphotype label was misspelled this corrects it.
+A single morphotype label was misspelled this corrected it.
 ```{r correct_mispelling}
 #Find cell containing the misspelled word
 mislabel_pennate <- which(corrected_width_data  == "penate", arr.ind = TRUE)
@@ -74,14 +74,14 @@ corrected_width_data[106, "CellMorphotype"] <- "pennate"
 ```
 
 ## Fix missing CellVol
-One cell did not fit well into any of the volume calculations. Therefore, a new morphotype category was created for it. 
+One cell did not fit well into any of the volume calculations. New morphotype created for it. 
 ```{r fix_missing}
 #Rename morphotype to better calculate cell volume
 corrected_width_data[12, "CellMorphotype"] <- "other"
 ```
 
 ## Estimate volumes & maximum linear dimension
-ADD DISCRIPTION OF CALCULATION!
+Data set created with new columns for calculated volume and dimension. Each morphotype is uniquely shaped and therefore the volume is calculated differently depending. Maximum dimension is defined as the largest number wether width 1 or 2 or the length measurement. 
 ```{r volumes_dimension}
 #Calculate Cell Volume for each Morphotype
 volume_dimension_data <- corrected_width_data |>
@@ -121,8 +121,7 @@ This code finds empty cells in the data set.
 ```
 
 ## Control for chain sizes
-NEED DISCRIPTION - DELETE VOLUME?
-This conversion works because, chains all centric
+Accounting for centric chains a new column was created for total volume and maximum dimension. This multiplies cell volume and dimension by the number of cells in every chain. For this to work a column in the raw data was filled with either 1 for single cells or the number of cells in a chain.
 ```{r size_chain}
 volume_dimension_data <- volume_dimension_data %>%
   mutate(CellVol_Total = CellVol * ChainNum) %>%
@@ -130,7 +129,7 @@ volume_dimension_data <- volume_dimension_data %>%
 ```
 
 ## Histogram of max dimension
-A histogram was created to visualise cell size to get a better idea of the data. 
+A histogram was created to visualize cell size to get a better sense of the data. 
 ```{r histogram}
 #Plot Maximum Dimensions
 volume_dimension_data |>
@@ -147,19 +146,19 @@ merged_data <- merge(community_composition, volume_dimension_data, by = "SampleP
 # Cell Count Analysis
 
 ## Create bargraph to visualize cell counts per sample
-DESCRIPTIONS ADDED UP TO THIS POINT 
+A bargraph was used as reference for furture sample visualizations. A plot of 'SamplePhotoId' versus the number of cells observed per single image was created. With only one image per bar the area is set to 0.16mm2. 
 ```{r bargraph_sample}
-#Summarize data with chain number
-merged_data_cell_count <- merged_data %>%
-  group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
-  summarize(CellCount = sum(ChainNum), .groups = "drop")
-
-#Create bar graph
-ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
-  geom_bar(stat = "identity", fill = "purple") +
-  labs(x = "Sample", y = "Number of Cells per 0.16mm2", title = "Number of Cells per Sample") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+# #Summarize data with chain number
+# merged_data_cell_count <- merged_data %>%
+#   group_by(Light, Temp_C, Top_Bottom, SamplePhotoID) %>%
+#   summarize(CellCount = sum(ChainNum), .groups = "drop")
+# 
+# #Create bar graph
+# ggplot(merged_data_cell_count, aes(x = SamplePhotoID, y = CellCount)) +
+#   geom_bar(stat = "identity", fill = "purple") +
+#   labs(x = "Sample", y = "Number of Cells per 0.16mm2", title = "Number of Cells per Sample") +
+#   theme_minimal() +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ## Filter data for ONLY centric and pennate morphotypes and then group. 
@@ -187,22 +186,22 @@ filtered_data$Light <- factor(filtered_data$Light, levels = c("light", "med", "d
 ```
 
 # Cell count per maximum dimension and condition
-Created a histogram of the filtered data with maximum dimension in um and a generated cell count per facet of top and bottom layers and temperature. Light was included as fill. The generated cell count is per 0.32 mm2 which accounts for the area of two 0.16mm2 images per sample.  
-#### fix title 
+Created a histogram of the filtered data with maximum dimension in um and a generated cell count per facet of top and bottom layers and temperature. Medium light conditions were excluded. Light was included as fill. The generated cell count is per 0.32 mm2 which accounts for the area of two 0.16mm2 images per sample.  
 ```{r count_dimension}
 filtered_data |>
   filter(Light != "med") |>
   ggplot() +
-  geom_histogram(aes(x = MaxDim_Total, fill = Light), breaks = c(0, 50, 150), color = "black", position = "stack") +
+  geom_histogram(aes(x = MaxDim_Total, fill = Light), breaks = c(0, 50, 100, 150), color = "black", position = "stack") +
   labs(
     x = "Maximum Dimension (um)", 
     y = "Cell Count per 0.32 mm²", 
-    title = "Total Cell Count versus Maximum Dimension, faceted by Temperature and Layer, light level as indicated by colour"
+    title = str_wrap("Total cell count vs. maximum dimension, faceted by temperature and layer, light level displayed by colour")
   ) +
   facet_grid(rows = vars(Light, Top_Bottom), cols = vars(Temp_C)) + 
   scale_fill_brewer(palette = "Set1") + 
   theme_minimal() +
   theme(
+    plot.title = element_text(size = 14, hjust = 0.5),
     axis.text.x = element_text(angle = 45, hjust = 1), 
     axis.title.x = element_text(size = 12),
     strip.text.y = element_text(size = 12), 
@@ -221,17 +220,21 @@ cell_count_data <- filtered_data %>%
 
 ggplot(cell_count_data, aes(x = Light, y = CellCount, fill = Light)) +
   geom_bar(stat = "identity") +
-  labs(x = "Patch (Corresponding Top and Bottom Samples)", 
+  labs( 
        y = "Cell Count per Image (0.32 mm2)", 
        title = "Cell Count per Condition") +
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
-  theme(axis.text.x = element_blank(),  
-        axis.title.x = element_text(size = 12))  
+  theme(    
+    axis.text.x = element_blank(),  
+    axis.title.x = element_blank(),  
+    plot.title = element_text(size = 12, hjust = 0.5),
+    #legend.position = "bottom" 
+  )
 ```
 
 # Top-bottom ratio graph per patch and condition
-ASK DR.C ABOUT RATIO CALCULATION
+A new data set was created which first removed the medium light condition then filtered for top before bottom. Then the data was grouped by patch, layer, light, temperature, and morphology with size considered. A cell count was made by summing the chain numbers. The top to bottom ratio was calculated by dividing the cell count for every condition, top divided by bottom. Next, a plot was created with patches of corresponding top and bottom lenses on the x-axis and ratio on the y-axis. Light was used as a fill. 
 ```{r top_bottom_ratio}
 # Ratio of Top and Bottom counts within each Patch
 top_bottom_ratio_data <- filtered_data |>
@@ -242,33 +245,39 @@ top_bottom_ratio_data <- filtered_data |>
   tidyr::pivot_wider(names_from = Top_Bottom, values_from = Total_Count, values_fill = 0) |>
   dplyr::mutate(Ratio = top / bottom)
 
+#Plot patch by ratio
 ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = Light)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
     x = "Patch (Corresponding Top and Bottom Samples)", 
     y = "Top-to-Bottom Ratio of Cell Counts per 0.32 mm2",
-    title = "Top-to-Bottom Ratio with Temperature and Light Conditions"
+    title = str_wrap("Top-to-bottom ratio of cell count, faceted by temperature and light.")
   ) +
   facet_grid(~ Temp_C) + 
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(size = 12, hjust = 0.5)
   )
 ```
 
-# IN PROGRESS 
+# Top-bottom ratio per condition, sorted by cell morphotype and size category
+A plot was created to visualize the cell count ratio between top and bottom layers per light and temperature condition. Morphology per size was highlighted with centric and pennate being assigned either small or big. Small meaning that the cell was under or equal to 50 um and large for any cell over 50 um. 
 ```{r}
-ggplot(top_bottom_ratio_data, aes(x = MorphoSize, y = Ratio)) +
+ggplot(top_bottom_ratio_data, aes(x = MorphoSize, y = Ratio, fill = MorphoSize)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
-    x = "Cell Morphotype", 
     y = "Top-to-Bottom Ratio of Cell Counts per 0.32 mm2",
-    title = "Top-to-Bottom Ratio with Temperature and Light Conditions"
+    title = str_wrap("Top-to-bottom ratio of cell count, faceted by temperature and light, morphotype sorted by size shown through colour.")
   ) +
   facet_grid(~ Light ~ Temp_C) + 
+  scale_fill_discrete(name = "Morphotype by Size") +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
+    axis.text.x = element_blank(),  
+    axis.title.x = element_blank(),  
+    plot.title = element_text(size = 12, hjust = 0.5),
+    legend.position = "bottom", 
   )
 ```
 
