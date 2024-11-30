@@ -73,6 +73,7 @@ kable(vert_migration)
 
 # Generate Time of Day & elapsed time
 Working with Dates & Times is tricky!
+
 ```{r elapsed_time}
 
 #Issue converting HHMM to ToD b/c leading 0 on 0900 messes up conversions & we do not have SS data to use simple 
@@ -94,7 +95,7 @@ kable(vert_migration)
 ```
 
 
-
+# Saving dataset vert_migration
 ```{r save_vert_migration}
 saveRDS(object = vert_migration, file = file.path("..", "Data","CleanData", "vert_migration.rds"))
 ```
