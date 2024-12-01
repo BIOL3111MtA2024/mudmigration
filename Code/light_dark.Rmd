@@ -89,11 +89,12 @@ filtered_data_wide %>%
   labs(
     x = "Light Condition", 
     y = expression("Chlorophyll Concentration ("*mu*"g / cm"^2*")"),  
-    title = "Chlorophyll Concentrations Across Light and Temperature Variation", 
+    title = "Top:Bottom Ratio Chlorophyll Concentrations Across Light and Temperature Variation", 
     subtitle = "Analyzing chlorophyll concentration in Bay of Fundy sediments at 15°C, 20°C, and 23°C and different light levels"
     
   ) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    plot.title = element_text(size = 12),
     plot.subtitle = element_text(size = 9.8),
     panel.background = element_rect(fill = "gray90"),  
     panel.grid.major = element_line(color = "white"), 
