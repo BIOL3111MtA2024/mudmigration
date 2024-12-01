@@ -76,12 +76,11 @@ corrected_width_data[106, "CellMorphotype"] <- "pennate"
 ## Fix missing CellVol
 One cell did not fit well into any of the volume calculations. New morphotype created for it. 
 ```{r fix_missing}
-#Rename morphotype to better calculate cell volume
 corrected_width_data[12, "CellMorphotype"] <- "other"
 ```
 
 ## Estimate volumes & maximum linear dimension
-Data set created with new columns for calculated volume and dimension. Each morphotype is uniquely shaped and therefore the volume is calculated differently depending. Maximum dimension is defined as the largest number wether width 1 or 2 or the length measurement. 
+Data set created with new columns for calculated volume and dimension. Each morphotype is uniquely shaped and therefore the volume is calculated differently depending. Maximum dimension is defined as the largest number whether width 1 or 2 or the length measurement. 
 ```{r volumes_dimension}
 #Calculate Cell Volume for each Morphotype
 volume_dimension_data <- corrected_width_data |>
@@ -146,7 +145,7 @@ merged_data <- merge(community_composition, volume_dimension_data, by = "SampleP
 # Cell Count Analysis
 
 ## Create bargraph to visualize cell counts per sample
-A bargraph was used as reference for furture sample visualizations. A plot of 'SamplePhotoId' versus the number of cells observed per single image was created. With only one image per bar the area is set to 0.16mm2. 
+A bargraph was used as reference for future sample visualizations. A plot of 'SamplePhotoId' versus the number of cells observed per single image was created. With only one image per bar the area is set to 0.16mm2. 
 ```{r bargraph_sample}
 # #Summarize data with chain number
 # merged_data_cell_count <- merged_data %>%
@@ -162,7 +161,7 @@ A bargraph was used as reference for furture sample visualizations. A plot of 'S
 ```
 
 ## Filter data for ONLY centric and pennate morphotypes and then group. 
-Filtered data for only the morphotypes of focus, pennate and centric. These were chosen because of their observational frequency. Further, group by patch, light, temperature, layer, morphotype, chain number, and maximum dimension.  
+Filtered data for only the morphotypes of focus, pennate and centric. These were chosen because of their observational frequency. A new column was created to define both morphotype and cell size in one value. Small cells were defined as any with a maximum dimension under or equal to 50 um and large cells any above 50 um. 
 ```{r filtered_data}
  #Summarize the counts for each maximum dimension bin per condition
 filtered_data <- merged_data |>
@@ -222,7 +221,7 @@ ggplot(cell_count_data, aes(x = Light, y = CellCount, fill = Light)) +
   geom_bar(stat = "identity") +
   labs( 
        y = "Cell Count per Image (0.32 mm2)", 
-       title = "Cell Count per Condition") +
+       title = "Cell Count faceted per temperature, coloured by light level") +
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
   theme(    
@@ -251,7 +250,7 @@ ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = Light)) +
   labs(
     x = "Patch (Corresponding Top and Bottom Samples)", 
     y = "Top-to-Bottom Ratio of Cell Counts per 0.32 mm2",
-    title = str_wrap("Top-to-bottom ratio of cell count, faceted by temperature and light.")
+    title = str_wrap("Top-to-bottom ratio of cell count, faceted by temperature and coloured by light.")
   ) +
   facet_grid(~ Temp_C) + 
   theme_minimal() +
@@ -261,9 +260,29 @@ ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = Light)) +
   )
 ```
 
+## ANOVA on top-bottom ratios 
+A two-way ANOVA was ran on top-bottom ratios with temperature and lights conditions considered. The data needed to be cleaned to remove Inf values due to lack of cell in some categories.
+```{r anova_top_bottom}
+# Check for Inf in 'Ratio'
+summary(top_bottom_ratio_data$Ratio)
+
+# Remove rows with Inf 
+ratio_data_clean <- top_bottom_ratio_data %>%
+  dplyr::filter(!is.na(Ratio) & !is.nan(Ratio) & !is.infinite(Ratio))
+
+# Check the cleaned data
+#summary(ratio_data_clean$Ratio)
+
+# Two-way ANOVA on cleaned data
+anova_ratio <- aov(Ratio ~ Temp_C * Light, data = ratio_data_clean)
+
+# Summary ANOVA
+summary(anova_ratio)
+```
+
 # Top-bottom ratio per condition, sorted by cell morphotype and size category
 A plot was created to visualize the cell count ratio between top and bottom layers per light and temperature condition. Morphology per size was highlighted with centric and pennate being assigned either small or big. Small meaning that the cell was under or equal to 50 um and large for any cell over 50 um. 
-```{r}
+```{r top_bottom_morphosize_ratio}
 ggplot(top_bottom_ratio_data, aes(x = MorphoSize, y = Ratio, fill = MorphoSize)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
@@ -281,6 +300,25 @@ ggplot(top_bottom_ratio_data, aes(x = MorphoSize, y = Ratio, fill = MorphoSize))
   )
 ```
 
+## ANOVA on top-bottom ratios 
+A three-way ANOVA was ran on top-bottom ratios with the addition of morphotype sorted by size. Temperature and lights conditions were also considered. The data needed to be cleaned to remove Inf values due to lack of cell in some categories. Because of the results of the previous ANOVA,only temperature was investigated. The goal was to establish in morphosize and temperature had a combined effect.
+```{r anova_morphosize}
+#Check for Inf in 'Ratio'
+summary(top_bottom_ratio_data$Ratio)
+
+#Remove rows with Inf
+ratio_morpho_data_clean <- top_bottom_ratio_data %>%
+  dplyr::filter(!is.na(Ratio) & !is.nan(Ratio) & !is.infinite(Ratio))
+
+#Check cleaned data
+#summary(ratio_morpho_data_clean$Ratio)
+
+#Two-way ANOVA on cleaned data with Temp_C and MorphoSive considered 
+anova_morpho <- aov(Ratio ~ Temp_C * MorphoSize, data = ratio_morpho_data_clean)
+
+# Summary ANOVA
+summary(anova_morpho)
+```
 
 
 
