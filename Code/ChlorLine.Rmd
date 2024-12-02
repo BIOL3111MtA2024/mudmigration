@@ -115,9 +115,9 @@ General trends:
 
 No significant trend in all the three temperature settings, based on statistical test ran and wide confidence interval visualized on the plot.
 
-There is migration happening, however, not at a measurable trend, since the data has very few points and is very sparse.
+There is migration happening, however, not at a measurable trend with temperature, since the data has very few points and is very sparse.
 
-In all temperature settings, values started low, and increased later on - not exactly with respect to time, but still, high values were not found at the start of the sampling period.
+In all temperature settings, values started low, and increased later on - but still, high values were not found at the start of the sampling period.
 As time went on, the range of values increased.
 
 # Nested Regression
@@ -154,5 +154,10 @@ summary(aov(TopBottomRatio ~ ToD * Temp_C,
 Both the linear model and the ANOVA suggest that neither ToD nor the interaction between ToD and Temperature significantly affect the TopBottomRatio variable. There is a borderline significance for temperature in the ANOVA test, hinting at a possible, but minor effect on the relationship.
 
 The R-squared values in the linear model indicate that the predictors explain very little of the variability in the TopBottomRatio variable.
+
+
+We have high top to bottom ratios, but a simple linear regression does not show that
+As time went on the range of values increased. But values did not increase/ high values not reached for 23 degrees 
+early top to bottom ratios were low and later top to bottoms were high
 
 
