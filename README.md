@@ -100,5 +100,12 @@ CampbellSOP28ChlorophyllaTurner.pdf - instructions on the chlorophyll analysis p
 
 ### Output
 
+mud_comp.html - Community composition analysis document 
+  Figure 1: Cell count per maximum dimension and condition
+  Figure 2: Cell count per condition
+  Figure 3: Top-bottom ratio graph per patch and condition
+  Figure 4: Top-bottom ratio per condition, sorted by cell morphotype and size category
+
+
 Output from knit .Rmd, Figures and tables produced from analysis.
 Do not generate swarms of superfluous data exploration figures.
