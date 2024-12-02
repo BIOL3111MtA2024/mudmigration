@@ -56,18 +56,21 @@ R studio and R version 4.3.3 and GoogleSheets (2024)
 Chlorophyll analysis:
 https://docs.google.com/spreadsheets/d/16DxWZhYw69ZgACGu82szN9tpgpYYPWIxPXOcSLM2Bo0/edit?usp=sharing
 Community composition:
-
+https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1iz1L2MoCAyF0O4x3D6mCePw/edit?gid=0#gid=0
 
 ### Data Dictionary
 
 Chlorophyll analysis:
 https://docs.google.com/spreadsheets/d/16DxWZhYw69ZgACGu82szN9tpgpYYPWIxPXOcSLM2Bo0/edit?usp=sharing
 Community composition:
+https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1iz1L2MoCAyF0O4x3D6mCePw/edit?gid=1060891329#gid=1060891329
 
 
 ### Data/RawData
-
+Chlorophyll analysis:
 vert_migration.csv - Chlorophyll analysis data.
+Community composition:
+https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1iz1L2MoCAyF0O4x3D6mCePw/edit?gid=405129858#gid=405129858
 
 ### Data/CleanData
 
@@ -88,6 +91,8 @@ light_dark.Rmd - Analyzing the vertical migration in different light and tempera
 ChlorImport.Rmd - Imports  data from an interactive googlesheet; converts RFU from the Turner Fluorometer to ug Chl cm^-2^; converts a numeric YYYYMMDDHHMM code to Time of Day, and elapsed time; and saves the tidied data as a .Rds for general use.
 
 ChlorLine.Rmd - Analyzes vertical migration per hour in different temperature conditions.
+
+mud_comp.Rmd - Cleaning raw data and calculating cell size. Visualizing cell count, top-bottom ratio, and morphotype with maximum dimension. 
 
 ### Docs
 
