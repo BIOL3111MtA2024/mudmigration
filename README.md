@@ -85,6 +85,9 @@ FileImportFunctions.Rmd - Import functions used for creating other analysis.
 
 light_dark.Rmd - Analyzing the vertical migration in different light and temperature conditions. 
 
+ChlorImport.Rmd - Imports  data from an interactive googlesheet; converts RFU from the Turner Fluorometer to ug Chl cm^-2^; converts a numeric YYYYMMDDHHMM code to Time of Day, and elapsed time; and saves the tidied data as a .Rds for general use.
+
+ChlorLine.Rmd - Analyzes vertical migration per hour in different temperature conditions.
 
 ### Docs
 
