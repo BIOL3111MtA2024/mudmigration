@@ -27,7 +27,7 @@ To determine if temperature and light influenced vertical migration, lens paper 
 
 ## Funding sources
 
-- List your funding sources, grant names, and grant numbers as applicable.
+- No funding sources in this project.
 
 ## Keywords
 

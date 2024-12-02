@@ -113,22 +113,12 @@ vert_migration_wide |>
 ```
 General trends:
 
-No significant trend in all the three temperature settings, based on statistical test ran and wisdeconfidence interval visualized on the plot.
+No significant trend in all the three temperature settings, based on statistical test ran and wide confidence interval visualized on the plot.
 
 There is migration happening, however, not at a measurable trend, since the data has very few points and is very sparse.
 
 In all temperature settings, values started low, and increased later on - not exactly with respect to time, but still, high values were not found at the start of the sampling period.
-
-
-Old analysis:
-(At 15°C there is a broader spread of ratios and the highest amount of ratios exceeding 2 (at noon and one replicate taken at 1 pm). This shows that the highest concentration of chlorophyll was found on these papers, suggesting the highest amplitude of diatom migration happens at 15°C.
-
-At 20°C ratios are generally lower, slightly below 2, with one exceeding 2 (at 11 am).There is a 
-
-At 23°C ratios are all below 1, indicating the lowest amplitude of migration happens at 23°C and shows the least variability between the three temperatures.
-
-The broader range of ratios at 15°C could indicate more vertical migration at lower temperatures. The decreasing range of ratios as the temperature increased from 15°C to 23°C suggests there is some temperature dependence in migration patterns of diatoms.)
-
+As time went on, the range of values increased.
 
 # Nested Regression
 We completed a nested regression for each temperature setting to determine if there is any significant slope/trend in our data.
