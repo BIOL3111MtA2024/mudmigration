@@ -21,6 +21,7 @@ The data was analysed for potential correlations between chl in different light 
 - Sarah R. Postuma, Mount Allison University, spostuma@mta.ca 
 - Gabriela Feres Chiappetta, Mount Allison University, gfereschiappetta@mta.ca
 - Paige I. B. Stuart, Mount Allison University, pistuart@mta.ca
+- Lisa Kamtchatnova, Mount Allison University, ekamtchatnova@mta.ca
 
 ## Primary Contact  
 
