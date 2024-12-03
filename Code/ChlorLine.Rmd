@@ -1,11 +1,15 @@
 ---
 title: "ChlorLine"
 output: html_notebook
+author:
+  Gabriela Feres Chiappetta
+  Lisa Kamtchatnova
+  Douglas Campbell
 ---
 
 # Introduction
 
-This .rmd reads chlorophyll data and generates a line graph ...
+This .rmd reads chlorophyll data, generates a line graph and statistical outputs.
 
 # Install packages if needed
 
@@ -63,8 +67,6 @@ vert_migration_wide <- vert_migration |>
   select(-c(Tissue_Area_cm2, VolSol_mL, Fluorescence_Reading, `...19`,  Chl_ugL)) |>
   pivot_wider(id_cols = c(YYYYMMDDHHMM, Replicate, Temp_C, Light, Trial, DateTime, Date, ToD, E_time_h), names_from = Top_Bottom, values_from = Chl_ugcm2, values_fn = mean) |>
   mutate(TopBottomRatio = top/bottom)
-
-#hack solution to cope with ambiguous row labelling by taking 'mean' of rows with multiple values.
 
 ```
 
