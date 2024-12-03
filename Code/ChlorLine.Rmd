@@ -7,31 +7,52 @@ author:
   Douglas Campbell
 ---
 
+# Summary
+
+  Diatom vertical migration is a worldwide phenomenon that affects tracking of diatom blooms from satellites. Understanding when the diatoms emerge from the sediment during the tidal cycle will improve tracking of diatom blooms. 
+  Temperature could affect the rate of photosynthesis and degradation of diatoms. In different light conditions, there might be less vertical migration occurring.
+  Sediment from the Bay of Fundy was incubated at 15°C, 20°C, and 23°C under medium, dim, and full light conditions and analyzed in several different ways. 
+  To determine if temperature and light influenced vertical migration, lens paper was added onto the surface of the sediment of all conditions and removed after a 6.5-hour period. The lens paper then underwent chlorophyll extraction and analysis.
+  The data was analysed for potential correlations between chlorophyll in different light and temperature conditions and found no statistical significance.
+
 # Introduction
 
-This .rmd reads chlorophyll data, generates a line graph and statistical outputs.
+  Mudflats are a bio-diverse, highly productive coastal and estuarine habitat home to microphytobenthic diatoms which carry out keystone functions and are responsible for 50% of estuarine primary productivity (Herlory et al., 2004). Motile microphytobenthic diatoms, predominantly pennate diatoms, engage in vertical migrations to the surface of mudflats, to carry out keystone functions during low tide and migrate back down during high tide (Conslavey et al., 2011). These migrations are asymmetrical, with diatoms migrating much quicker upwards than downwards to maximize light exposure for photosynthesis. Studies in estuaries around the world have shed light on these migratory patterns, however, no such studies have been performed in the rare habitat of the Bay of Fundy mudflats, located in The Bay of Fundy in New Brunswick. 
+  Fundy’s tides are the highest in the world due to an unusual combination of standing wave phenomena called seiche as well as the shape of the bay itself (Parks Canada Agency, 2023), with annual temperatures ranging from -14ºC to 10ºC (Corp, n.d). Our study aims to analyze the effects of temperature and light on the speed of vertical migration of microphytobenthic diatoms found in The Bay of Fundy, as well as their chlorophyll output under these conditions.
+   We studied this phenomena to better understand the makeup of the Bay of Fundy and investigate the impacts of global warming. More broadly, to apply knowledge of this phenomena to satellite surveying of photosynthetic biomass and develop new methods of investigation. The goal for this particular project was to examine how vertical migration of benthic diatoms is controlled by increasing temperatures in high light condition.
 
-# Install packages if needed
+# Hypothesis
+
+  Vertical migration will potentially decrease with increasing temperature.
+
+# Methods
+
+  Three aluminum lasagna pans was filled with mudflat sediment from Peg’s Cove in the Bay of Fundy and excess water eliminated via a baster. The sediment was left moist. Lens papers were cut into 2 x 2 cm squares. One paper was placed on the top of the sediment and one paper was placed directly under it for each light condition. Six patches of lens paper were laid out in each pan. Lasagna pans was will be placed in 15ºC, 20ºC and 23ºC incubation chambers. Lens paper in double layered strips added at 8:00. A patch of both layered papers from each condition was removed every hour from 09:00 to 14:00 from all lasagna pans respectively. Once removed, each moist paper was placed in a test tube and re-submerged with 2mL development solvent (Acetone and DMSO). Twelve test tubes were collected from each pan and labeled with the total time spent in sediment. Samples were collected from each test tube and chlorophyll analysis was completed with a Turner Chlorophyll Fluorometer, under the inspection of Dr. Campbell. The samples were then sent to statistical analysis.
+
+## Install packages
 
 ```{r install_packages}
 #install.packages("tidyverse")
 #install.packages("kableExtra")
 ```
 
-# Loading Packages
+## Load Packages
 
 ```{r load packages}
 library(tidyverse) 
 library(kableExtra)
 library(broom)
 ```
-# Reading file
+## Read file
 
 ```{r read_vert_migration}
 vert_migration <- readRDS( file = file.path("..","Data","CleanData","vert_migration.rds"))
 ```
 
-# Plotting Chlorophyll concentration over time at different temperatures 
+# Results
+
+
+## Chlorophyll concentration at hight tide in the Bay of Fundy at 15°C, 20°C, and 23°C
 
 ```{r chlor_time}
 vert_migration |>
@@ -55,12 +76,13 @@ vert_migration |>
   )
 
 ```
-In this plot, it is observed that the bottom layers of the lens paper usually has higher chlorophyll abundance than the top layer. This was already hypothesized: fewer diatoms would migrate to the top layer mainly due to size and motility, and more would stay in the bottom layer, since some were already at the surface by the time the lens papers were placed.
+  In this figure, it is observed that the bottom layers of the lens paper usually has higher chlorophyll abundance than the top layer. This was already hypothesized: fewer diatoms would migrate to the top layer mainly due to size and motility, and more would stay in the bottom layer, since some were already at the surface by the time the lens papers were placed.
 
 
-# Top and bottom ratio
+## Creating a TopBottomRatio variable
 
-vert_migration contains variable Top_Bottom, that describes if the sample was measure from the top or the bottom layer of lens paper. To simplify ratio calculation we used 'pivot_wider' in the data to separate Top_Bottom into two separate variables, Top & Bottom; that lowers the number of rows and increases the number of columns.
+  The vert_migration contains variable Top_Bottom, that describes if the sample was measure from the top or the bottom layer of lens paper. To simplify ratio calculation we used 'pivot_wider' in the data to separate Top_Bottom into two separate variables, Top & Bottom; that lowers the number of rows and increases the number of columns.
+  This new variable allowed for a clear understanding of vertical migration in a quantitative manner.
 
 ```{r top_bottom}
 vert_migration_wide <- vert_migration |>
@@ -70,7 +92,7 @@ vert_migration_wide <- vert_migration |>
 
 ```
 
-# Plot ratio of Top Chl_ugcm2 divided by Bottom Chl_ugcm2
+## Ratio of Top Chl_ugcm2 to Bottom Chl_ugcm2, Chlorophyll concentration top to bottom ratios at temperatures 15°C, 20°C, and 23°C
 
 ```{r Ratio Top to Bottom Chl_ugcm2}
 vert_migration_wide |>
@@ -93,17 +115,12 @@ vert_migration_wide |>
   )
 ```
 
-No significant trend in all the three temperature settings due to statistical tests (Nested regressions, linear regression and ANOVA) and wide confidence interval observed in the plot.
-
-There is migration happening, however, not at a measurable trend with temperature, since the data has very few points and is very sparse. It is also possible to observe high ratios in the data, however, a simple regression does not show that, unfortunately.
-
-Although not statistically significant, at 15ºC and 20ºC, it is observed that the ratios were always low at the beginning, increasing later on. At 23ºC, there is no observable nor statistical trend on ratio variability, and the ratios were not higher than ~1.3. 
-
-As time went on the range of values increased. But values did not increase/ high values not reached for 23 degrees 
-early top to bottom ratios were low and later top to bottoms were high
+  No significant trend in all the three temperature settings due to statistical tests (Nested regressions, linear regression and ANOVA) and wide confidence interval observed in the plot.
+  There is migration happening, however, not at a measurable trend with temperature, since the data has very few points and is very sparse. It is also possible to observe high ratios in the data, however, a simple regression does not show that, unfortunately.
+  Although not statistically significant, at 15ºC and 20ºC, it is observed that the ratios were always low at the beginning, increasing later on. At 23ºC, there is no observable nor statistical trend on ratio variability, and the ratios were not higher than ~1.3.As time went on the range of values increased.
 
 
-# Nested Regression
+### Nested Regression
 
 ```{r nested regression}
 vert_nest <- vert_migration_wide |>
@@ -123,19 +140,35 @@ unnest(cols = c(LinearTidy)) |>
   pivot_wider(id_cols = c(Temp_C), names_from = term, values_from = c(estimate, std.error, p.value)) |>
   kable()
 ```
-We completed a nested regression for each temperature setting to determine if there is any significant slope/trend in our data. And, from the results of the nested regression, there is not a significant trend in any of the temperature settings.
+  We completed a nested regression for each temperature setting to determine if there is any significant slope/trend in our data. And, from the results of the nested regression, there is not a significant trend in any of the temperature settings.
 
-# Linear regression and ANOVA
+### Linear regression 
 
 ```{r linear regression}
 summary(lm(TopBottomRatio ~ ToD * Temp_C,
            data = vert_migration_wide))
+```
+### ANOVA 
 
+```{r}
 summary(aov(TopBottomRatio ~ ToD * Temp_C,
            data = vert_migration_wide))
 ```
-Both the linear model and the ANOVA suggest that neither ToD nor the interaction between ToD and Temperature significantly affect the TopBottomRatio variable. However, there is a borderline significance for temperature in the ANOVA test, at a p-value of 0.0711, hinting at a possible minor effect of temperature in the TopBottomRatio variable
 
-The R-squared values in the linear model also indicate that the predictors explain very little of the variability in the TopBottomRatio variable.
+  Both the linear model and the ANOVA suggest that neither ToD nor the interaction between ToD and Temperature significantly affect the TopBottomRatio variable. However, there is a borderline significance for temperature in the ANOVA test, at a p-value of 0.0711, hinting at a possible minor effect of temperature in the TopBottomRatio variable
+  The R-squared values in the linear model also indicate that the predictors explain very little of the variability in the TopBottomRatio variable.
 
+# Conclusion
+
+  In summary, our investigation revealed that, while the data exhibited observable trends, these were not statistically significant. The plotted data points were highly dispersed, and substantially variable, confirmed in the confidence intervals, particularly at 15ºC. A positive trend for 15ºC was observed, among an almost a null effect for 20ºC and 23ºC. However, the statistical tests, regressions and an ANOVA, but after running three different statistical tests, did not confirm a significant effect of temperature on chlorophyll abundance. Although the ANOVA indicated a borderline significance of temperature at a p-value of 0.0711, the remaining tests did not support this finding. 
+  Migration is evident, because chlorophyll readings were seen in the top lens paper, however, not at a measurable trend with temperature, since the data has very few data points and is very sparse. It is possible to observe very high ratios in the 15ºC and 20ºC, however, a simple regression did not show or confirm that. Additionally, although not statistically significant, at 15ºC and 20ºC, it was observed that the ratios were always low at the beginning, and always increasing later on. Which indicates that we could possibly see a significant trend with more data points. At 23ºC, there is no observable nor statistical trend on ratio variability. To conclude, there was no significant trend of temperature in the pattern of diatom vertical migration.
+
+
+# References
+
+  Conslavey, M., Paterson, D. M., & Underwood, G. J. C. (2011). The Ups and Downs of Life in a Benthic Biofilm: Migration of Benthic Diatoms. Diatom Research, 19:2(181–202). https://doi.org/10.1080/0269249X.2004.9705870  
+  Daggers, T. D., Kromkamp, J. C., Herman, P. M. J., & van der Wal, D. (2018). A model to assess microphytobenthic primary production in tidal systems using satellite remote sensing. Remote Sensing of Environment, 211, 129–145. https://doi.org/10.1016/j.rse.2018.03.037  
+  Haro, S., Bohórquez, J., Lara, M., Garcia-Robledo, E., González, C. J., Crespo, J. M., Papaspyrou, S., & Corzo, A. (2019). Diel patterns of microphytobenthic primary production in intertidal sediments: The role of photoperiod on the vertical migration circadian rhythm. Scientific Reports, 9(1), 13376. https://doi.org/10.1038/s41598-019-49971-8   
+  Herlory, O., Guarini, J.-M., Richard, P., & Blanchard, G. F. (2004). Microstructure of microphytobenthic biofilm and its spatio-temporal dynamics in an intertidal mudflat (Aiguillon Nay, France). Marine Ecology Progress Series, 282(33–44). https://doi.org/10.3354/meps282033  
+  Corp, P. (n.d.). Attractions: Historical. The Weather Network. Retrieved September 13, 2024, from https://www.theweathernetwork.com/ca/forecasts/attractions/historical/nova-scotia/bay-of-fundy-tourism
 
