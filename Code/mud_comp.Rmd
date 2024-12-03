@@ -225,7 +225,7 @@ filtered_data |>
   )
 ```
 ### Observations:
-Cell are overwhelmingly smaller or equal to 50um. Comparing top and bottom samples, there is a bigger difference in cell counts in 15 degrees.  
+Cell are overwhelmingly smaller or equal to 50um at the mudflat surface. Comparing top and bottom samples, there is a bigger difference in cell counts in 15 degrees.  
 
 ## Figure 2: Cell count per condition 
 Created a new data set that groups entries based on light, temperature, lens paper layer, and SampleID. Then a summarized function created a cell count based on ChainNum. This is graphed using ggplot per patch (= corresponding top and bottom) and per light and temperature with cell count of the y-axis. Cell counts are per 0.32 mm2 because two images were taken per sample each with an area of 0.16 mm2. 
@@ -322,7 +322,7 @@ ggplot(top_bottom_ratio_data, aes(x = MorphoSize, y = Ratio, fill = MorphoSize))
   )
 ```
 ### Observations:
-Many differences in community makeup exist between conditions. I expect that trends displayed on the figure are due to a small sample size. However, there may be an effect of temperature. 
+Many differences in surface community makeup exist between conditions. I expect that trends displayed on the figure are due to a small sample size. However, there may be an effect of temperature. 
 
 ## ANOVA on top-bottom ratios 
 A three-way ANOVA was ran on top-bottom ratios with the addition of morphotype sorted by size. Temperature and lights conditions were also considered. The data needed to be cleaned to remove Inf values due to lack of cell in some categories. Because of the results of the previous ANOVA,only temperature was investigated. The goal was to establish in morphosize and temperature had a combined effect.
