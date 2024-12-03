@@ -1,32 +1,48 @@
 ---
-title: "Mud Migration Community Compositon"
+title: "Mud Migration, Surface Community Compositon"
 output: html_notebook
 author:
   Paige Stuart
   Douglass Campbell
 ---
-# Install packages if needed
+# 1.0 Introduction
+Mudflats are a bio-diverse, highly productive coastal and estuarine habitat home to microphytobenthic diatoms which carry out keystone functions and are responsible for 50% of estuarine primary productivity (Herlory et al., 2004). Motile microphytobenthic diatoms, predominantly pennate diatoms, engage in vertical migrations to the surface of mudflats, to carry out keystone functions during low tide and migrate back down during high tide (Conslavey et al., 2011). These migrations are asymmetrical, with diatoms migrating much quicker upwards than downwards to maximize light exposure for photosynthesis. Studies in estuaries around the world have shed light on these migratory patterns, however, no such studies have been performed in the rare habitat of the Bay of Fundy mudflats, located in The Bay of Fundy in New Brunswick. 
+  Fundy’s tides are the highest in the world due to an unusual combination of standing wave phenomena called seiche as well as the shape of the bay itself (Parks Canada Agency, 2023), with annual temperatures ranging from -14ºC to 10ºC (Corp, n.d). Our study aims to analyze the effects of temperature and light on the speed of vertical migration of microphytobenthic diatoms found in The Bay of Fundy, as well as their chlorophyll output under these conditions.
+   We studied this phenomena to better understand the makeup of the Bay of Fundy and investigate the impacts of global warming. More broadly, to apply knowledge of this phenomena to satellite surveying of photosynthetic biomass and develop new methods of investigation. The goal for this particular project was to examine how vertical migration of benthic diatoms is controlled by increasing temperatures and high light condition.
+
+# 2.0 Methods 
+## 2.1 Mudflat simulation
+Three aluminum lasagna pans were filled with mudflat sediment from Peg’s Cove in the Bay of Fundy. Excess water was eliminated via a baster. The sediment was left moist to replicate a natural environment.
+
+## 2.2 Surface community composition samples
+Lens papers were cut into 1 x 1 cm squares. One paper was placed on the top of the sediment and the other paper was placed directly on top of the other. Six patches of lens paper were used. A pair of lens paper (top and bottom) were added to each experimental condition. Conditions were created using incubators and coverings. For surface community composition, incubators were set to 15 °C and 20 °C. To simulate different light conditions, aluminum and screens were placed on top of two thirds of the pan. This created three different light levels; light, medium, and dark. The lens paper squares (1x1 cm) were places on the surface at 8am on October 8th, 2024. They were removed at 2pm, representing a full 6 hour tidal cycle. The lens papers were removed using forceps, turned over, and then place face down on a slide. Each slide was treated with gluteraldehyde and then covered and sealed. 
+
+## 2.3 Manual cell counting and sorting
+Manual cell counting was done by imaging lenses using a florescent scope. Two images per lens were taken and assigned a sample photo ID. Each image were then analyzed using DFM measure. Each observed cell was categorized by morphotype and measured to give a width (two widths for pennate) and a length in um. 
+
+# 3.0 Data Analysis 
+### Install packages if needed
 ```{r install_packages}
 #install.packages("googlesheets4")
 #install.packages("googledrive")
 #install.packages("tidyverse")
 ```
 
-# Load packages
+### Load packages
 ```{r load_packages}
 library(googlesheets4)
 library(googledrive)
 library(tidyverse)
 ```
 
-# Connect to google account
+### Connect to google account
 De-authorize Google account to allow universal access to the raw data sheet.Then retrieve data sheet from where it's stored on google drive.
 ```{r connect_google}
 gs4_deauth()
 googlesheet_url <- "https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1iz1L2MoCAyF0O4x3D6mCePw/edit?gid=405129858#gid=405129858"
 ```
 
-# Accessing sheets
+### Accessing sheets
 Access each of the three sheets on the spreadsheet.
 ```{r accessing_sheets}
 #Accessing sheet with meta data
@@ -36,10 +52,10 @@ raw_cell_measurements <- read_sheet(googlesheet_url, sheet = "raw_cell_measureme
 #Accessing data dictionary for reference to column values
 data_dictionary <- read_sheet(googlesheet_url, sheet = "data_dictionary")
 ```
-# Set Up
+## 3.1 Set up data for analysis 
 Initial steps for setting up the raw data for analysis. 
 
-## Set missing values of width_1 and width_2
+### Set missing values of width_1 and width_2
 Some width measurements are blank if a) the cell was undefined or b) the morphology had no unequal widths. This corrects these missing values to 1 um, which is the smallest measurement possible. 
 ```{r missing_widths}
 #Correcting width 1
@@ -55,14 +71,14 @@ corrected_width_data <- corrected_width_data |>
   ))
 ```
 
-## List of morphotypes obseved 
+### List of morphotypes obseved 
 Before graphing anything with morphotypes check for any misspelled variables.
 ```{r unqiue_morphotypes}
 unique_morphotypes <- unique(corrected_width_data$CellMorphotype)
 print(unique_morphotypes)
 ```
 
-## Correct mispelled pennate
+### Correct mispelled pennate
 A single morphotype label was misspelled this corrected it.
 ```{r correct_mispelling}
 #Find cell containing the misspelled word
@@ -73,13 +89,13 @@ mislabel_pennate
 corrected_width_data[106, "CellMorphotype"] <- "pennate"
 ```
 
-## Fix missing CellVol
+### Fix missing CellVol
 One cell did not fit well into any of the volume calculations. New morphotype created for it. 
 ```{r fix_missing}
 corrected_width_data[12, "CellMorphotype"] <- "other"
 ```
 
-## Estimate volumes & maximum linear dimension
+### Estimate volumes & maximum linear dimension
 Data set created with new columns for calculated volume and dimension. Each morphotype is uniquely shaped and therefore the volume is calculated differently depending. Maximum dimension is defined as the largest number whether width 1 or 2 or the length measurement. 
 ```{r volumes_dimension}
 #Calculate Cell Volume for each Morphotype
@@ -101,7 +117,7 @@ volume_dimension_data <- volume_dimension_data |>
   )
 ```
 
-## Check for missing results
+### Check for missing results
 This code finds empty cells in the data set. 
 ```{r missing_results}
 #Find empty cells in CellVol
@@ -119,7 +135,7 @@ This code finds empty cells in the data set.
 #Corrected these missing results, return to misspelling above ^
 ```
 
-## Control for chain sizes
+### Control for chain sizes
 Accounting for centric chains a new column was created for total volume and maximum dimension. This multiplies cell volume and dimension by the number of cells in every chain. For this to work a column in the raw data was filled with either 1 for single cells or the number of cells in a chain.
 ```{r size_chain}
 volume_dimension_data <- volume_dimension_data %>%
@@ -127,7 +143,7 @@ volume_dimension_data <- volume_dimension_data %>%
   mutate(MaxDim_Total = MaxDim_um * ChainNum)
 ```
 
-## Histogram of max dimension
+### Histogram of max dimension
 A histogram was created to visualize cell size to get a better sense of the data. 
 ```{r histogram}
 #Plot Maximum Dimensions
@@ -136,13 +152,13 @@ volume_dimension_data |>
   geom_histogram(aes(MaxDim_Total))
 ```
 
-## Merge corrected data to metadata
+### Merge corrected data to metadata
 This merges the new data frame corrected above to the metadata about each sample.
 ```{r merge_sheets}
 merged_data <- merge(community_composition, volume_dimension_data, by = "SamplePhotoID", all.x = TRUE)
 ```
 
-## Create bargraph to visualize cell counts per sample
+### Create bargraph to visualize cell counts per sample
 A bargraph was used as reference for future sample visualizations. A plot of 'SamplePhotoId' versus the number of cells observed per single image was created. With only one image per bar the area is set to 0.16mm2. 
 ```{r bargraph_sample}
 # #Summarize data with chain number
@@ -158,7 +174,7 @@ A bargraph was used as reference for future sample visualizations. A plot of 'Sa
 #   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-## Filter data for ONLY centric and pennate morphotypes and then group. 
+### Filter data for ONLY centric and pennate morphotypes and then group. 
 Filtered data for only the morphotypes of focus, pennate and centric. These were chosen because of their observational frequency. A new column was created to define both morphotype and cell size in one value. Small cells were defined as any with a maximum dimension under or equal to 50 um and large cells any above 50 um. 
 ```{r filtered_data}
  #Summarize the counts for each maximum dimension bin per condition
@@ -175,16 +191,15 @@ filtered_data <- merged_data |>
 #print(filtered_data)
 ```
 
-## Reorder top and bottom
+### Reorder top and bottom
 Ordered the filtered data to make top layer samples first and then all bottom layers. This insures that all top layer samples are displayed on the higher chunk of every graph.  
 ```{r reorder_top_bottom}
 filtered_data$Top_Bottom <- factor(filtered_data$Top_Bottom, levels = c("top", "bottom"))
 filtered_data$Light <- factor(filtered_data$Light, levels = c("light", "med", "dark"))
 ```
 
-# Analysis
-
-# Figure 1: Cell count per maximum dimension and condition
+# 4.0 Results 
+## Figure 1: Cell count per maximum dimension and condition
 Created a histogram of the filtered data with maximum dimension in um and a generated cell count per facet of top and bottom layers and temperature. Medium light conditions were excluded. Light was included as fill. The generated cell count is per 0.32 mm2 which accounts for the area of two 0.16mm2 images per sample.  
 ```{r count_dimension}
 filtered_data |>
@@ -212,7 +227,7 @@ filtered_data |>
 ### Observations:
 Cell are overwhelmingly smaller or equal to 50um. Comparing top and bottom samples, there is a bigger difference in cell counts in 15 degrees.  
 
-# Figure 2: Cell count per condition 
+## Figure 2: Cell count per condition 
 Created a new data set that groups entries based on light, temperature, lens paper layer, and SampleID. Then a summarized function created a cell count based on ChainNum. This is graphed using ggplot per patch (= corresponding top and bottom) and per light and temperature with cell count of the y-axis. Cell counts are per 0.32 mm2 because two images were taken per sample each with an area of 0.16 mm2. 
 ```{r cell_count}
 cell_count_data <- filtered_data %>%
@@ -234,7 +249,7 @@ ggplot(cell_count_data, aes(x = Light, y = CellCount, fill = Light)) +
   )
 ```
 
-# Figure 3: Top-bottom ratio graph per patch and condition
+## Figure 3: Top-bottom ratio graph per patch and condition
 A new data set was created which first removed the medium light condition then filtered for top before bottom. Then the data was grouped by patch, layer, light, temperature, and morphology with size considered. A cell count was made by summing the chain numbers. The top to bottom ratio was calculated by dividing the cell count for every condition, top divided by bottom. Next, a plot was created with patches of corresponding top and bottom lenses on the x-axis and ratio on the y-axis. Light was used as a fill. 
 ```{r top_bottom_ratio}
 # Ratio of Top and Bottom counts within each Patch
@@ -286,7 +301,7 @@ summary(anova_ratio)
 ### Interpretation:
 No significance found for either temperature or light through the analysis of top-bottom ratios. 
 
-# Figure 4: Top-bottom ratio per condition, sorted by cell morphotype and size category
+## Figure 4: Top-bottom ratio per condition, sorted by cell morphotype and size category
 A plot was created to visualize the cell count ratio between top and bottom layers per light and temperature condition. Morphology per size was highlighted with centric and pennate being assigned either small or big. Small meaning that the cell was under or equal to 50 um and large for any cell over 50 um. 
 ```{r top_bottom_morphosize_ratio}
 ggplot(top_bottom_ratio_data, aes(x = MorphoSize, y = Ratio, fill = MorphoSize)) +
@@ -331,9 +346,15 @@ summary(anova_morpho)
 ### Interpretation:
 Temperature is barely significant with a confidence interval of 0.05. 
 
+# 5.0 Conclusion
+A significant effect of temperature was found when analyzing top-bottom ratios per morphotypes,categorized by size. We also found that the majority of diatoms observed on the surface were equal to or below 50 um.
 
-
-
+# 6.0 References
+  Conslavey, M., Paterson, D. M., & Underwood, G. J. C. (2011). The Ups and Downs of Life in a Benthic Biofilm: Migration of Benthic Diatoms. Diatom Research, 19:2(181–202). https://doi.org/10.1080/0269249X.2004.9705870  
+  Daggers, T. D., Kromkamp, J. C., Herman, P. M. J., & van der Wal, D. (2018). A model to assess microphytobenthic primary production in tidal systems using satellite remote sensing. Remote Sensing of Environment, 211, 129–145. https://doi.org/10.1016/j.rse.2018.03.037  
+  Haro, S., Bohórquez, J., Lara, M., Garcia-Robledo, E., González, C. J., Crespo, J. M., Papaspyrou, S., & Corzo, A. (2019). Diel patterns of microphytobenthic primary production in intertidal sediments: The role of photoperiod on the vertical migration circadian rhythm. Scientific Reports, 9(1), 13376. https://doi.org/10.1038/s41598-019-49971-8   
+  Herlory, O., Guarini, J.-M., Richard, P., & Blanchard, G. F. (2004). Microstructure of microphytobenthic biofilm and its spatio-temporal dynamics in an intertidal mudflat (Aiguillon Nay, France). Marine Ecology Progress Series, 282(33–44). https://doi.org/10.3354/meps282033  
+  Corp, P. (n.d.). Attractions: Historical. The Weather Network. Retrieved September 13, 2024, from https://www.theweathernetwork.com/ca/forecasts/attractions/historical/nova-scotia/bay-of-fundy-tourism
 
 
 
