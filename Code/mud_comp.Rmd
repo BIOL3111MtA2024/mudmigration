@@ -3,7 +3,7 @@ title: "Mud Migration, Surface Community Compositon"
 output: html_notebook
 author:
   Paige Stuart
-  Douglass Campbell
+  Douglas A. Campbell
 ---
 # 1.0 Introduction
 Mudflats are a bio-diverse, highly productive coastal and estuarine habitat home to microphytobenthic diatoms which carry out keystone functions and are responsible for 50% of estuarine primary productivity (Herlory et al., 2004). Motile microphytobenthic diatoms, predominantly pennate diatoms, engage in vertical migrations to the surface of mudflats, to carry out keystone functions during low tide and migrate back down during high tide (Conslavey et al., 2011). These migrations are asymmetrical, with diatoms migrating much quicker upwards than downwards to maximize light exposure for photosynthesis. Studies in estuaries around the world have shed light on these migratory patterns, however, no such studies have been performed in the rare habitat of the Bay of Fundy mudflats, located in The Bay of Fundy in New Brunswick. 
@@ -18,7 +18,7 @@ Three aluminum lasagna pans were filled with mudflat sediment from Peg’s Cove 
 Lens papers were cut into 1 x 1 cm squares. One paper was placed on the top of the sediment and the other paper was placed directly on top of the other. Six patches of lens paper were used. A pair of lens paper (top and bottom) were added to each experimental condition. Conditions were created using incubators and coverings. For surface community composition, incubators were set to 15 °C and 20 °C. To simulate different light conditions, aluminum and screens were placed on top of two thirds of the pan. This created three different light levels; light, medium, and dark. The lens paper squares (1x1 cm) were places on the surface at 8am on October 8th, 2024. They were removed at 2pm, representing a full 6 hour tidal cycle. The lens papers were removed using forceps, turned over, and then place face down on a slide. Each slide was treated with gluteraldehyde and then covered and sealed. 
 
 ## 2.3 Manual cell counting and sorting
-Manual cell counting was done by imaging lenses using a florescent scope. Two images per lens were taken and assigned a sample photo ID. Each image were then analyzed using DFM measure. Each observed cell was categorized by morphotype and measured to give a width (two widths for pennate) and a length in um. 
+Manual cell counting was done by imaging lenses using a fluorescent scope. Two images per lens were taken and assigned a sample photo ID. Each image were then analyzed using DFM measure. Each observed cell was categorized by morphotype and measured to give a width (two widths for pennate) and a length in um. 
 
 # 3.0 Data Analysis 
 ### Install packages if needed
