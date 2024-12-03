@@ -51,10 +51,12 @@ vert_migration |>
   )
 
 ```
+In this plot, it is observed that the bottom layers of the lens paper usually has higher chlorophyll abundance than the top layer. This was already hypothesized: fewer diatoms would migrate to the top layer mainly due to size and motility, and more would stay in the bottom layer, since some were already at the surface by the time the lens papers were placed.
+
 
 # Top and bottom ratio
 
-vert_migration contains variable Top_Bottom To simplify ratio calculation we 'pivot_wider' the data to separate Top_Bottom into two separate variables, Top & Bottom; that will lower the number of rows and increase the number of columns
+vert_migration contains variable Top_Bottom, that describes if the sample was measure from the top or the bottom layer of lens paper. To simplify ratio calculation we used 'pivot_wider' in the data to separate Top_Bottom into two separate variables, Top & Bottom; that lowers the number of rows and increases the number of columns.
 
 ```{r top_bottom}
 vert_migration_wide <- vert_migration |>
@@ -88,6 +90,7 @@ vert_migration_wide |>
     strip.text = element_text(face = "bold")
   )
 ```
+<<<<<<< HEAD
 ```{r geom_smooth_solidline}
 # same graph but with a solid line instead, doesn't change anything - just wanted to see what is aesthetically better
 vert_migration_wide |>
@@ -109,20 +112,27 @@ vert_migration_wide |>
     strip.background = element_rect(fill = "lightgray"),
     strip.text = element_text(face = "bold")
   )
+=======
+>>>>>>> b281a7a54afa348452f34db003520f0bc85ab224
 
-```
-General trends:
+No significant trend in all the three temperature settings due to statistical tests (Nested regressions, linear regression and ANOVA) and wide confidence interval observed in the plot.
 
-No significant trend in all the three temperature settings, based on statistical test ran and wide confidence interval visualized on the plot.
+There is migration happening, however, not at a measurable trend with temperature, since the data has very few points and is very sparse. It is also possible to observe high ratios in the data, however, a simple regression does not show that, unfortunately.
 
-There is migration happening, however, not at a measurable trend, since the data has very few points and is very sparse.
+Although not statistically significant, at 15ºC and 20ºC, it is observed that the ratios were always low at the beginning, increasing later on. At 23ºC, there is no observable nor statistical trend on ratio variability, and the ratios were not higher than ~1.3. 
 
-In all temperature settings, values started low, and increased later on - not exactly with respect to time, but still, high values were not found at the start of the sampling period.
-As time went on, the range of values increased.
+As time went on the range of values increased. But values did not increase/ high values not reached for 23 degrees 
+early top to bottom ratios were low and later top to bottoms were high
+
 
 # Nested Regression
+<<<<<<< HEAD
 We completed a nested regression for each temperature setting to determine if there is any significant slope/trend in our data.
 ```{r nested_regression}
+=======
+
+```{r nested regression}
+>>>>>>> b281a7a54afa348452f34db003520f0bc85ab224
 vert_nest <- vert_migration_wide |>
   nest(.by = Temp_C) |>
   mutate(LinearFit = purrr::map(data, ~lm(TopBottomRatio ~ ToD,
@@ -140,7 +150,7 @@ unnest(cols = c(LinearTidy)) |>
   pivot_wider(id_cols = c(Temp_C), names_from = term, values_from = c(estimate, std.error, p.value)) |>
   kable()
 ```
-From the results of the nested regression, there is not a significant trend in any of the temperature settings.
+We completed a nested regression for each temperature setting to determine if there is any significant slope/trend in our data. And, from the results of the nested regression, there is not a significant trend in any of the temperature settings.
 
 # Linear regression and ANOVA
 
@@ -151,8 +161,8 @@ summary(lm(TopBottomRatio ~ ToD * Temp_C,
 summary(aov(TopBottomRatio ~ ToD * Temp_C,
            data = vert_migration_wide))
 ```
-Both the linear model and the ANOVA suggest that neither ToD nor the interaction between ToD and Temperature significantly affect the TopBottomRatio variable. There is a borderline significance for temperature in the ANOVA test, hinting at a possible, but minor effect on the relationship.
+Both the linear model and the ANOVA suggest that neither ToD nor the interaction between ToD and Temperature significantly affect the TopBottomRatio variable. However, there is a borderline significance for temperature in the ANOVA test, at a p-value of 0.0711, hinting at a possible minor effect of temperature in the TopBottomRatio variable
 
-The R-squared values in the linear model indicate that the predictors explain very little of the variability in the TopBottomRatio variable.
+The R-squared values in the linear model also indicate that the predictors explain very little of the variability in the TopBottomRatio variable.
 
 

@@ -42,8 +42,6 @@ vert_migration <- read_sheet(googlesheet_url, sheet = "vert_migration")
 
 ```
 
-
-
 # Transforming our numbers into Chl cm^-2^
 
 Instructions for the chlorophyll calculations come from CampbellSOP28ChlorophyllaTurner.pdf

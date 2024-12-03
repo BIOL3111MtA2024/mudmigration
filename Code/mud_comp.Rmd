@@ -142,8 +142,6 @@ This merges the new data frame corrected above to the metadata about each sample
 merged_data <- merge(community_composition, volume_dimension_data, by = "SamplePhotoID", all.x = TRUE)
 ```
 
-# Cell Count Analysis
-
 ## Create bargraph to visualize cell counts per sample
 A bargraph was used as reference for future sample visualizations. A plot of 'SamplePhotoId' versus the number of cells observed per single image was created. With only one image per bar the area is set to 0.16mm2. 
 ```{r bargraph_sample}
@@ -184,7 +182,9 @@ filtered_data$Top_Bottom <- factor(filtered_data$Top_Bottom, levels = c("top", "
 filtered_data$Light <- factor(filtered_data$Light, levels = c("light", "med", "dark"))
 ```
 
-# Cell count per maximum dimension and condition
+# Analysis
+
+# Figure 1: Cell count per maximum dimension and condition
 Created a histogram of the filtered data with maximum dimension in um and a generated cell count per facet of top and bottom layers and temperature. Medium light conditions were excluded. Light was included as fill. The generated cell count is per 0.32 mm2 which accounts for the area of two 0.16mm2 images per sample.  
 ```{r count_dimension}
 filtered_data |>
@@ -194,7 +194,7 @@ filtered_data |>
   labs(
     x = "Maximum Dimension (um)", 
     y = "Cell Count per 0.32 mm²", 
-    title = str_wrap("Total cell count vs. maximum dimension, faceted by temperature and layer, light level displayed by colour")
+    title = str_wrap("Total cell count vs. maximum dimension, faceted by temperature (°C) and layer, light level displayed by colour")
   ) +
   facet_grid(rows = vars(Light, Top_Bottom), cols = vars(Temp_C)) + 
   scale_fill_brewer(palette = "Set1") + 
@@ -209,8 +209,10 @@ filtered_data |>
     strip.text = element_blank() 
   )
 ```
+### Observations:
+Cell are overwhelmingly smaller or equal to 50um. Comparing top and bottom samples, there is a bigger difference in cell counts in 15 degrees.  
 
-# Cell count per condition 
+# Figure 2: Cell count per condition 
 Created a new data set that groups entries based on light, temperature, lens paper layer, and SampleID. Then a summarized function created a cell count based on ChainNum. This is graphed using ggplot per patch (= corresponding top and bottom) and per light and temperature with cell count of the y-axis. Cell counts are per 0.32 mm2 because two images were taken per sample each with an area of 0.16 mm2. 
 ```{r cell_count}
 cell_count_data <- filtered_data %>%
@@ -221,7 +223,7 @@ ggplot(cell_count_data, aes(x = Light, y = CellCount, fill = Light)) +
   geom_bar(stat = "identity") +
   labs( 
        y = "Cell Count per Image (0.32 mm2)", 
-       title = "Cell Count faceted per temperature, coloured by light level") +
+       title = "Cell count faceted per temperature (°C), coloured by light level") +
   facet_grid(rows = vars(Top_Bottom), cols = vars(Temp_C)) +
   theme_minimal() +
   theme(    
@@ -232,7 +234,7 @@ ggplot(cell_count_data, aes(x = Light, y = CellCount, fill = Light)) +
   )
 ```
 
-# Top-bottom ratio graph per patch and condition
+# Figure 3: Top-bottom ratio graph per patch and condition
 A new data set was created which first removed the medium light condition then filtered for top before bottom. Then the data was grouped by patch, layer, light, temperature, and morphology with size considered. A cell count was made by summing the chain numbers. The top to bottom ratio was calculated by dividing the cell count for every condition, top divided by bottom. Next, a plot was created with patches of corresponding top and bottom lenses on the x-axis and ratio on the y-axis. Light was used as a fill. 
 ```{r top_bottom_ratio}
 # Ratio of Top and Bottom counts within each Patch
@@ -250,7 +252,7 @@ ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = Light)) +
   labs(
     x = "Patch (Corresponding Top and Bottom Samples)", 
     y = "Top-to-Bottom Ratio of Cell Counts per 0.32 mm2",
-    title = str_wrap("Top-to-bottom ratio of cell count, faceted by temperature and coloured by light.")
+    title = str_wrap("Top-to-bottom ratio of cell count, faceted by temperature (°C) and coloured by light.")
   ) +
   facet_grid(~ Temp_C) + 
   theme_minimal() +
@@ -259,6 +261,8 @@ ggplot(top_bottom_ratio_data, aes(x = Patch, y = Ratio, fill = Light)) +
     plot.title = element_text(size = 12, hjust = 0.5)
   )
 ```
+### Observations:
+It appears that temperature or light may impact top-bottom ratios. A two-way ANOVA is needed to determine if its significant.  
 
 ## ANOVA on top-bottom ratios 
 A two-way ANOVA was ran on top-bottom ratios with temperature and lights conditions considered. The data needed to be cleaned to remove Inf values due to lack of cell in some categories.
@@ -279,15 +283,18 @@ anova_ratio <- aov(Ratio ~ Temp_C * Light, data = ratio_data_clean)
 # Summary ANOVA
 summary(anova_ratio)
 ```
+### Interpretation:
+No significance found for either temperature or light through the analysis of top-bottom ratios. 
 
-# Top-bottom ratio per condition, sorted by cell morphotype and size category
+# Figure 4: Top-bottom ratio per condition, sorted by cell morphotype and size category
 A plot was created to visualize the cell count ratio between top and bottom layers per light and temperature condition. Morphology per size was highlighted with centric and pennate being assigned either small or big. Small meaning that the cell was under or equal to 50 um and large for any cell over 50 um. 
 ```{r top_bottom_morphosize_ratio}
 ggplot(top_bottom_ratio_data, aes(x = MorphoSize, y = Ratio, fill = MorphoSize)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
     y = "Top-to-Bottom Ratio of Cell Counts per 0.32 mm2",
-    title = str_wrap("Top-to-bottom ratio of cell count, faceted by temperature and light, morphotype sorted by size shown through colour.")
+    title = str_wrap("Top-to-bottom ratio of cell count, faceted by temperature (°C)
+ and light, morphotype sorted by size shown through colour.")
   ) +
   facet_grid(~ Light ~ Temp_C) + 
   scale_fill_discrete(name = "Morphotype by Size") +
@@ -299,6 +306,8 @@ ggplot(top_bottom_ratio_data, aes(x = MorphoSize, y = Ratio, fill = MorphoSize))
     legend.position = "bottom", 
   )
 ```
+### Observations:
+Many differences in community makeup exist between conditions. I expect that trends displayed on the figure are due to a small sample size. However, there may be an effect of temperature. 
 
 ## ANOVA on top-bottom ratios 
 A three-way ANOVA was ran on top-bottom ratios with the addition of morphotype sorted by size. Temperature and lights conditions were also considered. The data needed to be cleaned to remove Inf values due to lack of cell in some categories. Because of the results of the previous ANOVA,only temperature was investigated. The goal was to establish in morphosize and temperature had a combined effect.
@@ -319,7 +328,8 @@ anova_morpho <- aov(Ratio ~ Temp_C * MorphoSize, data = ratio_morpho_data_clean)
 # Summary ANOVA
 summary(anova_morpho)
 ```
-
+### Interpretation:
+Temperature is barely significant with a confidence interval of 0.05. 
 
 
 
