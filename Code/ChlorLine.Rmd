@@ -6,11 +6,10 @@ author:
   Lisa Kamtchatnova
   Douglas Campbell
 ---
----
 
 # Introduction
 
-This .rmd reads chlorophyll data and generates a line graph .
+This .rmd reads chlorophyll data, generates a line graph and statistical outputs.
 
 # Install packages if needed
 
