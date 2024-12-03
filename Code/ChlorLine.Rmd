@@ -118,7 +118,9 @@ vert_migration_wide |>
   )
 ```
 
-Three statistical test were performed, nested regressions, linear regression, and ANOVA, and a statistical trend between vertical migration and temperature was not found.The confidence interval is too wide to attribute a significant trend to variation in temperature.  
+Figure 2 shows the ratio of chlorophyll concentration found on the top layer of lens paper to bottom layer of lens paper. 
+
+Three statistical test were performed, nested regressions, linear regression, and ANOVA, and a statistical trend between vertical migration and temperature was not found. The confidence interval is too wide to attribute a significant trend to variation in temperature.  
 
 Top to bottom chlorophyll concentration ratios were low early in the day and higher later on in the day for temperatures of 15ºC and 20ºC. This was not observed for 23ºC. 
 
