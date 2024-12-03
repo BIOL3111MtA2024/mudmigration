@@ -1,9 +1,6 @@
 ---
-title: "light_dark"
-output: html_notebook
-author: 
-  Paige Stuart
-  Douglas A. Campbell
+title: "Light Temp Conditions"
+author: "Sarah Postuma Douglas A. Campbell"
 ---
 
 # 1.0 Introduction
@@ -98,7 +95,7 @@ filtered_data %>%
 ## Figure 2: Top Bottom Ratio Graph 
 The Top/Bottom ratio is analyzed with the variables of 15°C, 20°C, and 23°C and the different light conditions.
 
-```{r graph}
+```{r top_bottom_graph}
 filtered_data_wide %>%
   ggplot() +
   geom_point(aes(x = Light, y = TopBottomRatio), alpha = 0.7) +
