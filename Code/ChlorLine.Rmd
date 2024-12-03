@@ -7,50 +7,49 @@ author:
   Douglas Campbell
 ---
 
+# 1.0 Introduction
 
-# Introduction
-
-  Mudflats are a bio-diverse, highly productive coastal and estuarine habitat home to microphytobenthic diatoms, which carry out keystone functions and are responsible for 50% of estuarine primary productivity (Herlory et al., 2004). Motile microphytobenthic diatoms, predominantly pennate diatoms, engage in vertical migrations to the surface of mudflats to carry out keystone functions during low tide and migrate back down during high tide (Conslavey et al., 2011). These migrations are asymmetrical, with diatoms migrating much quicker upward than downward to maximize light exposure for photosynthesis. Studies in estuaries around the world have shed light on their migratory patterns, however, no such studies have been done in the Bay of Fundy,in New Brunswick. We aim to analyze the effects of temperature and light on the amplitude of vertical migration of microphytobenthic diatoms from in The Bay of Fundy by looking at chlorophyll output and doing manual cell counts. 
+  Mudflats are a bio-diverse, highly productive coastal and estuarine habitat home to microphytobenthic diatoms, which carry out keystone functions and are responsible for 50% of estuarine primary productivity (Herlory et al., 2004). Motile microphytobenthic diatoms, predominantly pennate diatoms, engage in vertical migrations to the surface of mudflats to carry out keystone functions during low tide and migrate back down during high tide (Conslavey et al., 2011). These migrations are asymmetrical, with diatoms migrating much quicker upward than downward to maximize light exposure for photosynthesis. Studies in estuaries around the world have shed light on their migratory patterns, however, no such studies have been done in the Bay of Fundy,in New Brunswick. We aim to analyze the effects of temperature on the amplitude of vertical migration of microphytobenthic diatoms from in The Bay of Fundy by looking at chlorophyll output and doing manual cell counts. 
 
 
-# Hypothesis
+## 1.2 Hypothesis
 
-Light and temperature variation will have an effect on the amplitude of vertical migration.
+Temperature variation will have an effect on the amplitude of vertical migration.
 
-# Methods
+# 2.0 Methods
 
 Mudflat sediment from Peg’s Cove from the Bay of Fundy was collected and distributed among three lasagna pans, excess water was eliminated via a baster, and the sediment was left moist. Lens papers were cut into 2 x 2 cm squares and placed in pairs, one paper on top of the other, onto the sediment.
 
 For the temperature portion of the experiment, one lasagna pan was incubated at 15ºC and one lasagna pan was incubated at 20ºC, both at the same light level (high light). Seven double layered lens papers were placed in the mud and left overnight. We synchronized out timing to coincide with the peak of high tide at the exact location at Peg's Cove where the mud was collected. Starting at 0800hr, one set of papers was removed to perform chlorophyll analysis on the top and bottom papers separately. This was done once every hour, respectively, until 1400hr. A triplicate round was performed at 1400hr, where three sets of double layered papers were placed and analyzed.      
 
-To analyze how much chlorophyll was found on each paper, each paper was placed in a test tube and re-submerged with 2mL-4mL of development solvent (Acetone and DMSO). Dilution was performed on certain samples to keep chlorophyll readings within range of the Chlorophyll Fluorometer.resuilts were recorded and graphed. 
+To analyze how much chlorophyll was found on each paper, each paper was placed in a test tube and re-submerged with 2-4mL of development solvent (Acetone and DMSO). Dilution was performed on certain samples to keep chlorophyll readings within range of the Chlorophyll Fluorometer results were recorded and graphed. 
 
 A test run was performed at 23ºC two weeks before the final execution of our experiment. We included the results of the test run in our analysis.  
 
-## Install packages
+## 2.2 Install packages
 
 ```{r install_packages}
 #install.packages("tidyverse")
 #install.packages("kableExtra")
 ```
 
-## Load Packages
+## 2.3 Load Packages
 
 ```{r load_packages}
 library(tidyverse) 
 library(kableExtra)
 library(broom)
 ```
-## Read file
+## 2.4 Read file
 
 ```{r read_vert_migration}
 vert_migration <- readRDS( file = file.path("..","Data","CleanData","vert_migration.rds"))
 ```
 
-# Results
+# 3.0 Results
 
 
-## Chlorophyll concentration at hight tide in the Bay of Fundy at 15°C, 20°C, and 23°C
+## 3.1 Figure 1. Chlorophyll concentration at hight tide in the Bay of Fundy at 15°C, 20°C, and 23°C
 
 ```{r chlor_time}
 vert_migration |>
@@ -83,7 +82,7 @@ There is more chlorophyll concentration detected as time approaches to 1400hr (e
 Top to bottom ratio of chlorophyll concentration were analysed next to visualize our results without the scatter in these graphs. 
 
 
-## Creating a TopBottomRatio variable
+## 3.2 Creating a TopBottomRatio variable
 
 The vert_migration contains variable Top_Bottom, that describes if the sample was measure from the top or the bottom layer of lens paper. To simplify ratio calculation we used 'pivot_wider' in the data to separate Top_Bottom into two separate variables, Top & Bottom; that lowers the number of rows and increases the number of columns.This new variable eliminates the scatter seen in the plot above. 
 
@@ -95,7 +94,7 @@ vert_migration_wide <- vert_migration |>
 
 ```
 
-## Ratio of Top Chl_ugcm2 to Bottom Chl_ugcm2, Chlorophyll concentration top to bottom ratios at temperatures 15°C, 20°C, and 23°C
+## 3.3 Figure 2. Ratio of Top Chl_ugcm2 to Bottom Chl_ugcm2, Chlorophyll concentration top to bottom ratios at temperatures 15°C, 20°C, and 23°C
 
 ```{r Ratio_Top_to_Bottom_Chl_ugcm2}
 vert_migration_wide |>
@@ -118,16 +117,21 @@ vert_migration_wide |>
   )
 ```
 
-Three statistical test were performed, nested regressions, linear regression, and ANOVA, and a statistical trend between vertical migration and temperature was not found.The confidence interval is too wide to attribute a significant trend to variation in temperature.  
+<<<<<<< HEAD
+Figure 2 shows the ratio of chlorophyll concentration found on the top layer of lens paper to bottom layer of lens paper. 
+
+=======
+>>>>>>> 49fcc32df533649cc0dca6809432bfe1039344e1
+Three statistical test were performed, nested regressions, linear regression, and ANOVA, and a statistical trend between vertical migration and temperature was not found. The confidence interval is too wide to attribute a significant trend to variation in temperature.  
 
 Top to bottom chlorophyll concentration ratios were low early in the day and higher later on in the day for temperatures of 15ºC and 20ºC. This was not observed for 23ºC. 
 
-There was s spike in chlorophyll concentration at 1300hr for 15ºC. Since we had three operators working to collect the data we attribute this spike to human error. In future execution operator ID will be included in the graphs. 
+There was a spike in chlorophyll concentration at 1300hr for 15ºC. Since we had three operators working to collect the data we attribute this spike to human error. In future execution operator ID will be included in the graphs. 
 
 There is evidence that vertical migration took place because chlorophyll readings were detected at the top layer of filter paper, and this was later confirmed by manual cell counts.
   
 
-### Nested Regression
+### 3.3.1 Nested Regression
 
 ```{r nested regression}
 
@@ -150,13 +154,13 @@ unnest(cols = c(LinearTidy)) |>
 ```
   We completed a nested regression for each temperature setting to determine if there is any significant slope/trend in our data. And, from the results of the nested regression, there is not a significant trend in any of the temperature settings.
 
-### Linear regression 
+### 3.3.2 Linear regression 
 
 ```{r linear_regression}
 summary(lm(TopBottomRatio ~ ToD * Temp_C,
            data = vert_migration_wide))
 ```
-### ANOVA 
+### 3.3.3 ANOVA 
 
 ```{r}
 summary(aov(TopBottomRatio ~ ToD * Temp_C,
@@ -167,7 +171,7 @@ Both the linear model and the ANOVA suggest that neither ToD nor the interaction
 
 The R-squared values in the linear model also indicate that the predictors explain very little of the variability in the TopBottomRatio variable.
 
-# Conclusion
+# 4.0 Conclusion
 
   In summary, while out data exhibited observable trends these trends were not statistically significant when performing a simple linear regression. The data points were variable and confidence interval too wide to detect a significant trend. Notably, an ANOVA indicated a borderline effect of temperature with a p-value of 0.0711, however, the remaining tests did not support this finding.
   
@@ -175,7 +179,7 @@ The R-squared values in the linear model also indicate that the predictors expla
   
 If we were to perform this experiment again, triplicate readings for each time interval would be helpful to generate more data points and account for homogeneity in the mudflat.   
 
-# References
+# 5.0 References
 
   Conslavey, M., Paterson, D. M., & Underwood, G. J. C. (2011). The Ups and Downs of Life in a Benthic Biofilm: Migration of Benthic Diatoms. Diatom Research, 19:2(181–202). https://doi.org/10.1080/0269249X.2004.9705870  
   Daggers, T. D., Kromkamp, J. C., Herman, P. M. J., & van der Wal, D. (2018). A model to assess microphytobenthic primary production in tidal systems using satellite remote sensing. Remote Sensing of Environment, 211, 129–145. https://doi.org/10.1016/j.rse.2018.03.037  

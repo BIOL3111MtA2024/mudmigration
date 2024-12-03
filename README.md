@@ -103,6 +103,8 @@ CampbellSOP28ChlorophyllaTurner.pdf - instructions on the chlorophyll analysis p
 ### Output
 
 ChlorLine.html - Vertical migration per hour in different temperature conditions
+  Figure 1: Chlorophyll concentration at hight tide in the Bay of Fundy at 15°C, 20°C, and 23°C.
+  Figure 2: Ratio of Top Chl_ugcm2 to Bottom Chl_ugcm2, Chlorophyll concentration top to bottom ratios at temperatures 15°C, 20°C, and 23°C.
 
 light_dark.html - Light and temperature analysis
   Figure 1: The chlorophyll Chl_ugcm2 of is plotted across 15°C, 20°C, and 23°C and different light conditions and separated into top and bottom sheet
