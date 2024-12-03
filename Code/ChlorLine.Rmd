@@ -38,7 +38,7 @@ author:
 
 ## Load Packages
 
-```{r load packages}
+```{r load_packages}
 library(tidyverse) 
 library(kableExtra)
 library(broom)
@@ -94,7 +94,7 @@ vert_migration_wide <- vert_migration |>
 
 ## Ratio of Top Chl_ugcm2 to Bottom Chl_ugcm2, Chlorophyll concentration top to bottom ratios at temperatures 15°C, 20°C, and 23°C
 
-```{r Ratio Top to Bottom Chl_ugcm2}
+```{r Ratio_Top_to_Bottom_Chl_ugcm2}
 vert_migration_wide |>
   ggplot() +
   geom_point(aes(x = ToD, y = TopBottomRatio), alpha = 0.7) +
@@ -114,15 +114,48 @@ vert_migration_wide |>
     strip.text = element_text(face = "bold")
   )
 ```
+<<<<<<< HEAD
+```{r geom_smooth_solidline}
+# same graph but with a solid line instead, doesn't change anything - just wanted to see what is aesthetically better
+vert_migration_wide |>
+  ggplot() +
+  geom_point(aes(x = ToD, y = TopBottomRatio), alpha = 0.7) +
+  geom_smooth(aes(x = ToD, y = TopBottomRatio), method = "lm", color = "red", linetype = "solid", linewidth = 1.2) + 
+  facet_grid(cols = vars(Temp_C)) +
+  labs(
+    x = "Time of Day", 
+    y = "Top to Bottom Ratio", 
+    title = "Ratio of Top Chlorophyll µg·cm^2 To Bottom Chlorophyll µg·cm^2",
+    subtitle = "Analyzing chlorophyll concentration top to bottom ratios at temperatures 15°C, 20°C, and 23°C"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+    panel.background = element_rect(fill = "gray90"),
+    panel.grid.major = element_line(color = "white"),
+    panel.grid.minor = element_blank(),
+    strip.background = element_rect(fill = "lightgray"),
+    strip.text = element_text(face = "bold")
+  )
+=======
+>>>>>>> b281a7a54afa348452f34db003520f0bc85ab224
 
   No significant trend in all the three temperature settings due to statistical tests (Nested regressions, linear regression and ANOVA) and wide confidence interval observed in the plot.
   There is migration happening, however, not at a measurable trend with temperature, since the data has very few points and is very sparse. It is also possible to observe high ratios in the data, however, a simple regression does not show that, unfortunately.
   Although not statistically significant, at 15ºC and 20ºC, it is observed that the ratios were always low at the beginning, increasing later on. At 23ºC, there is no observable nor statistical trend on ratio variability, and the ratios were not higher than ~1.3.As time went on the range of values increased.
 
 
+<<<<<<< HEAD
 ### Nested Regression
+=======
+# Nested Regression
+<<<<<<< HEAD
+We completed a nested regression for each temperature setting to determine if there is any significant slope/trend in our data.
+```{r nested_regression}
+=======
+>>>>>>> 3a3b90ff0638e17233f0c14ebaa800a441d5c676
 
 ```{r nested regression}
+>>>>>>> b281a7a54afa348452f34db003520f0bc85ab224
 vert_nest <- vert_migration_wide |>
   nest(.by = Temp_C) |>
   mutate(LinearFit = purrr::map(data, ~lm(TopBottomRatio ~ ToD,
@@ -144,7 +177,7 @@ unnest(cols = c(LinearTidy)) |>
 
 ### Linear regression 
 
-```{r linear regression}
+```{r linear_regression}
 summary(lm(TopBottomRatio ~ ToD * Temp_C,
            data = vert_migration_wide))
 ```
