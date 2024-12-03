@@ -25,7 +25,7 @@ For the temperature portion of the experiment, one lasagna pan was incubated at 
 
 To analyze how much chlorophyll was found on each paper, each paper was placed in a test tube and re-submerged with 2mL-4mL of development solvent (Acetone and DMSO). Dilution was performed on certain samples to keep chlorophyll readings within range of the Chlorophyll Fluorometer.resuilts were recorded and graphed. 
 
-A test run was performed at 23ºC two weeks before the final execution of our experiment. We incuded the results of the test run in our analysis.  
+A test run was performed at 23ºC two weeks before the final execution of our experiment. We included the results of the test run in our analysis.  
 
 ## Install packages
 
