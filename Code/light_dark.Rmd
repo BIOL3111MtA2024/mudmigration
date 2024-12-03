@@ -1,12 +1,27 @@
 ---
 title: "light_dark"
 output: html_notebook
+author: 
+  Paige Stuart
+  Douglas A. Campbell
 ---
 
-# Instruction 
-This .Rmd reads in the chlorophyll data and analyzes the Light and Temperature conditions on Chlorophyll ugcm2 after a 6.5 hour period. 
+# 1.0 Introduction
+Mudflats are a bio-diverse, highly productive coastal and estuarine habitat home to microphytobenthic diatoms which carry out keystone functions and are responsible for 50% of estuarine primary productivity (Herlory et al., 2004). Motile microphytobenthic diatoms, predominantly pennate diatoms, engage in vertical migrations to the surface of mudflats, to carry out keystone functions during low tide and migrate back down during high tide (Conslavey et al., 2011). These migrations are asymmetrical, with diatoms migrating much quicker upwards than downwards to maximize light exposure for photosynthesis. Studies in estuaries around the world have shed light on these migratory patterns, however, no such studies have been performed in the rare habitat of the Bay of Fundy mudflats, located in The Bay of Fundy in New Brunswick. 
+  Fundy’s tides are the highest in the world due to an unusual combination of standing wave phenomena called seiche as well as the shape of the bay itself (Parks Canada Agency, 2023), with annual temperatures ranging from -14ºC to 10ºC (Corp, n.d). Our study aims to analyze the effects of temperature and light on the speed of vertical migration of microphytobenthic diatoms found in The Bay of Fundy, as well as their chlorophyll output under these conditions.
+   We studied this phenomena to better understand the makeup of the Bay of Fundy and investigate the impacts of global warming. More broadly, to apply knowledge of this phenomena to satellite surveying of photosynthetic biomass and develop new methods of investigation. The goal for this particular project was to examine how vertical migration of benthic diatoms is controlled by increasing temperatures and high light condition.
 
-# Loading Packages 
+# 2.0 Methods 
+
+## 2.1 Mudflat Simulation
+Three aluminum lasagna pans were filled with mudflat sediment from Peg’s Cove in the Bay of Fundy and excess water eliminated with a baster. The sediment was left moist.
+
+## 2.2 Light and Temperature Samples 
+Lens papers were cut into 2 x 6 cm squares. One paper was placed on the top of the sediment and one paper was placed directly ontop for each light condition. Six patches of lens paper were laid out in each pan. Lasagna pans were placed in 15ºC, 20ºC and 23ºC incubation chambers and under full light incubator, medium, and dim light conditions. Lens paper in double layered strips added at 8:00. All patches were removed at 14:30. Once removed, each paper was placed in a test tube and re-submerged with 4mL solvent (Acetone and DMSO). Samples collected from each test tube were sent to spectroscopy using a Turner Chlorophyll Fluorometer, under the inspection of Dr. Campbell. The samples were then sent to statistical analysis.
+
+# 3.0 Data Analysis
+
+###  Loading Packages 
 ```{r loading_packages}
 #install.packages("tidyverse", "knitr", "here", "ggplot2")
 library(tidyverse) 
@@ -16,25 +31,25 @@ library(googledrive)
 library(ggplot2)
 ```
 
-# chl_data
-Data is stored on Google docs and loaded into RStudio. 
+### chl_data
+Data is stored on Google docs and loads onto R Studio. 
 ```{r accessing_data}
 gs4_deauth()
 googlesheet_url <- "https://docs.google.com/spreadsheets/d/16DxWZhYw69ZgACGu82szN9tpgpYYPWIxPXOcSLM2Bo0/edit?usp=sharing"
 chl_data <- read_sheet(googlesheet_url, sheet = "vert_migration")
 ```
+## 3.1 Set up data for analysis 
+Processing data for generating graphs. 
 
-# Transforming our numbers into Chl/cm^2
+### Transforming raw data fluorescence into Chl/cm^2
 Instructions for the chlorophyll calculations come from CampbellSOP28ChlorophyllaTurner.pdf
- 7.0314 RFU/ug L-1 and intercept of 0.9791
- 
 ```{r chlorophyll_calculations}
 chl_data$Chl_ugL <- (chl_data$Fluorescence_Reading/7.0314) -0.9791
 chl_data$Chl_ugcm2 <- (chl_data$Chl_ugL*chl_data$VolSol_mL/1000) / chl_data$Tissue_Area_cm2
 kable(chl_data)
 ```
 
-# Sorting the data
+### Sorting the data
 ```{r filter_data}
 filtered_data <- filter(chl_data, Chl_ugcm2 > 0, YYYYMMDDHHMM %in% c(202410101430,
                                                                      202409261400))
@@ -42,7 +57,19 @@ filtered_data$Light_Temp <- factor(paste(filtered_data$Temp_C, filtered_data$Lig
 
 ```
 
-# Temperature and Light Graph 
+### Top Bottom Ratio
+Filtered_data_wide is created using pivot wider with the Top/Bottom ratios of Chl_ugcm2 Chlorophyll. The top and bottom chlorophyll are now in columns, which widens and shortens the dataframe. This makes the calculations easier to complete.
+
+```{r top_bottom}
+filtered_data_wide <- filtered_data |>
+  select(-c(Tissue_Area_cm2, VolSol_mL, Fluorescence_Reading, `...19`,  Chl_ugL)) |>
+  pivot_wider(id_cols = c(YYYYMMDDHHMM, Replicate, Temp_C, Light), names_from = Top_Bottom, values_from = Chl_ugcm2, values_fn = mean) |>
+  mutate(TopBottomRatio = top/bottom)
+
+```
+
+# 4.0 Results 
+## Figure 1: Temperature and Light Graph 
 The chlorophyll Chl_ugcm2 is plotted across 15°C, 20°C, and 23°C and different light conditions. 
 
 ```{r graph}
@@ -67,18 +94,8 @@ filtered_data %>%
  
 ```
 
-# Top Bottom Ratio
-Filtered_data_wide is created using pivot wider with the Top/Bottom ratios of Chl_ugcm2 Chlorophyll. The top and bottom chlorophyll are now in columns, which widens and shortens the dataframe. This makes the calculations easier to complete.
 
-```{r top_bottom}
-filtered_data_wide <- filtered_data |>
-  select(-c(Tissue_Area_cm2, VolSol_mL, Fluorescence_Reading, `...19`,  Chl_ugL)) |>
-  pivot_wider(id_cols = c(YYYYMMDDHHMM, Replicate, Temp_C, Light), names_from = Top_Bottom, values_from = Chl_ugcm2, values_fn = mean) |>
-  mutate(TopBottomRatio = top/bottom)
-
-```
-
-# Top Bottom Ratio Graph 
+## Figure 2: Top Bottom Ratio Graph 
 The Top/Bottom ratio is analyzed with the variables of 15°C, 20°C, and 23°C and the different light conditions.
 
 ```{r graph}
@@ -106,11 +123,22 @@ filtered_data_wide %>%
 
 
 
-# Anova 
+## Anova on Top:Bottom Ratios, Temperature and Light Conditon
 A two factor anova is run on  the TopBottomRatio on light conditions and the temperatures 15°C, 20°C, and 23°C.
 
 ```{r anova}
 summary(aov(TopBottomRatio ~ Light * Temp_C,
            data =  filtered_data_wide))
 ```
+### Interpretation:
+No significance was found for light conditon, temperature, or both on the top to bottom ratio. 
 
+# 5.0 Conclusion
+There is no significant effects of light condition or temperature on top to bottom ratio. Different light and temperature conditions could have an overall effect on the photosynthetic communities present but these results indicate that there is no effect on vertical migration. 
+
+# 6.0 References
+  Conslavey, M., Paterson, D. M., & Underwood, G. J. C. (2011). The Ups and Downs of Life in a Benthic Biofilm: Migration of Benthic Diatoms. Diatom Research, 19:2(181–202). https://doi.org/10.1080/0269249X.2004.9705870  
+  Daggers, T. D., Kromkamp, J. C., Herman, P. M. J., & van der Wal, D. (2018). A model to assess microphytobenthic primary production in tidal systems using satellite remote sensing. Remote Sensing of Environment, 211, 129–145. https://doi.org/10.1016/j.rse.2018.03.037  
+  Haro, S., Bohórquez, J., Lara, M., Garcia-Robledo, E., González, C. J., Crespo, J. M., Papaspyrou, S., & Corzo, A. (2019). Diel patterns of microphytobenthic primary production in intertidal sediments: The role of photoperiod on the vertical migration circadian rhythm. Scientific Reports, 9(1), 13376. https://doi.org/10.1038/s41598-019-49971-8   
+  Herlory, O., Guarini, J.-M., Richard, P., & Blanchard, G. F. (2004). Microstructure of microphytobenthic biofilm and its spatio-temporal dynamics in an intertidal mudflat (Aiguillon Nay, France). Marine Ecology Progress Series, 282(33–44). https://doi.org/10.3354/meps282033  
+  Corp, P. (n.d.). Attractions: Historical. The Weather Network. Retrieved September 13, 2024, from https://www.theweathernetwork.com/ca/forecasts/attractions/historical/nova-scotia/bay-of-fundy-tourism
