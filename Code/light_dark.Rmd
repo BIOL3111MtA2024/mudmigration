@@ -7,6 +7,10 @@ author: "Sarah Postuma Douglas A. Campbell"
 Mudflats are a bio-diverse, highly productive coastal and estuarine habitat home to microphytobenthic diatoms which carry out keystone functions and are responsible for 50% of estuarine primary productivity (Herlory et al., 2004). Motile microphytobenthic diatoms, predominantly pennate diatoms, engage in vertical migrations to the surface of mudflats, to carry out keystone functions during low tide and migrate back down during high tide (Conslavey et al., 2011). These migrations are asymmetrical, with diatoms migrating much quicker upwards than downwards to maximize light exposure for photosynthesis. Studies in estuaries around the world have shed light on these migratory patterns, however, no such studies have been performed in the rare habitat of the Bay of Fundy mudflats, located in The Bay of Fundy in New Brunswick. 
   Fundy’s tides are the highest in the world due to an unusual combination of standing wave phenomena called seiche as well as the shape of the bay itself (Parks Canada Agency, 2023), with annual temperatures ranging from -14ºC to 10ºC (Corp, n.d). Our study aims to analyze the effects of temperature and light on the speed of vertical migration of microphytobenthic diatoms found in The Bay of Fundy, as well as their chlorophyll output under these conditions.
    We studied this phenomena to better understand the makeup of the Bay of Fundy and investigate the impacts of global warming. More broadly, to apply knowledge of this phenomena to satellite surveying of photosynthetic biomass and develop new methods of investigation. The goal for this particular project was to examine how vertical migration of benthic diatoms is controlled by increasing temperatures and high light condition.
+   
+## 1.1 Hypothesis
+We hypothesize that cold temperatures and dark conditions will have an impact on microphytobenthic diatoms vertical migrations and chlorophyll output.
+
 
 # 2.0 Methods 
 
