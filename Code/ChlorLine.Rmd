@@ -9,12 +9,12 @@ author:
 
 # 1. Introduction
 
-  Mudflats are a bio-diverse, highly productive coastal and estuarine habitat home to microphytobenthic diatoms, which carry out keystone functions and are responsible for 50% of estuarine primary productivity (Herlory et al., 2004). Motile microphytobenthic diatoms, predominantly pennate diatoms, engage in vertical migrations to the surface of mudflats to carry out keystone functions during low tide and migrate back down during high tide (Conslavey et al., 2011). These migrations are asymmetrical, with diatoms migrating much quicker upward than downward to maximize light exposure for photosynthesis. Studies in estuaries around the world have shed light on their migratory patterns, however, no such studies have been done in the Bay of Fundy,in New Brunswick. We aim to analyze the effects of temperature and light on the amplitude of vertical migration of microphytobenthic diatoms from in The Bay of Fundy by looking at chlorophyll output and doing manual cell counts. 
+  Mudflats are a bio-diverse, highly productive coastal and estuarine habitat home to microphytobenthic diatoms, which carry out keystone functions and are responsible for 50% of estuarine primary productivity (Herlory et al., 2004). Motile microphytobenthic diatoms, predominantly pennate diatoms, engage in vertical migrations to the surface of mudflats to carry out keystone functions during low tide and migrate back down during high tide (Conslavey et al., 2011). These migrations are asymmetrical, with diatoms migrating much quicker upward than downward to maximize light exposure for photosynthesis. Studies in estuaries around the world have shed light on their migratory patterns, however, no such studies have been done in the Bay of Fundy,in New Brunswick. We aim to analyze the effects of temperature on the amplitude of vertical migration of microphytobenthic diatoms from in The Bay of Fundy by looking at chlorophyll output and doing manual cell counts. 
 
 
 ## 1.2 Hypothesis
 
-Light and temperature variation will have an effect on the amplitude of vertical migration.
+Temperature variation will have an effect on the amplitude of vertical migration.
 
 # 2. Methods
 
@@ -22,7 +22,7 @@ Mudflat sediment from Peg’s Cove from the Bay of Fundy was collected and distr
 
 For the temperature portion of the experiment, one lasagna pan was incubated at 15ºC and one lasagna pan was incubated at 20ºC, both at the same light level (high light). Seven double layered lens papers were placed in the mud and left overnight. We synchronized out timing to coincide with the peak of high tide at the exact location at Peg's Cove where the mud was collected. Starting at 0800hr, one set of papers was removed to perform chlorophyll analysis on the top and bottom papers separately. This was done once every hour, respectively, until 1400hr. A triplicate round was performed at 1400hr, where three sets of double layered papers were placed and analyzed.      
 
-To analyze how much chlorophyll was found on each paper, each paper was placed in a test tube and re-submerged with 2mL-4mL of development solvent (Acetone and DMSO). Dilution was performed on certain samples to keep chlorophyll readings within range of the Chlorophyll Fluorometer.resuilts were recorded and graphed. 
+To analyze how much chlorophyll was found on each paper, each paper was placed in a test tube and re-submerged with 2-4mL of development solvent (Acetone and DMSO). Dilution was performed on certain samples to keep chlorophyll readings within range of the Chlorophyll Fluorometer results were recorded and graphed. 
 
 A test run was performed at 23ºC two weeks before the final execution of our experiment. We included the results of the test run in our analysis.  
 
@@ -117,11 +117,11 @@ vert_migration_wide |>
   )
 ```
 
-Three statistical test were performed, nested regressions, linear regression, and ANOVA, and a statistical trend between vertical migration and temperature was not found.The confidence interval is too wide to attribute a significant trend to variation in temperature.  
+Three statistical test were performed, nested regressions, linear regression, and ANOVA, and a statistical trend between vertical migration and temperature was not found. The confidence interval is too wide to attribute a significant trend to variation in temperature.  
 
 Top to bottom chlorophyll concentration ratios were low early in the day and higher later on in the day for temperatures of 15ºC and 20ºC. This was not observed for 23ºC. 
 
-There was s spike in chlorophyll concentration at 1300hr for 15ºC. Since we had three operators working to collect the data we attribute this spike to human error. In future execution operator ID will be included in the graphs. 
+There was a spike in chlorophyll concentration at 1300hr for 15ºC. Since we had three operators working to collect the data we attribute this spike to human error. In future execution operator ID will be included in the graphs. 
 
 There is evidence that vertical migration took place because chlorophyll readings were detected at the top layer of filter paper, and this was later confirmed by manual cell counts.
   
