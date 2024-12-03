@@ -19,6 +19,7 @@ The data was analysed for potential correlations between chl in different light 
 
 - Douglas A. Campbell, Mount Allison University, dcampbel@mta.ca, ORCID 0000-0001-8996-5463
 - Sarah R. Postuma, Mount Allison University, spostuma@mta.ca 
+- Gabriela Feres Chiappetta, Mount Allison University, gfereschiappetta@mta.ca
 
 ## Primary Contact  
 
@@ -55,6 +56,7 @@ R studio and R version 4.3.3 and GoogleSheets (2024)
 
 Chlorophyll analysis:
 https://docs.google.com/spreadsheets/d/16DxWZhYw69ZgACGu82szN9tpgpYYPWIxPXOcSLM2Bo0/edit?usp=sharing
+
 Community composition:
 https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1iz1L2MoCAyF0O4x3D6mCePw/edit?gid=0#gid=0
 
@@ -62,6 +64,7 @@ https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1iz1L2MoCAyF0O4x3D6mC
 
 Chlorophyll analysis:
 https://docs.google.com/spreadsheets/d/16DxWZhYw69ZgACGu82szN9tpgpYYPWIxPXOcSLM2Bo0/edit?usp=sharing
+
 Community composition:
 https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1iz1L2MoCAyF0O4x3D6mCePw/edit?gid=1060891329#gid=1060891329
 
@@ -69,6 +72,7 @@ https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1iz1L2MoCAyF0O4x3D6mC
 ### Data/RawData
 Chlorophyll analysis:
 vert_migration.csv - Chlorophyll analysis data.
+
 Community composition:
 https://docs.google.com/spreadsheets/d/1Ga0qnVxOVR9NwSNI5RM1iz1L2MoCAyF0O4x3D6mCePw/edit?gid=405129858#gid=405129858
 
@@ -99,6 +103,9 @@ mud_comp.Rmd - Cleaning raw data and calculating cell size. Visualizing cell cou
 CampbellSOP28ChlorophyllaTurner.pdf - instructions on the chlorophyll analysis procedure and calculations. 
 
 ### Output
+
+ChlorLine.html - Vertical migration per hour in different temperature conditions
+
 
 mud_comp.html - Community composition analysis document 
   Figure 1: Cell count per maximum dimension and condition
