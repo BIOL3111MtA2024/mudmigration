@@ -7,9 +7,9 @@ Diatom vertical migration is a worldwide phenomenon that affects tracking of dia
 Temperature could affect the rate of photosynthesis and degradation of diatoms. In different light conditions, there might be less vertical migration occurring.
 Sediment from the Bay of Fundy was incubated at 15°C, 20°C, and 23°C under medium, dim, and full light conditions and analyzed in several different ways. 
 To determine if temperature and light influenced vertical migration, lens paper was added onto the surface of the sediment of all conditions and removed after a 6.5-hour period. The lens paper then underwent chlorophyll extraction and analysis.
-The data was analysed for potential correlations between chl in different light and temperature conditions and found no statistical significance.
-
-##ADD IN BRIEF BRIEF INFO ABOUT COMMUNITY AND HOURLY IN SUMMARY -SP
+The data was analysed for potential correlations between chl in different light and temperature conditions and found no statistical significance. 
+Hourly samples of the full light condition were taken and found no significant results.
+Sampling of the surface community diatom composition found a significant result of temperature on layer and morphosize.
 
 ## Highly Qualified Personnel
 
@@ -86,10 +86,6 @@ vert_migration.rds - Clean and filtered data from chlorphyll analysis.
 
 ### Code
 
-Scripts for processing raw data into cleaned data, outside derived code, and user derived code.
-A folder OldR is used to store outdated code.
-Typically organize .Rmd in modules; Import; Tidy; Process saving .Rds out of each step.
-
 FileImportFunctions.Rmd - Import functions used for creating other analysis.
 
 light_dark.Rmd - Analyzing the vertical migration in different light and temperature conditions. 
@@ -107,7 +103,12 @@ CampbellSOP28ChlorophyllaTurner.pdf - instructions on the chlorophyll analysis p
 ### Output
 
 ChlorLine.html - Vertical migration per hour in different temperature conditions
+  Figure 1: Chlorophyll concentration at hight tide in the Bay of Fundy at 15°C, 20°C, and 23°C.
+  Figure 2: Ratio of Top Chl_ugcm2 to Bottom Chl_ugcm2, Chlorophyll concentration top to bottom ratios at temperatures 15°C, 20°C, and 23°C.
 
+light_dark.html - Light and temperature analysis
+  Figure 1: The chlorophyll Chl_ugcm2 of is plotted across 15°C, 20°C, and 23°C and different light conditions and separated into top and bottom sheet
+  Figure 2: The Top/Bottom ratio is plotted with the variables of 15°C, 20°C, and 23°C and the different light conditions
 
 mud_comp.html - Community composition analysis document 
   Figure 1: Cell count per maximum dimension and condition
@@ -116,5 +117,3 @@ mud_comp.html - Community composition analysis document
   Figure 4: Top-bottom ratio per condition, sorted by cell morphotype and size category
 
 
-Output from knit .Rmd, Figures and tables produced from analysis.
-Do not generate swarms of superfluous data exploration figures.
