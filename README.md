@@ -20,6 +20,7 @@ The data was analysed for potential correlations between chl in different light 
 - Douglas A. Campbell, Mount Allison University, dcampbel@mta.ca, ORCID 0000-0001-8996-5463
 - Sarah R. Postuma, Mount Allison University, spostuma@mta.ca 
 - Gabriela Feres Chiappetta, Mount Allison University, gfereschiappetta@mta.ca
+- Lisa Kamtchatnova, Mount Allison University, ekamtchatnova@mta.ca
 
 ## Primary Contact  
 
