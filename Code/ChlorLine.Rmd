@@ -72,6 +72,7 @@ vert_migration |>
   )
 
 ```
+
 Figure 1 shows the concentration of chlorophyll in ug/cm^2 detected on the top and bottom layers of our lens paper at each hour, starting at 0800hr and finishing at 1400hr. 
 
 The bottom layer of paper has a higher chlorophyll concentration than top layer at all temperature levels. 
@@ -116,10 +117,6 @@ vert_migration_wide |>
   )
 ```
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 49fcc32df533649cc0dca6809432bfe1039344e1
 
 Figure 2 shows the ratio of chlorophyll concentration found on the top layer of lens paper to bottom layer of lens paper. Light level was high for all temperature settings. 
 
