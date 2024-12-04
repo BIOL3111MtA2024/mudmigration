@@ -1,10 +1,9 @@
 ---
 title: "ChlorLine"
-output: html_notebook
-author:
-  Gabriela Feres Chiappetta
-  Lisa Kamtchatnova
-  Douglas Campbell
+author: "Gabriela Feres Chiappetta Lisa Kamtchatnova Douglas Campbell"
+output:
+  html_document:
+    df_print: paged
 ---
 
 # 1.0 Introduction
@@ -118,10 +117,12 @@ vert_migration_wide |>
 ```
 
 <<<<<<< HEAD
-Figure 2 shows the ratio of chlorophyll concentration found on the top layer of lens paper to bottom layer of lens paper. 
 
 =======
 >>>>>>> 49fcc32df533649cc0dca6809432bfe1039344e1
+
+Figure 2 shows the ratio of chlorophyll concentration found on the top layer of lens paper to bottom layer of lens paper. Light level was high for all temperature settings. 
+
 Three statistical test were performed, nested regressions, linear regression, and ANOVA, and a statistical trend between vertical migration and temperature was not found. The confidence interval is too wide to attribute a significant trend to variation in temperature.  
 
 Top to bottom chlorophyll concentration ratios were low early in the day and higher later on in the day for temperatures of 15ºC and 20ºC. This was not observed for 23ºC. 
